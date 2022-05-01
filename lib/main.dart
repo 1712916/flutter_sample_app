@@ -1,10 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubits/cubits.dart';
 import 'views/pages/pages.dart';
 
 void main() {
-  runApp(const MyApp());
+  BlocOverrides.runZoned(() =>  runApp(const MyApp()), blocObserver: AppBlocObserver(),);
+}
+
+class AppBlocObserver extends BlocObserver {
+  @override
+  void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+    if (kDebugMode) {
+      print('${bloc.runtimeType} $change');
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {

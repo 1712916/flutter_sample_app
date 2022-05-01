@@ -45,25 +45,6 @@ class _HomePageState extends CustomState<HomePage, HomeCubit> {
         }
       },
     );
-    // return StreamBuilder<HomeState>(
-    //   stream: context.read<HomeCubit>().stream,
-    //   builder: (context, snapshot) {
-    //     print('alo: $snapshot');
-    //     if (snapshot.hasData) {
-    //       switch (snapshot.data?.loadStatus) {
-    //         case LoadStatus.init:
-    //           return const SizedBox();
-    //         case LoadStatus.loaded:
-    //           return FloatingActionButton(onPressed: () {
-    //             lol();
-    //           });
-    //         default:
-    //           return const SizedBox();
-    //       }
-    //     }
-    //     return const SizedBox.shrink();
-    //   },
-    // );
   }
 
   @override

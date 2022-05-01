@@ -1,6 +1,7 @@
 import 'package:flutter_sample_app/cubits/base/base.dart';
 
-import '../../models/models.dart';
+import '../../data/data.dart';
+
 
 class HomeState extends BaseState implements Copyable<HomeState> {
   final List<String>? contents;
