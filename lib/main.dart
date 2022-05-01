@@ -1,12 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sample_app/routers/route.dart';
 
-import 'cubits/cubits.dart';
-import 'views/pages/pages.dart';
+import 'dependencies/app_dependencies.dart';
 
 void main() {
-  BlocOverrides.runZoned(() =>  runApp(const MyApp()), blocObserver: AppBlocObserver(),);
+  WidgetsFlutterBinding.ensureInitialized();
+  BlocOverrides.runZoned(
+    () async {
+      await AppDependencies.init();
+      runApp(const MyApp());
+    },
+    blocObserver: AppBlocObserver(),
+  );
 }
 
 class AppBlocObserver extends BlocObserver {
@@ -29,7 +36,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(cubit: HomeCubit()),
+      initialRoute: RouteManager.home,
+      onGenerateRoute: (settings) => RouteManager.getRoute(settings),
     );
   }
 }
