@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../cubits/cubits.dart';
+import '../../../resources/resources.dart';
 import '../base_page/base_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,6 +50,13 @@ class _HomePageState extends CustomState<HomePage, HomeCubit> {
   }
 
   @override
+  PreferredSizeWidget? buildAppbar(BuildContext context) {
+    return AppBar(
+      title: const Text(LocaleKeys.title).tr(),
+    );
+  }
+
+  @override
   HomeCubit get cubit => widget.cubit..initData();
 }
 
@@ -67,11 +76,27 @@ class _HomeContent extends StatelessWidget {
             );
           case LoadStatus.loaded:
             final contents = state.contents;
-            return ListView.builder(
-              itemCount: contents?.length ?? 0,
-              itemBuilder: (context, index) {
-                return Text(contents?[index] ?? '');
-              },
+            return Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    context.read<ThemeCubit>().switchMode(ThemeMode.light);
+                  },
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: contents?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return Text(contents?[index] ?? '');
+                    },
+                  ),
+                ),
+              ],
             );
           default:
             return const SizedBox();
