@@ -5,8 +5,7 @@ class ThemeCubit extends Cubit<ThemeMode> {
   ThemeCubit() : super(ThemeMode.light);
 
   void setUp() {
-    //read from shareRef
-    //
+    //todo: read from shareRef
   }
 
   void switchMode(ThemeMode themeMode) {

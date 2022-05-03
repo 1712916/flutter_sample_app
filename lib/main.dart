@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => ThemeCubit()..setUp()),
       ],
       child: const _MaterialApp(),
     );
