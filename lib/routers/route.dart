@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RouteManager {
 
-  static String get home => '/';
+  static String get mainPage => '/';
+
+  static String get home => '/home';
+
+  static String get imagePage => '/image';
 
   static getRoute(RouteSettings settings) {
     late Widget widget;
@@ -25,6 +30,8 @@ class RouteManager {
         ),
       );
     }
+    // return PageTransition(child: widget, type: PageTransitionType.leftToRight, settings: settings);
     return MaterialPageRoute(builder: (_) => widget, settings: settings);
+   
   }
 }

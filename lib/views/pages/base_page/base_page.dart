@@ -11,10 +11,18 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
 
   Widget buildContent(BuildContext context) => const SizedBox.shrink();
 
+  bool isFirstLoad = true;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (isFirstLoad && mounted) {
+      getPageSettings(ModalRoute.of(context)!.settings.arguments);
+      isFirstLoad = false;
+    }
   }
+
+  void getPageSettings(Object? arguments){}
 
   @override
   Widget build(BuildContext context) {

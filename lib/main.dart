@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'resources/theme/theme_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
 
   BlocOverrides.runZoned(
     () async {
@@ -67,13 +69,14 @@ class _MaterialApp extends StatelessWidget {
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, state) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           themeMode: state,
           theme: ThemeResource.getTheme(themeMode: ThemeMode.light, theme: Theme.of(context)),
           darkTheme: ThemeResource.getTheme(themeMode: ThemeMode.dark, theme: Theme.of(context)),
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          initialRoute: RouteManager.home,
+          initialRoute: RouteManager.mainPage,
           onGenerateRoute: (settings) => RouteManager.getRoute(settings),
         );
       },
