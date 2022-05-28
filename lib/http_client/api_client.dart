@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_sample_app/data/api_config.dart';
-import 'package:flutter_sample_app/data/response/status_code.dart';
 
 enum HttpMethod {
   get,
@@ -16,21 +14,10 @@ extension MethodExtensions on HttpMethod {
   String get value => ['GET', 'PUT', 'POST', 'DELETE', 'OPTION'][index];
 }
 
-enum ApiPath {
-  searchAndPagination,
-}
-
-extension GetPath on ApiPath {
-  String getPath() {
-    switch (this) {
-      case ApiPath.searchAndPagination:
-        return '${ApiConfig.baseUrl}${ApiConfig.searchPath}';
-    }
-  }
-}
-
 class ApiRequest {
   static final Dio _dio = Dio();
+
+  static int timeOut = 600; //1000 = 1 second
 
   static Future<Response?> call(
     HttpMethod httpMethod, {
@@ -46,6 +33,9 @@ class ApiRequest {
       'Accept': "application/json",
       'Content-type': 'application/json; charset=utf-8',
     };
+    options.sendTimeout = timeOut;
+    options.receiveTimeout = timeOut;
+
     log('call api: $url');
     log('call api param: $queryParameters');
     try {
