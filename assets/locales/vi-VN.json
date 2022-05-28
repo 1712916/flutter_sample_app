@@ -1,4 +1,9 @@
 {
   "title": "Meow",
-  "saveToPhone": "Lưu vào máy"
+  "saveToPhone": "Đã lưu vào thiết bị",
+  "haveAnError": "Đã xảy ra lỗi!",
+  "retry": "Thử lại",
+  "meowTitle": "Mèo",
+  "dogTitle": "Cún",
+  "downLoadThisImage": "Tải ảnh này"
 }

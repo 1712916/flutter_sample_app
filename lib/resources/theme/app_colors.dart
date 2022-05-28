@@ -19,6 +19,15 @@ class AppColors {
     }
   }
 
+  static ColorStyle getColorStyle(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.dark:
+        return ColorStyle.dark;
+      default:
+        return ColorStyle.light;
+    }
+  }
+
   external Color get primaryColor;
 
   external Color get backgroundColor;

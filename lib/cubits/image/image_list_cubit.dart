@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sample_app/data/data.dart';
+import 'package:flutter_sample_app/helpers/helpers.dart';
+import 'package:flutter_sample_app/widgets/toast.dart';
 
 import '../../data/response/custom_response.dart';
 import '../../data/response/status_code.dart';
@@ -9,14 +11,26 @@ class ImageListCubit extends Cubit<ImageListState> {
   ImageListCubit() : super(ImageListState());
   final ISearchRepository searchRepository = SearchRepository();
 
-  void initData(SearchModel searchModel) {
+  void initData(List<SearchModel> searchModels) {
     emit(state.copyWith(
-      images: [searchModel],
+      images: searchModels,
     ));
-    randomLoad(5);
+    loadMore(5);
   }
 
-  Future randomLoad(int number) async {
+  Future loadMore(int number) async {
+    await InternetCheckerHelper.checkInternetAccess(
+      onConnected: () async {
+        await _randomLoad(number);
+      },
+      onDisconnected: () async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        Toast.makeText(message: 'Please check internet access');
+      }
+    );
+  }
+
+  Future _randomLoad(int number) async {
     CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: number);
     if (response.statusCode == StatusCode.success) {
       emit(

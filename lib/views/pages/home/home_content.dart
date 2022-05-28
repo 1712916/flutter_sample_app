@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../cubits/cubits.dart';
+import '../../../resources/resources.dart';
 import '../../../routers/route.dart';
 import 'load_more.dart';
 
@@ -57,7 +59,7 @@ class _HomeContentState extends State<HomeContent> {
                       onTap: () {
                         Navigator.of(context).pushNamed(
                           RouteManager.imageListPage,
-                          arguments: contents![index],
+                          arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
                         );
                       },
                       child: Image.network(
@@ -87,13 +89,17 @@ class _HomeContentState extends State<HomeContent> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Have An Error!'),
+                  const Text(LocaleKeys.haveAnError).tr(),
                   const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () => context.read<HomeCubit>().initData(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      child: Text('Retry'),
+                      decoration: BoxDecoration(
+                        color: context.read<ThemeCubit>().getColors.primaryColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Text(LocaleKeys.retry).tr(),
                     ),
                   ),
                 ],

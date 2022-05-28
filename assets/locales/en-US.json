@@ -1,4 +1,9 @@
 {
   "title": "Meow",
-  "saveToPhone": "Save to phone"
+  "saveToPhone": "Save to phone",
+  "haveAnError": "Have An Error!",
+  "retry": "Retry",
+  "meowTitle": "Meow",
+  "dogTitle": "Gauw",
+  "downLoadThisImage": "Download this image"
 }

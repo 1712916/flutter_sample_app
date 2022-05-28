@@ -43,8 +43,24 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(
       loadStatus: LoadStatus.loading,
     ));
+    await InternetCheckerHelper.checkInternetAccess(
+      onConnected: () async {
+        await _loadData();
+      },
+      onDisconnected: () async {
+        await Future.delayed(const Duration(milliseconds: 600));
+        emit(
+          state.copyWith(
+            loadStatus: LoadStatus.error,
+          ),
+        );
+      },
+    );
+  }
+
+  Future _loadData() async {
     CustomResponse<List<SearchModel>>? response = await searchRepository.search(limit: countPattern * 3, page: state.currentPage);
-   if (response.statusCode == StatusCode.success) {
+    if (response.statusCode == StatusCode.success) {
       emit(
         state.copyWith(
           loadStatus: LoadStatus.loaded,
@@ -74,29 +90,33 @@ class HomeCubit extends Cubit<HomeState> {
           ));
         },
         onConnected: () async {
-          int page = state.currentPage! + 1;
-          CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: countPattern * 3, page: page);
-          if (response.statusCode == StatusCode.success) {
-            emit(
-              state.copyWith(
-                loadStatus: LoadStatus.loaded,
-                loadingMore: false,
-                contents: [
-                  ...?state.contents,
-                  ...?response.data,
-                ],
-                currentPage: page,
-              ),
-            );
-          } else if (response.statusCode == StatusCode.requestTimeout) {
-            emit(
-              state.copyWith(
-                loadingMore: false,
-                errorStatus: StatusCode.requestTimeout,
-              ),
-            );
-          }
+          await _loadMore();
         },
+      );
+    }
+  }
+
+  Future _loadMore() async {
+    int page = state.currentPage! + 1;
+    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: countPattern * 3, page: page);
+    if (response.statusCode == StatusCode.success) {
+      emit(
+        state.copyWith(
+          loadStatus: LoadStatus.loaded,
+          loadingMore: false,
+          contents: [
+            ...?state.contents,
+            ...?response.data,
+          ],
+          currentPage: page,
+        ),
+      );
+    } else if (response.statusCode == StatusCode.requestTimeout) {
+      emit(
+        state.copyWith(
+          loadingMore: false,
+          errorStatus: StatusCode.requestTimeout,
+        ),
       );
     }
   }

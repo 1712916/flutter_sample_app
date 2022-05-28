@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/views/pages/image/image.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../data/data.dart';
 import '../base_page/base_page.dart';
+import 'image_page.dart';
 
 class ImageListPage extends StatefulWidget {
   const ImageListPage({Key? key, required this.cubit}) : super(key: key);
@@ -20,7 +20,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
 
   @override
   void getPageSettings(Object? arguments) {
-    if (arguments is SearchModel) {
+    if (arguments is List<SearchModel>) {
       cubit.initData(arguments);
     }
   }
@@ -44,7 +44,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
             if (!_isLoadMore) {
               _isLoadMore = true;
               if (images.length - 2 == currentIndex) {
-                await cubit.randomLoad(10);
+                await cubit.loadMore(10);
               }
               _isLoadMore = false;
             }

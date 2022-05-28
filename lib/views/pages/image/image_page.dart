@@ -4,6 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import '../../../cubits/cubits.dart';
 import '../../../data/data.dart';
 import '../../../helpers/helpers.dart';
+import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 
 class ImagePage extends StatefulWidget {
@@ -64,56 +65,6 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
     if (url.isNotEmpty) {
       await DownloadHelper.downloadImage(url: url);
     }
-  }
-}
-
-class DownloadButton extends StatefulWidget {
-  const DownloadButton({Key? key, this.onTap}) : super(key: key);
-
-  final Function? onTap;
-
-  @override
-  _DownloadButtonState createState() => _DownloadButtonState();
-}
-
-class _DownloadButtonState extends State<DownloadButton> {
-  bool _isDownloading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () async {
-        if (!_isDownloading) {
-          _isDownloading = true;
-          setState(() {});
-          await Future.delayed(Duration(seconds: 3));
-          await widget.onTap?.call();
-          _isDownloading = false;
-          setState(() {});
-        }
-      },
-      tooltip: 'Download this image',
-      icon: _isDownloading
-          ? const CircularProgressIndicator(
-              color: Colors.grey,
-              strokeWidth: 2,
-            )
-          : Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                ),
-              ),
-              padding: const EdgeInsets.all(4),
-              child: const Icon(
-                Icons.download,
-                size: 20,
-                color: Colors.white,
-              ),
-            ),
-    );
   }
 }
 

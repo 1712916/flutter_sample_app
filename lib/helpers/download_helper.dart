@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:image_downloader/image_downloader.dart';
+ import 'package:image_downloader/image_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../resources/resources.dart';
 import '../widgets/widgets.dart';
 import 'helpers.dart';
 
@@ -9,9 +11,9 @@ class DownloadHelper {
   DownloadHelper._();
 
   static Future downloadImage({required String url}) async {
-    await PermissionHelper.request(Permission.storage, onGranted: () {
-      InternetCheckerHelper.checkInternetAccess(
-        onConnected: () => _downLoadImage(url),
+    await PermissionHelper.request(Permission.storage, onGranted: () async {
+      await InternetCheckerHelper.checkInternetAccess(
+        onConnected: () async => await _downLoadImage(url),
         onDisconnected: () {},
       );
     });
@@ -26,11 +28,10 @@ class DownloadHelper {
       if (imageId == null) {
         return;
       }
-      Toast.makeText(message: 'Ảnh đã được lưu vào thiết bị này');
+      Toast.makeText(message: LocaleKeys.saveToPhone.tr());
 
     } on PlatformException catch (error) {
-      print(error);
-      Toast.makeText(message: 'Đã xảy ra lỗi');
+      Toast.makeText(message: LocaleKeys.haveAnError.tr());
     }
   }
 }
