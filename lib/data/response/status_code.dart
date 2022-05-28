@@ -11,6 +11,8 @@ class StatusCode {
   static const int unauthorized = 401;
   static const int forbidden = 403;
   static const int findNotFound = 404;
+  static const int requestTimeout = 408;
+
 
   //Server error responses (500–599)
 }

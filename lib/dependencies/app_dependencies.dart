@@ -1,6 +1,7 @@
-import 'package:flutter_sample_app/dependencies/cubit_dependencies.dart';
-import 'package:flutter_sample_app/dependencies/page_dependencies.dart';
 import 'package:get_it/get_it.dart';
+
+import 'cubit_dependencies.dart';
+import 'page_dependencies.dart';
 
 class AppDependencies {
   static GetIt get injector => GetIt.I;

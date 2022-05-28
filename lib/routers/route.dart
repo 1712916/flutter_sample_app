@@ -10,6 +10,10 @@ class RouteManager {
 
   static String get imagePage => '/image';
 
+  static String get imageListPage => '/image-list';
+
+  static String get settingPage => '/setting';
+
   static getRoute(RouteSettings settings) {
     late Widget widget;
     try {

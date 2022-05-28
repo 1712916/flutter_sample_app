@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +10,10 @@ import 'package:flutter_sample_app/cubits/cubits.dart';
 import 'package:flutter_sample_app/routers/route.dart';
 
 import 'dependencies/app_dependencies.dart';
+import 'helpers/helpers.dart';
 import 'resources/theme/theme_data.dart';
+
+GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +56,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivitySubscription = InternetCheckerHelper.connectivity.onConnectivityChanged.listen(InternetCheckerHelper.changeConnectivityResult);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -70,6 +90,7 @@ class _MaterialApp extends StatelessWidget {
       builder: (context, state) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          navigatorKey: navKey,
           themeMode: state,
           theme: ThemeResource.getTheme(themeMode: ThemeMode.light, theme: Theme.of(context)),
           darkTheme: ThemeResource.getTheme(themeMode: ThemeMode.dark, theme: Theme.of(context)),

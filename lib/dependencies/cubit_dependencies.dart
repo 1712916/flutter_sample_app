@@ -7,5 +7,6 @@ class CubitDependencies {
     injector.registerFactory<MainCubit>(() => MainCubit());
     injector.registerFactory<HomeCubit>(() => HomeCubit());
     injector.registerFactory<ImageCubit>(() => ImageCubit());
+    injector.registerFactory<ImageListCubit>(() => ImageListCubit());
   }
 }

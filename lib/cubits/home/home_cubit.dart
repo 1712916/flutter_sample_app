@@ -5,6 +5,7 @@ import '../../data/models/search_model.dart';
 import '../../data/repositories/search_repository.dart';
 import '../../data/response/custom_response.dart';
 import '../../data/response/status_code.dart';
+import '../../helpers/helpers.dart';
 import '../cubits.dart';
 
 const List<QuiltedGridTile> gridPattern = [
@@ -42,22 +43,21 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(
       loadStatus: LoadStatus.loading,
     ));
-    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: countPattern * 3, page: state.currentPage, order: 'DESC');
-
-    if (response.statusCode == StatusCode.success) {
+    CustomResponse<List<SearchModel>>? response = await searchRepository.search(limit: countPattern * 3, page: state.currentPage);
+   if (response.statusCode == StatusCode.success) {
       emit(
         state.copyWith(
           loadStatus: LoadStatus.loaded,
           contents: response.data,
         ),
       );
-    } else {
+    } else if (response.statusCode == StatusCode.requestTimeout) {
       emit(
         state.copyWith(
           loadStatus: LoadStatus.error,
         ),
       );
-    }
+    } else {}
   }
 
   void loadMore() async {
@@ -65,23 +65,39 @@ class HomeCubit extends Cubit<HomeState> {
       emit(state.copyWith(
         loadingMore: true,
       ));
-      await Future.delayed(const Duration(seconds: 2));
-      int page = state.currentPage! + 1;
-      CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: countPattern * 3, page: page, order: 'DESC');
 
-      if (response.statusCode == StatusCode.success) {
-        emit(
-          state.copyWith(
-            loadStatus: LoadStatus.loaded,
+      await InternetCheckerHelper.checkInternetAccess(
+        onDisconnected: () async {
+          await Future.delayed(const Duration(milliseconds: 600));
+          emit(state.copyWith(
             loadingMore: false,
-            contents: [
-              ...?state.contents,
-              ...?response.data,
-            ],
-            currentPage: page,
-          ),
-        );
-      } else {}
+          ));
+        },
+        onConnected: () async {
+          int page = state.currentPage! + 1;
+          CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: countPattern * 3, page: page);
+          if (response.statusCode == StatusCode.success) {
+            emit(
+              state.copyWith(
+                loadStatus: LoadStatus.loaded,
+                loadingMore: false,
+                contents: [
+                  ...?state.contents,
+                  ...?response.data,
+                ],
+                currentPage: page,
+              ),
+            );
+          } else if (response.statusCode == StatusCode.requestTimeout) {
+            emit(
+              state.copyWith(
+                loadingMore: false,
+                errorStatus: StatusCode.requestTimeout,
+              ),
+            );
+          }
+        },
+      );
     }
   }
 }

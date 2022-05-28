@@ -10,10 +10,11 @@ class HomeState extends BaseState implements Copyable<HomeState> {
 
   HomeState({
     LoadStatus? loadStatus,
+    int? errorStatus,
     this.contents,
     this.currentPage,
     this.loadingMore,
-  }) : super(loadStatus: loadStatus);
+  }) : super(loadStatus: loadStatus, errorStatus: errorStatus);
 
   @override
   List<Object?> get props => [
@@ -21,6 +22,7 @@ class HomeState extends BaseState implements Copyable<HomeState> {
         contents.hashCode,
         currentPage,
         loadingMore,
+        errorStatus,
       ];
 
   @override
@@ -34,12 +36,14 @@ class HomeState extends BaseState implements Copyable<HomeState> {
     List<SearchModel>? contents,
     int? currentPage,
     bool? loadingMore,
+    int? errorStatus,
   }) {
     return HomeState(
       loadStatus: loadStatus ?? this.loadStatus,
       contents: contents ?? this.contents,
       currentPage: currentPage ?? this.currentPage,
       loadingMore: loadingMore ?? this.loadingMore,
+      errorStatus: errorStatus,
     );
   }
 }

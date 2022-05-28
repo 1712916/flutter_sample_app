@@ -1,23 +1,26 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter_sample_app/data/models/search_model.dart';
-import 'package:flutter_sample_app/http_client/api_client.dart';
 
+import '../../../http_client/api_client.dart';
+import '../../data.dart';
 import '../../response/custom_response.dart';
 import '../../response/status_code.dart';
 
 class ISearchService {}
 
 class SearchService {
-  Future<CustomResponse<List<SearchModel>>> search({int? limit, int? page, String? order}) async {
+  Future<CustomResponse<List<SearchModel>>> search({int? limit, int? page, OrderType? order = OrderType.desc, List<ImageType>? imageTypes}) async {
+    List<ImageType> _imageTypes =  imageTypes ?? ImageType.values;
+    String mimeTypesString = _imageTypes.map((e) => e.name).toList().join(',');
+    String _order = order?.name ?? OrderType.desc.name;
     final Response? response = await ApiRequest.call(HttpMethod.get, url: ApiPath.searchAndPagination.getPath(), queryParameters: {
       'limit': limit ?? 20,
       'page': page ?? 0,
-      'order': order ?? 'DESC',
+      'order': _order,
+      'mime_types': mimeTypesString,
     });
-    if (response == null) {
-      return CustomResponse(statusCode: StatusCode.badRequest); //
+    if (response == null) {}
+    else if (response.statusCode == StatusCode.requestTimeout) {
+      return CustomResponse(statusCode: StatusCode.requestTimeout); //
     } else if (response.statusCode == StatusCode.success) {
       print('response data: ${response.data}');
       final responseData = response.data;
@@ -28,6 +31,5 @@ class SearchService {
       );
     }
     return CustomResponse(statusCode: StatusCode.badRequest); //
-
   }
 }

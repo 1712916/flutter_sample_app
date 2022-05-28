@@ -56,10 +56,15 @@ class ApiRequest {
         cancelToken: cancelToken,
         options: options,
       );
+    } on DioError catch (e) {
+      log('Time out: $e');
+      return Response(
+        requestOptions: RequestOptions(path: url),
+        statusCode: StatusCode.requestTimeout,
+      );
     } catch (e) {
       log('Thrown an exception when call api: $e');
       return null;
     }
-
   }
 }
