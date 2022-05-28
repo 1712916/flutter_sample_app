@@ -11,12 +11,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cached_network_image: ^3.2.0
   equatable: ^2.0.3
   easy_localization: ^3.0.0
   flutter_bloc: ^8.0.1
   get_it: ^7.2.0
   dio: ^4.0.6
   shared_preferences: ^2.0.15
+  flutter_staggered_grid_view: ^0.6.1
+  photo_view: ^0.13.0
+  page_transition: ^2.0.5
+  image_downloader: ^0.31.0
   permission_handler: ^9.2.0
   connectivity_plus: ^2.3.0
 

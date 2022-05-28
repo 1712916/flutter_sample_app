@@ -1,18 +1,29 @@
 import 'package:flutter_sample_app/cubits/base/base.dart';
 
 import '../../data/data.dart';
-
+import '../../data/models/search_model.dart';
 
 class HomeState extends BaseState implements Copyable<HomeState> {
-  final List<String>? contents;
+  final List<SearchModel>? contents;
+  final int? currentPage;
+  final bool? loadingMore;
 
   HomeState({
     LoadStatus? loadStatus,
+    int? errorStatus,
     this.contents,
-  }) : super(loadStatus: loadStatus);
+    this.currentPage,
+    this.loadingMore,
+  }) : super(loadStatus: loadStatus, errorStatus: errorStatus);
 
   @override
-  List<Object?> get props => [loadStatus, contents.hashCode];
+  List<Object?> get props => [
+        loadStatus,
+        contents.hashCode,
+        currentPage,
+        loadingMore,
+        errorStatus,
+      ];
 
   @override
   HomeState copy() {
@@ -20,23 +31,19 @@ class HomeState extends BaseState implements Copyable<HomeState> {
   }
 
   @override
-  HomeState copyWith({LoadStatus? loadStatus, List<String>? contents}) {
+  HomeState copyWith({
+    LoadStatus? loadStatus,
+    List<SearchModel>? contents,
+    int? currentPage,
+    bool? loadingMore,
+    int? errorStatus,
+  }) {
     return HomeState(
       loadStatus: loadStatus ?? this.loadStatus,
       contents: contents ?? this.contents,
+      currentPage: currentPage ?? this.currentPage,
+      loadingMore: loadingMore ?? this.loadingMore,
+      errorStatus: errorStatus,
     );
   }
-}
-
-void lol() {
-  HomeState homeState = HomeState(
-    contents: [],
-    loadStatus: LoadStatus.init,
-  );
-  print('HomeState: ${homeState.loadStatus}');
-  HomeState homeStateCP = homeState.copy();
-  print('HomeState copy: ${homeStateCP.copy().loadStatus}');
-  HomeState homeStateCPW = homeState.copyWith(loadStatus: LoadStatus.loaded);
-  print('HomeState copy: ${homeStateCPW.loadStatus}');
-
 }

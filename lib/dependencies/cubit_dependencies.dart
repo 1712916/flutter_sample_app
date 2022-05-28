@@ -4,6 +4,9 @@ import '../cubits/cubits.dart';
 
 class CubitDependencies {
   static Future<void> init(GetIt injector) async {
+    injector.registerFactory<MainCubit>(() => MainCubit());
     injector.registerFactory<HomeCubit>(() => HomeCubit());
+    injector.registerFactory<ImageCubit>(() => ImageCubit());
+    injector.registerFactory<ImageListCubit>(() => ImageListCubit());
   }
 }
