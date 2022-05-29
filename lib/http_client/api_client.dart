@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_sample_app/data/api_config.dart';
 import 'package:flutter_sample_app/data/response/status_code.dart';
+import 'package:flutter_sample_app/utils/setting.dart';
 
 enum HttpMethod {
   get,
@@ -24,7 +25,7 @@ extension GetPath on ApiPath {
   String getPath() {
     switch (this) {
       case ApiPath.searchAndPagination:
-        return '${ApiConfig.baseUrl}${ApiConfig.searchPath}';
+        return '${SettingManager.isMeow ? ApiConfig.catBaseUrl : ApiConfig.dogBaseUrl}${ApiConfig.searchPath}';
     }
   }
 }

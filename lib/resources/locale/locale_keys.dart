@@ -6,4 +6,10 @@ class LocaleKeys {
   static const String meowTitle = 'meowTitle';
   static const String dogTitle = 'dogTitle';
   static const String downLoadThisImage = 'downLoadThisImage';
+  static const String catOrDog = 'catOrDog';
+  static const String settings = 'settings';
+  static const String orderSearch = 'orderSearch';
+  static const String imageType = 'imageType';
+  static const String savedSettings = 'savedSettings';
+  static const String savedSettingsFailure = 'savedSettingsFailure';
 }

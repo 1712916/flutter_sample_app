@@ -10,6 +10,6 @@ class PageDependencies {
     injector.registerFactory<Widget>(() => HomePage(cubit: injector()), instanceName: RouteManager.home);
     injector.registerFactory<Widget>(() => ImagePage(cubit: injector()), instanceName: RouteManager.imagePage);
     injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.imageListPage);
-    injector.registerFactory<Widget>(() => SettingPage(), instanceName: RouteManager.settingPage);
+    injector.registerFactory<Widget>(() => SettingPage(cubit: injector(),), instanceName: RouteManager.settingPage);
   }
 }

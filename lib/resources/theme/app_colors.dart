@@ -47,6 +47,8 @@ class AppColors {
   external Color get dividerColor;
 
   external Color get shadowColor;
+
+  external Color get accentColor;
 }
 
 class LightColors extends AppColors {
@@ -69,7 +71,7 @@ class LightColors extends AppColors {
   Color get errorColor => const Color(0xFFE3FDFD);
 
   @override
-  Color get focusColor => const Color(0xFFE3FDFD);
+  Color get focusColor => const Color(0xFFd6edfa);
 
   @override
   Color get disabledColor => const Color(0xFFE3FDFD);
@@ -79,6 +81,9 @@ class LightColors extends AppColors {
 
   @override
   Color get shadowColor => const Color(0xFFE3FDFD);
+
+  @override
+  Color get accentColor => Colors.orangeAccent;
 }
 
 class DarkColors extends AppColors {
@@ -111,4 +116,7 @@ class DarkColors extends AppColors {
 
   @override
   Color get shadowColor => const Color(0xFFE3FDFD);
+
+  @override
+  Color get accentColor => Colors.orangeAccent;
 }

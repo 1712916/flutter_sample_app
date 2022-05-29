@@ -5,5 +5,11 @@
   "retry": "Retry",
   "meowTitle": "Meow",
   "dogTitle": "Gauw",
-  "downLoadThisImage": "Download this image"
+  "downLoadThisImage": "Download this image",
+  "catOrDog": "Cat or Dog",
+  "settings": "Settings",
+  "orderSearch": "Search Order",
+  "imageType": "Image Type",
+  "savedSettings": "Saved Settings Success",
+  "savedSettingsFailure": "Fail to save Settings"
 }

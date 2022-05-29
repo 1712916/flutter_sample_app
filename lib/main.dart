@@ -12,14 +12,14 @@ import 'package:flutter_sample_app/routers/route.dart';
 import 'dependencies/app_dependencies.dart';
 import 'helpers/helpers.dart';
 import 'resources/theme/theme_data.dart';
+import 'utils/utils.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
-
+  await SettingManager.loadSetting();
   BlocOverrides.runZoned(
     () async {
       await AppDependencies.init();

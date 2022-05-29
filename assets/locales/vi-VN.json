@@ -5,5 +5,11 @@
   "retry": "Thử lại",
   "meowTitle": "Mèo",
   "dogTitle": "Cún",
-  "downLoadThisImage": "Tải ảnh này"
+  "downLoadThisImage": "Tải ảnh này",
+  "catOrDog": "Mèo hay Cún",
+  "settings": "Cài đặt",
+  "orderSearch": "Sắp xếp",
+  "imageType": "Loại tệp",
+  "savedSettings": "Đã lưu cài đặt",
+  "savedSettingsFailure": "Lưu cài đặt thất bại"
 }

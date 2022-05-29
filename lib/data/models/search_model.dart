@@ -117,7 +117,7 @@ class Breed {
 
   factory Breed.fromJson(Map<String, dynamic> json) => Breed(
     weight: Weight.fromJson(json["weight"]),
-    id: json["id"],
+    id: json["id"].toString(),
     name: json["name"],
     temperament: json["temperament"],
     origin: json["origin"],

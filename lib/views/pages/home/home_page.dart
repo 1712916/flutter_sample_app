@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sample_app/routers/route.dart';
+import 'package:flutter_sample_app/utils/setting.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
@@ -35,9 +36,9 @@ class _HomePageState extends CustomState<HomePage, HomeCubit> {
   @override
   PreferredSizeWidget? buildAppbar(BuildContext context) {
     return AppBar(
-      title: const Text(
-        LocaleKeys.title,
-        style: TextStyle(color: Colors.black),
+      title: Text(
+        SettingManager.isMeow ? LocaleKeys.meowTitle : LocaleKeys.dogTitle,
+        style: const TextStyle(color: Colors.black),
       ).tr(),
       actions: [
         IconButton(
