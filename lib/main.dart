@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -43,7 +43,7 @@ class AppBlocObserver extends BlocObserver {
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
     if (kDebugMode) {
-      print('${bloc.runtimeType} $change');
+      log('${bloc.runtimeType} $change');
     }
   }
 }

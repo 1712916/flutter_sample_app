@@ -73,7 +73,13 @@ class HomeCubit extends Cubit<HomeState> {
           loadStatus: LoadStatus.error,
         ),
       );
-    } else {}
+    } else {
+      emit(
+        state.copyWith(
+          loadStatus: LoadStatus.error,
+        ),
+      );
+    }
   }
 
   void loadMore() async {
