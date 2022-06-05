@@ -1,17 +1,15 @@
-import 'dart:async';
 import 'dart:developer';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/cubits/cubits.dart';
-import 'package:flutter_sample_app/routers/route.dart';
 
+import 'cubits/cubits.dart';
 import 'dependencies/app_dependencies.dart';
 import 'helpers/helpers.dart';
 import 'resources/theme/theme_data.dart';
+import 'routers/route.dart';
 import 'utils/utils.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();

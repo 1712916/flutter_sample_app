@@ -1,5 +1,4 @@
-import 'package:flutter_sample_app/utils/setting.dart';
-
+import '../../utils/utils.dart';
 import '../data.dart';
 import '../data_provider/data_provider.dart';
 import '../response/custom_response.dart';

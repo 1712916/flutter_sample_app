@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/data/data.dart';
-import 'package:flutter_sample_app/helpers/helpers.dart';
-import 'package:flutter_sample_app/widgets/toast.dart';
 
+import '../../data/data.dart';
 import '../../data/response/custom_response.dart';
 import '../../data/response/status_code.dart';
+import '../../helpers/helpers.dart';
+import '../../widgets/widgets.dart';
 import 'image_list_state.dart';
 
 class ImageListCubit extends Cubit<ImageListState> {

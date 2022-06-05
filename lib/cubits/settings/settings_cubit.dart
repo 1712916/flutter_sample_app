@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/data/data.dart';
-import 'package:flutter_sample_app/utils/setting.dart';
 
+import '../../data/data.dart';
+import '../../utils/utils.dart';
 import 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingState> {

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/utils/setting.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../data/data.dart';
 import '../../../resources/resources.dart';
 import '../../../routers/route.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 

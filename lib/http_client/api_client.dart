@@ -1,9 +1,10 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_sample_app/data/api_config.dart';
-import 'package:flutter_sample_app/data/response/status_code.dart';
-import 'package:flutter_sample_app/utils/setting.dart';
+
+import '../data/api_config.dart';
+import '../data/response/status_code.dart';
+import '../utils/utils.dart';
 
 enum HttpMethod {
   get,

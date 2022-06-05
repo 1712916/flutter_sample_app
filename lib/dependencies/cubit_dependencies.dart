@@ -1,4 +1,3 @@
-import 'package:flutter_sample_app/cubits/settings/settings.dart';
 import 'package:get_it/get_it.dart';
 
 import '../cubits/cubits.dart';

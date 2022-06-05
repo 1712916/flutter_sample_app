@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/cubits/cubits.dart';
+
+import '../cubits/cubits.dart';
 
 class MultiSelectionWidget<T> extends StatefulWidget {
   final List<T> list;

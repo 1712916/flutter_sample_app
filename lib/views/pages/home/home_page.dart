@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sample_app/routers/route.dart';
-import 'package:flutter_sample_app/utils/setting.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
+import '../../../routers/route.dart';
+import '../../../utils/utils.dart';
 import '../base_page/base_page.dart';
 import 'home_content.dart';
 

@@ -1,7 +1,5 @@
-import 'package:flutter_sample_app/cubits/base/base.dart';
-
 import '../../data/data.dart';
-import '../../data/models/search_model.dart';
+import '../cubits.dart';
 
 class HomeState extends BaseState implements Copyable<HomeState> {
   final List<SearchModel>? contents;

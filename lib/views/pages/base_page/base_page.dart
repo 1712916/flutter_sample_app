@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sample_app/cubits/base/base.dart';
+
+import '../../../cubits/cubits.dart';
 
 abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends State<T> {
   bool isBody = false;
