@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'cubits/cubits.dart';
 import 'dependencies/app_dependencies.dart';
@@ -15,13 +16,15 @@ import 'utils/utils.dart';
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   InternetCheckerHelper.connectivity.onConnectivityChanged.listen(InternetCheckerHelper.changeConnectivityResult);
   await EasyLocalization.ensureInitialized();
   await SettingManager.loadSetting();
   BlocOverrides.runZoned(
     () async {
       await AppDependencies.init();
+      FlutterNativeSplash.remove();
       runApp(
         EasyLocalization(
           child: const MyApp(),

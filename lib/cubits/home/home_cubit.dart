@@ -39,6 +39,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   final int countPattern = gridPattern.length;
 
+  bool _isFirstInit = true;
+
   void initData() async {
     emit(state.copyWith(
       loadStatus: LoadStatus.loading,
@@ -49,13 +51,18 @@ class HomeCubit extends Cubit<HomeState> {
       },
       onDisconnected: () async {
         await Future.delayed(const Duration(milliseconds: 600));
-        emit(
-          state.copyWith(
-            loadStatus: LoadStatus.error,
-          ),
-        );
+        if (_isFirstInit) {
+          await _loadData();
+        } else {
+          emit(
+            state.copyWith(
+              loadStatus: LoadStatus.error,
+            ),
+          );
+        }
       },
     );
+    _isFirstInit = false;
   }
 
   Future _loadData() async {
