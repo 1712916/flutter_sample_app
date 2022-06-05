@@ -11,5 +11,10 @@
   "orderSearch": "Search Order",
   "imageType": "Image Type",
   "savedSettings": "Saved Settings Success",
-  "savedSettingsFailure": "Fail to save Settings"
+  "savedSettingsFailure": "Fail to save Settings",
+  "yes": "Yes",
+  "no": "No",
+  "doYouWantToSaveChanged": "Do you want to save your changes?",
+  "changeDetection": "Change detection",
+  "downloadPath": "Download Path"
 }

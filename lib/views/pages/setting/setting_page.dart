@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sample_app/utils/setting.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../data/data.dart';
@@ -47,51 +48,62 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
               content: Align(
                 alignment: Alignment.center,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.5,
                   child: BlocBuilder<SettingsCubit, SettingState>(
-                      buildWhen: (previous, current) => false,
-                      builder: (context, state) {
-                        return CustomSwitch(
-                          isMeow: state.isMeow!,
-                          onChange: (isMeow) {
-                            cubit.onChangeMeow(isMeow);
-                          },
-                        );
-                      }),
+                    buildWhen: (previous, current) => false,
+                    builder: (context, state) {
+                      return CustomSwitch(
+                        isMeow: state.isMeow!,
+                        onChange: (isMeow) {
+                          cubit.onChangeMeow(isMeow);
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
             Text(
               LocaleKeys.orderSearch,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline6,
             ).tr(),
             const SizedBox(height: 8),
             BlocBuilder<SettingsCubit, SettingState>(
-                buildWhen: (previous, current) => false,
-                builder: (context, state) {
-                  return SingleSelectionWidget<OrderType>(
-                    data: OrderType.values,
-                    defaultIndex: state.orderType!.index,
-                    buildItemNotSelect: (item) {
-                      return MultiSelectionItem(
-                        title: item.name,
-                        isSelected: false,
-                      );
-                    },
-                    buildItemSelected: (item) {
-                      return MultiSelectionItem(
-                        title: item.name,
-                        isSelected: true,
-                      );
-                    },
-                    onChoice: (index) => cubit.onChangeOrderType(OrderType.values[index]),
-                  );
-                }),
+              buildWhen: (previous, current) => false,
+              builder: (context, state) {
+                return SingleSelectionWidget<OrderType>(
+                  data: OrderType.values,
+                  defaultIndex: state.orderType!.index,
+                  buildItemNotSelect: (item) {
+                    return MultiSelectionItem(
+                      title: item.name,
+                      isSelected: false,
+                    );
+                  },
+                  buildItemSelected: (item) {
+                    return MultiSelectionItem(
+                      title: item.name,
+                      isSelected: true,
+                    );
+                  },
+                  onChoice: (index) => cubit.onChangeOrderType(OrderType.values[index]),
+                );
+              },
+            ),
             const SizedBox(height: 16),
             Text(
               LocaleKeys.imageType,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline6,
             ).tr(),
             const SizedBox(height: 8),
             BlocBuilder<SettingsCubit, SettingState>(
@@ -116,6 +128,8 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
                 );
               },
             ),
+            const SizedBox(height: 8),
+            TitleContent(title: LocaleKeys.downloadPath.tr(), content: Text(SettingManager.downloadPath)),
           ],
         ),
       ),
@@ -129,7 +143,9 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
         LocaleKeys.settings,
         style: TextStyle(color: Colors.black),
       ).tr(),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme
+          .of(context)
+          .primaryColor,
       leading: BackButton(
         color: Colors.black,
         onPressed: () async {

@@ -11,5 +11,10 @@
   "orderSearch": "Sắp xếp",
   "imageType": "Loại tệp",
   "savedSettings": "Đã lưu cài đặt",
-  "savedSettingsFailure": "Lưu cài đặt thất bại"
+  "savedSettingsFailure": "Lưu cài đặt thất bại",
+  "yes": "Có",
+  "no": "Không",
+  "doYouWantToSaveChanged": "Bạn có muốn lưu thay đổi không?",
+  "changeDetection": "Phát hiện thay đổi",
+  "downloadPath": "Lưu xuống tại"
 }

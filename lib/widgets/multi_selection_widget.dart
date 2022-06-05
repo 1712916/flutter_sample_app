@@ -9,6 +9,7 @@ class MultiSelectionWidget<T> extends StatefulWidget {
   final Widget Function(T) selectedBuilder;
   final Function(int)? onChange;
   final Function(Set<int>)? onListChange;
+  final bool? canEmpty;
 
   const MultiSelectionWidget({
     Key? key,
@@ -18,6 +19,7 @@ class MultiSelectionWidget<T> extends StatefulWidget {
     required this.selectedBuilder,
     this.onChange,
     this.onListChange,
+    this.canEmpty = false,
   }) : super(key: key);
 
   @override
@@ -44,7 +46,9 @@ class _MultiSelectionWidgetState<T> extends State<MultiSelectionWidget<T>> {
         return GestureDetector(
           onTap: () {
             if (_currentSelected.contains(index)) {
-              _currentSelected.remove(index);
+              if ((widget.canEmpty!) || _currentSelected.length > 1) {
+                _currentSelected.remove(index);
+              }
             } else {
               _currentSelected.add(index);
             }

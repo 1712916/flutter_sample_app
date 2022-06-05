@@ -12,4 +12,9 @@ class LocaleKeys {
   static const String imageType = 'imageType';
   static const String savedSettings = 'savedSettings';
   static const String savedSettingsFailure = 'savedSettingsFailure';
+  static const String yes = 'yes';
+  static const String no = 'no';
+  static const String doYouWantToSaveChanged = 'doYouWantToSaveChanged';
+  static const String changeDetection = 'changeDetection';
+  static const String downloadPath = 'downloadPath';
 }

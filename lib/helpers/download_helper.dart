@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../resources/resources.dart';
+import '../utils/utils.dart';
 import '../widgets/widgets.dart';
 import 'helpers.dart';
 
@@ -24,7 +25,7 @@ class DownloadHelper {
       // Saved with this method.
       //chọn địa chỉ => Mình sẽ set up ở màn setting
       //sẽ lưu vào một cái folder nào đó
-      var imageId = await ImageDownloader.downloadImage(url);
+      var imageId = await ImageDownloader.downloadImage(url, destination: AndroidDestinationType.custom(directory: SettingManager.downloadPath.split('/').last));
       if (imageId == null) {
         return;
       }
