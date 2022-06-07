@@ -17,4 +17,7 @@ class LocaleKeys {
   static const String doYouWantToSaveChanged = 'doYouWantToSaveChanged';
   static const String changeDetection = 'changeDetection';
   static const String downloadPath = 'downloadPath';
+  static const String errorWhenTryShare = 'errorWhenTryShare';
+  static const String waitToShare = 'waitToShare';
+  static const String shareFile = 'shareFile';
 }

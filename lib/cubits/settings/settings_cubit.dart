@@ -18,7 +18,7 @@ class SettingsCubit extends Cubit<SettingState> {
   bool _checkChangeSettings() {
     int getTotalIndexOfImageTypes(List<ImageType> imageType) {
       return imageType.fold<int>(0, (previousValue, element) {
-        return previousValue + (element.index + 1);
+        return previousValue + (element.index + 10);
       });
     }
     if (SettingManager.isMeow != state.isMeow) {

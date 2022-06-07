@@ -46,10 +46,28 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
             },
           ),
           Positioned(
-            bottom: MediaQuery.of(context).size.height / 10,
+            bottom: MediaQuery.of(context).size.height / 6,
             right: 16,
-            child: DownloadButton(
-              onTap: () => onDownload(),
+            child: Column(
+              children: [
+                DownloadButton(
+                  key: UniqueKey(),
+                  icon: Icons.share,
+                  onTap: () => onShare(),
+                ),
+                const SizedBox(height: 10),
+                DownloadButton(
+                  key: UniqueKey(),
+                  onTap: () => onDownload(),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            left: 0,
+            child: const BackButton(
+              color: Colors.white,
             ),
           ),
         ],
@@ -64,6 +82,13 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
     String url = searchModel?.url ?? '';
     if (url.isNotEmpty) {
       await DownloadHelper.downloadImage(url: url);
+    }
+  }
+
+  onShare() async {
+    String url = searchModel?.url ?? '';
+    if (url.isNotEmpty) {
+      await ShareHelper.shareImage(url: url);
     }
   }
 }

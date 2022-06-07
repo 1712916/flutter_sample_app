@@ -16,5 +16,8 @@
   "no": "No",
   "doYouWantToSaveChanged": "Do you want to save your changes?",
   "changeDetection": "Change detection",
-  "downloadPath": "Download Path"
+  "downloadPath": "Download Path",
+  "errorWhenTryShare": "Try to share, Error!",
+  "waitToShare": "Please wait to the pre shared finish!",
+  "shareFile": "Share file"
 }
