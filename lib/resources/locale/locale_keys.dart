@@ -20,4 +20,6 @@ class LocaleKeys {
   static const String errorWhenTryShare = 'errorWhenTryShare';
   static const String waitToShare = 'waitToShare';
   static const String shareFile = 'shareFile';
+  static const String checkInternetAccess = 'checkInternetAccess';
+  static const String timeOutMessage = 'timeOutMessage';
 }

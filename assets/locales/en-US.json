@@ -19,5 +19,7 @@
   "downloadPath": "Download Path",
   "errorWhenTryShare": "Try to share, Error!",
   "waitToShare": "Please wait to the pre shared finish!",
-  "shareFile": "Share file"
+  "shareFile": "Share file",
+  "checkInternetAccess": "Please check internet access.",
+  "timeOutMessage": "Time out to connect to server!"
 }

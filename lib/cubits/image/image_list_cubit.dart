@@ -1,9 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/data.dart';
 import '../../data/response/custom_response.dart';
 import '../../data/response/status_code.dart';
 import '../../helpers/helpers.dart';
+import '../../resources/resources.dart';
 import '../../widgets/widgets.dart';
 import 'image_list_state.dart';
 
@@ -25,7 +27,7 @@ class ImageListCubit extends Cubit<ImageListState> {
       },
       onDisconnected: () async {
         await Future.delayed(const Duration(milliseconds: 300));
-        Toast.makeText(message: 'Please check internet access');
+        Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
       }
     );
   }
@@ -42,7 +44,9 @@ class ImageListCubit extends Cubit<ImageListState> {
         ),
       );
     } else if (response.statusCode == StatusCode.requestTimeout) {
-
+      Toast.makeText(message: LocaleKeys.timeOutMessage.tr());
+    } else {
+      Toast.makeText(message: LocaleKeys.haveAnError.tr());
     }
   }
 }

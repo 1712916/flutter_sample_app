@@ -36,7 +36,10 @@ class _HomeContentState extends State<HomeContent> {
             return const SizedBox();
           case LoadStatus.loading:
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.grey,
+              ),
             );
           case LoadStatus.loaded:
             final contents = state.contents;

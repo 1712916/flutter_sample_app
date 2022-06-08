@@ -15,7 +15,9 @@ class DownloadHelper {
     await PermissionHelper.request(Permission.storage, onGranted: () async {
       await InternetCheckerHelper.checkInternetAccess(
         onConnected: () async => await _downLoadImage(url),
-        onDisconnected: () {},
+        onDisconnected: () {
+          Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
+        },
       );
     });
   }
