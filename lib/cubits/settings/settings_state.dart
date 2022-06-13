@@ -6,12 +6,14 @@ class SettingState extends BaseState implements Copyable<SettingState> {
   final OrderType? orderType;
   final List<ImageType>? imageTypes;
   final bool? isChange;
+  final int? patternIndex;
 
   SettingState({
     this.isMeow,
     this.orderType,
     this.imageTypes,
     this.isChange,
+    this.patternIndex,
   });
 
   @override
@@ -25,12 +27,14 @@ class SettingState extends BaseState implements Copyable<SettingState> {
     OrderType? orderType,
     List<ImageType>? imageTypes,
     bool? isChange,
+    int? patternIndex,
   }) {
     return SettingState(
       isMeow: isMeow ?? this.isMeow,
       orderType: orderType ?? this.orderType,
       imageTypes: imageTypes ?? this.imageTypes,
       isChange: isChange ?? this.isChange,
+      patternIndex: patternIndex ?? this.patternIndex,
     );
   }
 
@@ -41,5 +45,6 @@ class SettingState extends BaseState implements Copyable<SettingState> {
         orderType,
         imageTypes?.hashCode,
         isChange,
+        patternIndex,
       ];
 }

@@ -22,4 +22,5 @@ class LocaleKeys {
   static const String shareFile = 'shareFile';
   static const String checkInternetAccess = 'checkInternetAccess';
   static const String timeOutMessage = 'timeOutMessage';
+  static const String presentationPattern = 'presentationPattern';
 }

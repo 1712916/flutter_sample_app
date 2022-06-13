@@ -21,5 +21,6 @@
   "waitToShare": "Làm ơn chờ cho chia sẽ đó trước kết thúc!",
   "shareFile": "Chia sẽ tệp",
   "checkInternetAccess": "Vui lòng kiểm tra kết nối mạng.",
-  "timeOutMessage": "Quá hạn kết nối tới máy chủ!"
+  "timeOutMessage": "Quá hạn kết nối tới máy chủ!",
+  "presentationPattern": "Mẫu hiển thị"
 }

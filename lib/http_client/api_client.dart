@@ -48,6 +48,8 @@ class ApiRequest {
       'Accept': "application/json",
       'Content-type': 'application/json; charset=utf-8',
     };
+    options.sendTimeout = 6000;
+    options.receiveTimeout = 6000;
     log('call api: $url');
     log('call api param: $queryParameters');
     try {

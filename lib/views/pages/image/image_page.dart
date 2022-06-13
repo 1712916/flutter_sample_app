@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meow_app/routers/route.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../../../cubits/cubits.dart';
@@ -52,6 +53,12 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
               children: [
                 DownloadButton(
                   key: UniqueKey(),
+                  icon: Icons.videogame_asset,
+                  onTap: () => onOpenGame(),
+                ),
+                const SizedBox(height: 10),
+                DownloadButton(
+                  key: UniqueKey(),
                   icon: Icons.share,
                   onTap: () => onShare(),
                 ),
@@ -90,6 +97,10 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
     if (url.isNotEmpty) {
       await ShareHelper.shareImage(url: url);
     }
+  }
+
+  onOpenGame() async {
+    Navigator.of(context).pushNamed(RouteManager.gamePage);
   }
 }
 

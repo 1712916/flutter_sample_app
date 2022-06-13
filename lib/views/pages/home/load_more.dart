@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../data/response/status_code.dart';
+import '../../../resources/resources.dart';
 import '../../../widgets/widgets.dart';
 
 class LoadMoreCircular extends StatelessWidget {
@@ -51,7 +53,7 @@ class LoadMoreCircular extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.errorStatus == StatusCode.requestTimeout) {
-          Toast.makeText(context: context, message: 'Have an error!');
+          Toast.makeText(context: context, message: LocaleKeys.haveAnError.tr());
         }
       },
     );

@@ -10,6 +10,7 @@ class SettingsCubit extends Cubit<SettingState> {
           imageTypes: SettingManager.imageTypes,
           orderType: SettingManager.orderType,
           isMeow: SettingManager.isMeow,
+          patternIndex: SettingManager.patternIndex,
           isChange: false,
         ));
 
@@ -27,6 +28,8 @@ class SettingsCubit extends Cubit<SettingState> {
       return true;
     } else if (getTotalIndexOfImageTypes(SettingManager.imageTypes) != getTotalIndexOfImageTypes(state.imageTypes!)) {
       return true;
+    } else if (SettingManager.patternIndex != state.patternIndex) {
+      return true;
     }
     return false;
   }
@@ -35,6 +38,7 @@ class SettingsCubit extends Cubit<SettingState> {
     SettingManager.isMeow = state.isMeow!;
     SettingManager.orderType = state.orderType!;
     SettingManager.imageTypes = state.imageTypes!;
+    SettingManager.patternIndex = state.patternIndex;
     SettingManager.save();
     return true;
   }
@@ -51,6 +55,11 @@ class SettingsCubit extends Cubit<SettingState> {
 
   void onChangeImageTypes(Set<int> imageTypes) {
     emit(state.copyWith(imageTypes: imageTypes.map((index) => ImageType.values[index]).toList()));
+    emit(state.copyWith(isChange: isChangeSettings));
+  }
+
+  void onChangePattern(int index) {
+    emit(state.copyWith(patternIndex: index));
     emit(state.copyWith(isChange: isChangeSettings));
   }
 }

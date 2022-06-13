@@ -11,5 +11,7 @@ class PageDependencies {
     injector.registerFactory<Widget>(() => ImagePage(cubit: injector()), instanceName: RouteManager.imagePage);
     injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.imageListPage);
     injector.registerFactory<Widget>(() => SettingPage(cubit: injector(),), instanceName: RouteManager.settingPage);
+    injector.registerFactory<Widget>(() => const InfoPage(), instanceName: RouteManager.infoPage);
+    injector.registerFactory<Widget>(() => const GamePage(), instanceName: RouteManager.gamePage);
   }
 }

@@ -6,6 +6,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
 import '../../../routers/route.dart';
+import '../../../utils/utils.dart';
+import '../../views.dart';
 import 'load_more.dart';
 
 class HomeContent extends StatefulWidget {
@@ -51,11 +53,11 @@ class _HomeContentState extends State<HomeContent> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: SliverQuiltedGridDelegate(
-                    crossAxisCount: 3,
+                    crossAxisCount: GridPattern.list[SettingManager.patternIndex!].crossAxisCount,
                     mainAxisSpacing: 2,
                     crossAxisSpacing: 2,
                     repeatPattern: QuiltedGridRepeatPattern.same,
-                    pattern: gridPattern,
+                    pattern: GridPattern.list[SettingManager.patternIndex!].gridPattern,
                   ),
                   childrenDelegate: SliverChildBuilderDelegate(
                         (context, index) => GestureDetector(

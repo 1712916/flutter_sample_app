@@ -14,6 +14,10 @@ class RouteManager {
 
   static String get settingPage => '/setting';
 
+  static String get infoPage => '/info';
+
+  static String get gamePage => '/game';
+
   static getRoute(RouteSettings settings) {
     late Widget widget;
     try {

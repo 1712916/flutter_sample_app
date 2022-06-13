@@ -21,5 +21,6 @@
   "waitToShare": "Please wait to the pre shared finish!",
   "shareFile": "Share file",
   "checkInternetAccess": "Please check internet access.",
-  "timeOutMessage": "Time out to connect to server!"
+  "timeOutMessage": "Time out to connect to server!",
+  "presentationPattern": "Presentation Pattern"
 }
