@@ -1,85 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cell_widget.dart';
+import '../../../cubits/cubits.dart';
+import '../base_page/base_page.dart';
 import 'directional_control_widget.dart';
 import 'game_manager.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({Key? key}) : super(key: key);
+  const GamePage({Key? key, required this.cubit}) : super(key: key);
+
+  final GameCubit cubit;
 
   @override
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
-  String? message;
-  bool isFirstInit = true;
-  late List<Widget> cells;
+class _GamePageState extends CustomState<GamePage, GameCubit> {
 
-  GameManager gameManager = GameManager();
+  @override
+  void didChangeDependencies() {
+    if (isFirstLoad) {
+      GameManager.cellSize = MediaQuery.of(context).size.width / GameManager.widthRatio;
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  void getPageSettings(arguments) async {
+    if (arguments is String) {
+      cubit.initByUrl(arguments);
+    } else if (true) {}
+  }
 
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  Widget buildContent(BuildContext context) {
+    return const _GameContent();
   }
+
+  @override
+  PreferredSizeWidget? buildAppbar(BuildContext context) {
+    return AppBar();
+  }
+
+  @override
+  GameCubit get cubit => widget.cubit;
+}
+
+class _GameContent extends StatelessWidget {
+  const _GameContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstInit) {
-      GameManager.cellSize = MediaQuery.of(context).size.width / GameManager.widthRatio;
-      gameManager.initBoardGame();
-      cells = genCell();
-      isFirstInit = false;
-    }
-
-    return Scaffold(
-      body: SafeArea(
-        child: DirectionalControlWidget(
-          moveLeft: () => gameManager.controller(MoveType.left),
-          moveRight: () => gameManager.controller(MoveType.right),
-          moveDown: () => gameManager.controller(MoveType.down),
-          moveUp: () => gameManager.controller(MoveType.up),
-          child: SizedBox(
-            width: GameManager.gameBoardWidth,
-            height: GameManager.gameBoardHeight,
-            child: Stack(
-              children: [
-                ...cells,
-                // ...List.generate(GameManager.widthRatio * GameManager.heightRatio, (index) => Text('${index%GameManager.heightRatio}_${index%GameManager.widthRatio}')),
-                // ...List.generate(GameManager.widthRatio * GameManager.heightRatio, (index) => CellWidget(size: GameManager.cellSize, key: GameManager.boardGame['${index%GameManager.heightRatio}_${index%GameManager.widthRatio}'],)),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return BlocBuilder<GameCubit, GameState>(
+      builder: (context, state) {
+        switch (state.loadStatus) {
+          case LoadStatus.init:
+            return const SizedBox();
+          case LoadStatus.loading:
+            return const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.grey,
+              ),
+            );
+          case LoadStatus.loaded:
+            final cubit = context.read<GameCubit>();
+            final gameManager = cubit.gameManager;
+            return SafeArea(
+              child: DirectionalControlWidget(
+                moveLeft: () => gameManager.controller(MoveType.left),
+                moveRight: () => gameManager.controller(MoveType.right),
+                moveDown: () => gameManager.controller(MoveType.down),
+                moveUp: () => gameManager.controller(MoveType.up),
+                child: SizedBox(
+                  width: GameManager.gameBoardWidth,
+                  height: GameManager.gameBoardHeight,
+                  child: Stack(
+                    children: cubit.cells,
+                  ),
+                ),
+              ),
+            );
+          default:
+            return const SizedBox();
+        }
+      },
     );
   }
-
-  List<Widget> genCell() {
-    List<Widget> widgets = [];
-    for (int i = 0; i < GameManager.heightRatio; i++) {
-      List<GlobalKey<CellWidgetState>> gameStatusRow = [];
-      for (int j = 0; j < GameManager.widthRatio; j++) {
-        String key = '${i}_$j';
-        gameStatusRow.add(GlobalKey());
-        if (i != 0 || j != 0) {
-          widgets.add(CellWidget(
-            size: GameManager.cellSize,
-            top: GameManager.cellSize * i,
-            left: GameManager.cellSize * j,
-            key: gameStatusRow.last,
-            child: Text('$key'),
-          ));
-        } else {
-          // widgets.add(CellWidget(size: GameManager.cellSize, color: Colors.orangeAccent, key: GameManager.boardGame['$key'], child: Text('$key'),));
-        }
-      }
-      gameManager.boardGameStatus.add(gameStatusRow);
-    }
-    return widgets;
-  }
 }
-
 

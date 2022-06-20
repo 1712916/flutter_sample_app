@@ -100,7 +100,7 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
   }
 
   onOpenGame() async {
-    Navigator.of(context).pushNamed(RouteManager.gamePage);
+    Navigator.of(context).pushNamed(RouteManager.gamePage, arguments: searchModel?.url);
   }
 }
 

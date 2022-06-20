@@ -4,8 +4,8 @@ import 'cell_widget.dart';
 
 class GameManager {
   static double cellSize = 50;
-  static int widthRatio = 4;
-  static int heightRatio = 4;
+  static int widthRatio = 3;
+  static int heightRatio = 3;
   static double ratio = widthRatio / heightRatio;
 
   static double gameBoardHeight = heightRatio * cellSize;

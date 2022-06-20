@@ -9,5 +9,6 @@ class CubitDependencies {
     injector.registerFactory<ImageCubit>(() => ImageCubit());
     injector.registerFactory<ImageListCubit>(() => ImageListCubit());
     injector.registerFactory<SettingsCubit>(() => SettingsCubit());
+    injector.registerFactory<GameCubit>(() => GameCubit());
   }
 }
