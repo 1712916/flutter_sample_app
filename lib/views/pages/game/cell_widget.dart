@@ -35,7 +35,7 @@ class CellWidgetState extends State<CellWidget> {
     return AnimatedPositioned(
       top: top,
       left: left,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 150),
       curve: Curves.linear,
       child: Container(
         margin: const EdgeInsets.all(1),

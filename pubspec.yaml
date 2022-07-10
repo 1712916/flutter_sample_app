@@ -30,6 +30,7 @@ dependencies:
   package_info_plus: ^1.4.2
   cupertino_icons: ^1.0.5
   image_cropper: ^2.0.3
+  image: any
 
 dev_dependencies:
   flutter_test:

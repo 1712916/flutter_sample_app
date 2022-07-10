@@ -1,58 +1,46 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:meow_app/cubits/cubits.dart';
+import 'package:image/image.dart' as imglib;
 
 import '../../helpers/helpers.dart';
-import '../../views/pages/game/cell_widget.dart';
 import '../../views/pages/game/game_manager.dart';
+import '../cubits.dart';
 
 class GameCubit extends Cubit<GameState> {
   GameCubit() : super(GameState(loadStatus: LoadStatus.init));
 
   GameManager gameManager = GameManager();
 
-  late List<Widget> _cells;
-  List<Widget> get cells => _cells;
+  void init() async {}
 
-  List<Widget> _genCell() {
-    List<Widget> widgets = [];
-    for (int i = 0; i < GameManager.heightRatio; i++) {
-      List<GlobalKey<CellWidgetState>> gameStatusRow = [];
-      for (int j = 0; j < GameManager.widthRatio; j++) {
-        String key = '${i}_$j';
-        gameStatusRow.add(GlobalKey());
-        if (i != 0 || j != 0) {
-          widgets.add(CellWidget(
-            size: GameManager.cellSize,
-            top: GameManager.cellSize * i,
-            left: GameManager.cellSize * j,
-            key: gameStatusRow.last,
-            child: Text('$key'),
-          ));
-        } else {
-          // widgets.add(CellWidget(size: GameManager.cellSize, color: Colors.orangeAccent, key: GameManager.boardGame['$key'], child: Text('$key'),));
-        }
-      }
-      gameManager.boardGameStatus.add(gameStatusRow);
+  void initByUrl(String url) async {
+    emit(state.copyWith(loadStatus: LoadStatus.loading));
+    await _getCroppedFile(url);
+    if (state.image != null) {
+      initBoardGame();
+      emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
+    } else {
+      emit(state.copyWith(loadStatus: LoadStatus.error));
     }
-    return widgets;
-  }
-
-  void init() async {
-    emit(state.copyWith());
-    final response = await openEditImage('https://cdn2.thecatapi.com/images/1df.png');
-    initBoardGame();
   }
 
   void initBoardGame() {
-    _cells = _genCell();
+    gameManager.init(state.image!);
   }
+
+  void reloadScramble() {
+    gameManager = GameManager();
+    initBoardGame();
+    emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
+  }
+
 
   Future<CroppedFile?> openEditImage(String url) async {
     //down load image => lưu lại => lấy path
     String? path = await DownloadHelper.downloadToInternal(url);
-    print('path: $path');
     if (path != null) {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: path,
@@ -64,17 +52,30 @@ class GameCubit extends Cubit<GameState> {
           ),
         ],
       );
-      print('croppedFile?.path: ${croppedFile?.path}');
       return croppedFile;
     }
     return null;
   }
 
-  void initByUrl(String url) async {
-    emit(state.copyWith(loadStatus: LoadStatus.loading));
+  Future _getCroppedFile(String url) async {
     final response = await openEditImage(url);
-    initBoardGame();
-    emit(state.copyWith(loadStatus: LoadStatus.loaded));
+    if (response != null) {
+      await _roundingSizeImage(await response.readAsBytes());
+    } else {
 
+    }
+
+  }
+
+  Future _roundingSizeImage(Uint8List? croppedFile) async {
+    final imageInfo = await decodeImageFromList(croppedFile!);
+    final int roundingSize = (imageInfo.width / GameManager.heightRatio).floor() * GameManager.heightRatio;
+    final imglib.Image? image = imglib.copyCrop(imglib.decodeImage(croppedFile)!, 0, 0, roundingSize, roundingSize);
+
+    emit(
+      state.copyWith(
+        image: image,
+      ),
+    );
   }
 }
