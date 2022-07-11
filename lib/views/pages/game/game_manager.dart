@@ -17,7 +17,7 @@ void printMatrix(List<List<dynamic>> matrix) {
   }
 }
 
-const int _numberOfStep = 30 * 3;
+const int _numberOfStep = 100;
 
 class GameManager {
   static double cellSize = 50;
@@ -83,7 +83,11 @@ class GameManager {
     //thêm khoảng trống
     //Khoảng trống này luôn giữ mãnh bên góc bên trái
     matrixCellState.add([GlobalKey()]);
-    randomMatrixCell();
+
+    final List<List<GameMatrix>> boardGameMatrix = [];
+
+    boardGameMatrix.add([const GameMatrix(x: 0, y: 0)]);
+    boardGameMatrix.addAll(_scramble());
 
     final int imageCellWidth = (image.width / GameManager.widthRatio).floor();
     final int imageCellHeight = (image.height / GameManager.heightRatio).floor();
@@ -94,20 +98,22 @@ class GameManager {
       List<GlobalKey<CellWidgetState>> gameStatusRow = [];
       for (int x = 0; x < GameManager.widthRatio; x++) {
         gameStatusRow.add(GlobalKey());
-        final a = boardGameMatrix[y + 1][x];
+        final cellPosition = boardGameMatrix[y + 1][x];
         final thumbnail = imglib.copyCrop(
           image,
-          a.x * imageCellWidth,
-          a.y * imageCellHeight,
+          cellPosition.x * imageCellWidth,
+          cellPosition.y * imageCellHeight,
           imageCellWidth,
           imageCellHeight,
         );
 
         widgets.add(
           CellWidget(
+            destination: cellPosition,
             size: GameManager.cellSize,
-            top: GameManager.cellSize * (y + 1),
-            left: GameManager.cellSize * x,
+            jumpSize:GameManager.cellSize,
+            top: y + 1,
+            left: x,
             key: gameStatusRow.last,
             child: Image.memory(
               imglib.encodePng(thumbnail) as Uint8List,
@@ -123,21 +129,6 @@ class GameManager {
 
   void init(imglib.Image image) {
     _cells = _genCellWidgets(image);
-  }
-
-  final List<List<GameMatrix>> _boardGameMatrix = [];
-
-  List<List<GameMatrix>> get boardGameMatrix => _boardGameMatrix;
-
-  void randomMatrixCell() {
-    /*
-    * 0
-    * 0 0 0
-    * 0 0 0
-    * 0 0 0
-    * */
-    _boardGameMatrix.add([GameMatrix(x: 0, y: 0)]);
-    _boardGameMatrix.addAll(_scramble());
   }
 
   List<List<GameMatrix>> _scramble() {
@@ -257,6 +248,17 @@ class GameManager {
     }
 
     return moveTypes;
+  }
+
+  Future<bool> checkDone() async {
+    for (List<GlobalKey<CellWidgetState>> row in matrixCellState) {
+      for (GlobalKey<CellWidgetState> cell in row) {
+        if (!(cell.currentState?.isGetDestination() ?? true)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 

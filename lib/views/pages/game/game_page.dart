@@ -41,7 +41,12 @@ class _GamePageState extends CustomState<GamePage, GameCubit> {
 
   @override
   PreferredSizeWidget? buildAppbar(BuildContext context) {
-    return AppBar();
+    return AppBar(
+      leading: const BackButton(
+        color: Colors.black,
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+    );
   }
 
   @override
@@ -74,95 +79,71 @@ class _GameContent extends StatelessWidget {
             );
           case LoadStatus.loaded:
             return SafeArea(
-              child: Column(
+              child: Stack(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
                     children: [
-                      const _Image(),
+                      const SizedBox(height: 10),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              cubit.reloadScramble();
-                            },
-                            icon: const Tooltip(
-                              message: 'Re-Scramble cells of image',
-                              child: Icon(Icons.refresh),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-
-                            },
-                            icon: const Tooltip(
-                              message: 'Re-Scramble cells of image',
-                              child: Icon(Icons.monochrome_photos),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-
-                            },
-                            icon: const Tooltip(
-                              message: 'Re-Scramble cells of image',
-                              child: Icon(Icons.add_photo_alternate_outlined ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Divider(color: Colors.black),
-                  const Expanded(
-                    child: _PlayArea(),
-                  ),
-                ],
-              ),
-            );
-
-            return ValueListenableBuilder<bool>(
-              valueListenable: viewContent,
-              builder: (context, value, _) {
-                return Stack(
-                  children: [
-                    SafeArea(
-                      child: Column(
-                        children: [
-                          _Image(),
+                          const _Image(),
                           Row(
                             children: [
                               IconButton(
-                                  onPressed: () {
-                                    cubit.reloadScramble();
-                                  },
-                                  icon: Icon(Icons.onetwothree))
+                                onPressed: () async {
+                                  cubit.reloadScramble();
+                                },
+                                icon: const Tooltip(
+                                  message: 'Re-Scramble cells of image',
+                                  child: Icon(Icons.refresh),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Tooltip(
+                                  message: 'Re-Scramble cells of image',
+                                  child: Icon(Icons.monochrome_photos),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Tooltip(
+                                  message: 'Re-Scramble cells of image',
+                                  child: Icon(Icons.add_photo_alternate_outlined),
+                                ),
+                              ),
                             ],
-                          ),
-                          const Divider(color: Colors.black),
-                          Expanded(
-                            child: _PlayArea(),
                           ),
                         ],
                       ),
-                    ),
-                    // value ? const SizedBox() : Container(
-                    //   width: double.maxFinite,
-                    //   height: double.maxFinite,
-                    //   color: Colors.transparent,
-                    //   child: Center(
-                    //     child: Container(
-                    //       padding: const EdgeInsets.all(16),
-                    //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.grey.withOpacity(0.5)),
-                    //       child: Text('Please waiting'),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                );
-              },
+                      const Divider(color: Colors.black),
+                      const Expanded(
+                        child: Center(
+                          child: _PlayArea(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Align(
+                  //   alignment: Alignment.topCenter,
+                  //   child: ConfettiWidget(
+                  //     key: UniqueKey(),
+                  //     confettiController: confettiController,
+                  //     numberOfParticles: 30, // number of particles to emit
+                  //     gravity: 0.05, // gravity - or fall speed
+                  //     shouldLoop: true,
+                  //     blastDirection: pi/2,
+                  //     colors: const [
+                  //       Colors.green,
+                  //       Colors.blue,
+                  //       Colors.pink
+                  //     ], // manually specify the colors to be used
+                  //   ),
+                  // ),
+                ],
+              ),
             );
-
           default:
             return const SizedBox();
         }
@@ -216,25 +197,62 @@ class _PlayArea extends StatelessWidget {
         }
 
         final cubit = context.read<GameCubit>();
-        final gameManager = cubit.gameManager;
+
         return Transform.scale(
-          scale: 0.5,
-          child: DirectionalControlWidget(
-            moveLeft: () => gameManager.controller(MoveType.left),
-            moveRight: () => gameManager.controller(MoveType.right),
-            moveDown: () => gameManager.controller(MoveType.down),
-            moveUp: () => gameManager.controller(MoveType.up),
+          scale: 0.7,
+          child: CustomPaint(
+            foregroundPainter: _BoarderPainter(y: 4, x: 3, color: Colors.orangeAccent),
             child: SizedBox(
               width: GameManager.gameBoardWidth,
               height: GameManager.gameBoardHeight,
-              child: Stack(
-                fit: StackFit.expand,
-                children: state.cells!,
+              child: DirectionalControlWidget(
+                moveLeft: () => cubit.controller(MoveType.left),
+                moveRight: () => cubit.controller(MoveType.right),
+                moveDown: () => cubit.controller(MoveType.down),
+                moveUp: () => cubit.controller(MoveType.up),
+                child: ColoredBox(
+                  color: Colors.transparent,
+                  child: Stack(
+                    children: state.cells!,
+                  ),
+                ),
               ),
             ),
           ),
         );
       },
     );
+  }
+}
+
+class _BoarderPainter extends CustomPainter {
+  final int y;
+  final int x;
+  final Color? color;
+
+  _BoarderPainter({required this.y, required this.x, this.color});
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = color ?? Colors.cyan
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    Path path = Path();
+    path.moveTo(0, 0);
+    path.lineTo(0, size.height);
+    path.lineTo(size.width, size.height);
+    path.lineTo(size.width, size.height / y);
+    path.moveTo(-1, 0);
+    path.lineTo(size.width / x, 0);
+    path.lineTo(size.width / x, size.height / y);
+    path.lineTo(size.width + 1, size.height / y);
+    canvas.drawPath(path, paint);
   }
 }

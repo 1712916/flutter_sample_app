@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:meow_app/views/pages/game/game_manager.dart';
 
 class CellWidget extends StatefulWidget {
   const CellWidget({
     Key? key,
     required this.size,
+    required this.jumpSize,
     this.color,
     this.top,
     this.left,
     this.child,
+    required this.destination,
   }) : super(key: key);
   final double size;
+  final double jumpSize;
   final Color? color;
-  final double? top;
-  final double? left;
+  final int? top;
+  final int? left;
   final Widget? child;
+  final GameMatrix destination;
 
   @override
   CellWidgetState createState() => CellWidgetState();
 }
 
 class CellWidgetState extends State<CellWidget> {
-  double top = 0;
-  double left = 0;
+  int top = 0;
+  int left = 0;
 
   @override
   void initState() {
@@ -30,40 +35,44 @@ class CellWidgetState extends State<CellWidget> {
     super.initState();
   }
 
+  bool isGetDestination() {
+    return top - 1 == widget.destination.y && left == widget.destination.x;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      top: top,
-      left: left,
+      top: top * widget.jumpSize,
+      left: left * widget.jumpSize,
+      height: widget.size,
+      width: widget.size,
       duration: const Duration(milliseconds: 150),
       curve: Curves.linear,
       child: Container(
-        margin: const EdgeInsets.all(1),
-        height: widget.size - 2,
-        width: widget.size - 2,
-        color: widget.color ?? Colors.grey,
+        padding: const EdgeInsets.all(2),
+        color: widget.color ?? Colors.transparent,
         child: widget.child ?? const SizedBox.shrink(),
       ),
     );
   }
 
   void moveForward() {
-    left += widget.size;
+    left += 1;
     setState(() {});
   }
 
   void moveBack() {
-    left -= widget.size;
+    left -= 1;
     setState(() {});
   }
 
   void moveUp() {
-    top -= widget.size;
+    top -= 1;
     setState(() {});
   }
 
   void moveDown() {
-    top += widget.size;
+    top += 1;
     setState(() {});
   }
 }
