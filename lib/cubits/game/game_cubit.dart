@@ -13,7 +13,12 @@ import '../cubits.dart';
 class GameCubit extends Cubit<GameState> {
   GameCubit() : super(GameState(loadStatus: LoadStatus.init));
 
-  GameManager gameManager = GameManager();
+  late GameManager gameManager;
+
+  static GameManager _initGame(GameInfo gameInfo) {
+    GameManager.cellSize = gameInfo.cellSize;
+    return GameManager()..init(gameInfo.image);
+  }
 
   void init() async {}
 
@@ -21,23 +26,34 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(loadStatus: LoadStatus.loading));
     await _getCroppedFile(url);
     if (state.image != null) {
-      initBoardGame();
+      await initBoardGame();
       emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
     } else {
       emit(state.copyWith(loadStatus: LoadStatus.error));
     }
   }
 
-  void initBoardGame() {
-    gameManager.init(state.image!);
+  Future initBoardGame() async {
+    gameManager = await compute<GameInfo, GameManager>(_initGame, GameInfo(GameManager.cellSize, state.image!));
   }
 
-  void reloadScramble() {
-    gameManager = GameManager();
-    initBoardGame();
-    emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
+  void reloadScramble() async {
+    await initBoardGame();
+    emit(
+      state.copyWith(
+        loadStatus: LoadStatus.loaded,
+        cells: gameManager.cells,
+        isComplete: false,
+      ),
+    );
   }
 
+  void controller(MoveType moveType) {
+    gameManager.controller(moveType);
+    gameManager.checkDone().then((value) {
+      emit(state.copyWith(isComplete: value));
+    });
+  }
 
   Future<CroppedFile?> openEditImage(String url) async {
     //down load image => lưu lại => lấy path
@@ -62,10 +78,7 @@ class GameCubit extends Cubit<GameState> {
     final response = await openEditImage(url);
     if (response != null) {
       await _roundingSizeImage(await response.readAsBytes());
-    } else {
-
-    }
-
+    } else {}
   }
 
   Future _roundingSizeImage(Uint8List? croppedFile) async {
@@ -79,4 +92,11 @@ class GameCubit extends Cubit<GameState> {
       ),
     );
   }
+}
+
+class GameInfo {
+  final double cellSize;
+  final imglib.Image image;
+
+  GameInfo(this.cellSize, this.image);
 }

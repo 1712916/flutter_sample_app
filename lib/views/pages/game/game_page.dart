@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
@@ -57,6 +59,7 @@ class _GameContent extends StatelessWidget {
   _GameContent({Key? key}) : super(key: key);
 
   final ValueNotifier<bool> viewContent = ValueNotifier<bool>(false);
+  final ConfettiController confettiController = ConfettiController(duration: const Duration(seconds: 3));
 
   @override
   Widget build(BuildContext context) {
@@ -125,22 +128,22 @@ class _GameContent extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Align(
-                  //   alignment: Alignment.topCenter,
-                  //   child: ConfettiWidget(
-                  //     key: UniqueKey(),
-                  //     confettiController: confettiController,
-                  //     numberOfParticles: 30, // number of particles to emit
-                  //     gravity: 0.05, // gravity - or fall speed
-                  //     shouldLoop: true,
-                  //     blastDirection: pi/2,
-                  //     colors: const [
-                  //       Colors.green,
-                  //       Colors.blue,
-                  //       Colors.pink
-                  //     ], // manually specify the colors to be used
-                  //   ),
-                  // ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: ConfettiWidget(
+                      key: UniqueKey(),
+                      confettiController: confettiController,
+                      numberOfParticles: 30, // number of particles to emit
+                      gravity: 0.05, // gravity - or fall speed
+                      shouldLoop: false,
+                      blastDirection: pi/2,
+                      colors: const [
+                        Colors.green,
+                        Colors.blue,
+                        Colors.pink
+                      ], // manually specify the colors to be used
+                    ),
+                  ),
                 ],
               ),
             );
@@ -149,15 +152,12 @@ class _GameContent extends StatelessWidget {
         }
       },
       listener: (context, state) async {
-        if (state.loadStatus == LoadStatus.loaded) {
-          // final cubit = context.read<GameCubit>();
-          // final gameManager = cubit.gameManager;
-          // gameManager.controller(MoveType.up);
-          // viewContent.value = true;
+        if (state.isComplete ?? false) {
+          confettiController.play();
         }
       },
       listenWhen: (oldState, newState) {
-        return oldState.loadStatus != newState.loadStatus;
+        return oldState.isComplete != newState.isComplete;
       },
     );
   }

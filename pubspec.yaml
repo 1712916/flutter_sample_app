@@ -31,6 +31,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   image_cropper: ^2.0.3
   image: any
+  confetti: ^0.6.0
 
 dev_dependencies:
   flutter_test:
