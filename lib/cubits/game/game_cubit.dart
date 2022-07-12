@@ -33,6 +33,16 @@ class GameCubit extends Cubit<GameState> {
     }
   }
 
+  void initByFilePath(String path) async {
+    final preImage = state.image;
+    await _getCroppedFile('', path: path);
+    if (preImage != state.image) {
+      emit(state.copyWith(loadStatus: LoadStatus.loading));
+      await initBoardGame();
+      emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
+    }
+  }
+
   Future initBoardGame() async {
     gameManager = await compute<GameInfo, GameManager>(_initGame, GameInfo(GameManager.cellSize, state.image!));
   }
@@ -55,12 +65,12 @@ class GameCubit extends Cubit<GameState> {
     });
   }
 
-  Future<CroppedFile?> openEditImage(String url) async {
+  Future<CroppedFile?> openEditImage(String url, {String? path}) async {
     //down load image => lưu lại => lấy path
-    String? path = await DownloadHelper.downloadToInternal(url);
-    if (path != null) {
+    String? imageTemptPath = path ?? await DownloadHelper.downloadToInternal(url);
+    if (imageTemptPath != null) {
       final croppedFile = await ImageCropper().cropImage(
-        sourcePath: path,
+        sourcePath: imageTemptPath,
         aspectRatioPresets: [CropAspectRatioPreset.square],
         uiSettings: [
           AndroidUiSettings(toolbarTitle: 'Edit Image', toolbarColor: Colors.greenAccent, toolbarWidgetColor: Colors.black, initAspectRatio: CropAspectRatioPreset.square, lockAspectRatio: true),
@@ -74,11 +84,11 @@ class GameCubit extends Cubit<GameState> {
     return null;
   }
 
-  Future _getCroppedFile(String url) async {
-    final response = await openEditImage(url);
+  Future _getCroppedFile(String url, {String? path}) async {
+    final response = await openEditImage(url, path: path);
     if (response != null) {
       await _roundingSizeImage(await response.readAsBytes());
-    } else {}
+    }
   }
 
   Future _roundingSizeImage(Uint8List? croppedFile) async {

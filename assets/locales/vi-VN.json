@@ -22,5 +22,9 @@
   "shareFile": "Chia sẽ tệp",
   "checkInternetAccess": "Vui lòng kiểm tra kết nối mạng.",
   "timeOutMessage": "Quá hạn kết nối tới máy chủ!",
-  "presentationPattern": "Mẫu hiển thị"
+  "presentationPattern": "Mẫu hiển thị",
+  "importImageOption": "Bạn có thể chụp 1 tấm ảnh hoặc chọn từ thư viện",
+  "reScrambleImage": "Xáo trộn ảnh",
+  "takeAPhoto": "Chụp ảnh",
+  "importFromPhoto": "Chọn ảnh từ thư viện"
 }

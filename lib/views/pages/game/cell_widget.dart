@@ -49,7 +49,7 @@ class CellWidgetState extends State<CellWidget> {
       duration: const Duration(milliseconds: 150),
       curve: Curves.linear,
       child: Container(
-        padding: const EdgeInsets.all(2),
+        padding: const EdgeInsets.all(0.5),
         color: widget.color ?? Colors.transparent,
         child: widget.child ?? const SizedBox.shrink(),
       ),

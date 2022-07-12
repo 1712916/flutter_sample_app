@@ -23,4 +23,8 @@ class LocaleKeys {
   static const String checkInternetAccess = 'checkInternetAccess';
   static const String timeOutMessage = 'timeOutMessage';
   static const String presentationPattern = 'presentationPattern';
+  static const String importImageOption = 'importImageOption';
+  static const String reScrambleImage = 'reScrambleImage';
+  static const String takeAPhoto = 'takeAPhoto';
+  static const String importFromPhoto = 'importFromPhoto';
 }

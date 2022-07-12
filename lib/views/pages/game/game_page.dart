@@ -2,11 +2,16 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:confetti/confetti.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:image_picker/image_picker.dart';
+import 'package:meow_app/helpers/helpers.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../cubits/cubits.dart';
+import '../../../resources/resources.dart';
 import '../base_page/base_page.dart';
 import 'directional_control_widget.dart';
 import 'game_manager.dart';
@@ -80,6 +85,16 @@ class _GameContent extends StatelessWidget {
                 color: Colors.grey,
               ),
             );
+          case LoadStatus.error:
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(LocaleKeys.importImageOption.tr()),
+                  const _OpenImageFileWidget(),
+                ],
+              ),
+            );
           case LoadStatus.loaded:
             return SafeArea(
               child: Stack(
@@ -97,25 +112,12 @@ class _GameContent extends StatelessWidget {
                                 onPressed: () async {
                                   cubit.reloadScramble();
                                 },
-                                icon: const Tooltip(
-                                  message: 'Re-Scramble cells of image',
-                                  child: Icon(Icons.refresh),
+                                icon: Tooltip(
+                                  message: LocaleKeys.reScrambleImage.tr(),
+                                  child: const Icon(Icons.refresh),
                                 ),
                               ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Tooltip(
-                                  message: 'Re-Scramble cells of image',
-                                  child: Icon(Icons.monochrome_photos),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Tooltip(
-                                  message: 'Re-Scramble cells of image',
-                                  child: Icon(Icons.add_photo_alternate_outlined),
-                                ),
-                              ),
+                              const _OpenImageFileWidget(),
                             ],
                           ),
                         ],
@@ -136,12 +138,8 @@ class _GameContent extends StatelessWidget {
                       numberOfParticles: 30, // number of particles to emit
                       gravity: 0.05, // gravity - or fall speed
                       shouldLoop: false,
-                      blastDirection: pi/2,
-                      colors: const [
-                        Colors.green,
-                        Colors.blue,
-                        Colors.pink
-                      ], // manually specify the colors to be used
+                      blastDirection: pi / 2,
+                      colors: const [Colors.green, Colors.blue, Colors.pink], // manually specify the colors to be used
                     ),
                   ),
                 ],
@@ -254,5 +252,54 @@ class _BoarderPainter extends CustomPainter {
     path.lineTo(size.width / x, size.height / y);
     path.lineTo(size.width + 1, size.height / y);
     canvas.drawPath(path, paint);
+  }
+}
+
+class _OpenImageFileWidget extends StatelessWidget {
+  const _OpenImageFileWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<GameCubit>();
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          onPressed: () async {
+            await PermissionHelper.request(Permission.camera, onGranted: () async {
+              XFile? imageFile = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 90);
+              if (imageFile != null) {
+                cubit.initByFilePath(imageFile.path);
+              }
+            });
+          },
+          icon: Tooltip(
+            message: LocaleKeys.takeAPhoto.tr(),
+            child: const Icon(
+              Icons.monochrome_photos,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        IconButton(
+          onPressed: () async {
+            await PermissionHelper.request(Permission.photos, onGranted: () async {
+              XFile? imageFile = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 90);
+              if (imageFile != null) {
+                cubit.initByFilePath(imageFile.path);
+              }
+            });
+          },
+          icon: Tooltip(
+            message: LocaleKeys.importFromPhoto.tr(),
+            child: const Icon(
+              Icons.add_photo_alternate_outlined,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
