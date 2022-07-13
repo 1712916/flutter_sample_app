@@ -26,5 +26,11 @@
   "importImageOption": "Bạn có thể chụp 1 tấm ảnh hoặc chọn từ thư viện",
   "reScrambleImage": "Xáo trộn ảnh",
   "takeAPhoto": "Chụp ảnh",
-  "importFromPhoto": "Chọn ảnh từ thư viện"
+  "importFromPhoto": "Chọn ảnh từ thư viện",
+  "version": "Phiên bản",
+  "description": "Mô tả",
+  "descriptionDetail": "Trong một ngày lang thang tui đã tìm được 2 cái nguồn chứa ảnh miễn phí này. Rất trân trọng và cảm ơn.",
+  "function": "Chức năng",
+  "functionDetail": "Xem danh sách ảnh (mèo hoặc chó)_Xem ảnh/zoom/share/download/game sắp xếp_* Không thể chơi game sắp xếp trên ảnh gif_Có thể lọc định dạng jpg, png, gif",
+  "contact": "Liên hệ"
 }

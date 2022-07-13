@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meow_app/views/pages/game/game_manager.dart';
+
+import 'game_manager.dart';
 
 class CellWidget extends StatefulWidget {
   const CellWidget({

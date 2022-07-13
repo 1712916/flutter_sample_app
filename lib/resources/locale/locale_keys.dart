@@ -27,4 +27,10 @@ class LocaleKeys {
   static const String reScrambleImage = 'reScrambleImage';
   static const String takeAPhoto = 'takeAPhoto';
   static const String importFromPhoto = 'importFromPhoto';
+  static const String version = 'version';
+  static const String description = 'description';
+  static const String descriptionDetail = 'descriptionDetail';
+  static const String function = 'function';
+  static const String functionDetail = 'functionDetail';
+  static const String contact = 'contact';
 }

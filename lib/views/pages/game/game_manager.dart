@@ -194,9 +194,6 @@ class GameManager {
       }
     }
 
-    printMatrix(tempt);
-    print(tempt);
-
     return tempt;
   }
 
@@ -226,14 +223,16 @@ class GameManager {
   }
 
   MoveType _getOppositeMoveType (MoveType moveType) {
-    if (moveType == MoveType.left) {
-      return MoveType.right;
-    } else if (moveType == MoveType.right) {
-      return MoveType.left;
-    }else if (moveType == MoveType.up) {
-      return MoveType.down;
+    switch (moveType) {
+      case MoveType.left:
+        return MoveType.right;
+      case MoveType.right:
+        return MoveType.left;
+      case MoveType.up:
+         return MoveType.down;
+      default:
+        return MoveType.down;
     }
-    return MoveType.down;
   }
 
   List<MoveType> _genMoveList() {

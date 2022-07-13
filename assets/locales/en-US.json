@@ -26,5 +26,11 @@
   "importImageOption": "Select image",
   "reScrambleImage": "Re-Scramble cells of image",
   "takeAPhoto": "Take a photo",
-  "importFromPhoto": "Import image from gallery"
+  "importFromPhoto": "Import image from gallery",
+  "version": "Version",
+  "description": "Description",
+  "descriptionDetail": "Thank a lot free image resource from",
+  "function": "Function",
+  "functionDetail": "Images [cat or dog]_Image/zoom/share/download/sort game_* Can't play in gif format_Format image: jpg, png, gif",
+  "contact": "Contact"
 }

@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:image_picker/image_picker.dart';
-import 'package:meow_app/helpers/helpers.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../cubits/cubits.dart';
+import '../../../helpers/helpers.dart';
 import '../../../resources/resources.dart';
 import '../base_page/base_page.dart';
 import 'directional_control_widget.dart';
@@ -124,9 +124,7 @@ class _GameContent extends StatelessWidget {
                       ),
                       const Divider(color: Colors.black),
                       const Expanded(
-                        child: Center(
-                          child: _PlayArea(),
-                        ),
+                        child: _PlayArea(),
                       ),
                     ],
                   ),
@@ -182,8 +180,21 @@ class _Image extends StatelessWidget {
   }
 }
 
-class _PlayArea extends StatelessWidget {
+class _PlayArea extends StatefulWidget {
   const _PlayArea({Key? key}) : super(key: key);
+
+  @override
+  State<_PlayArea> createState() => _PlayAreaState();
+}
+
+class _PlayAreaState extends State<_PlayArea> {
+  final ValueNotifier<double> scaleNotifier = ValueNotifier(0.7);
+
+  @override
+  void dispose() {
+    scaleNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,27 +207,53 @@ class _PlayArea extends StatelessWidget {
 
         final cubit = context.read<GameCubit>();
 
-        return Transform.scale(
-          scale: 0.7,
-          child: CustomPaint(
-            foregroundPainter: _BoarderPainter(y: 4, x: 3, color: Colors.orangeAccent),
-            child: SizedBox(
-              width: GameManager.gameBoardWidth,
-              height: GameManager.gameBoardHeight,
-              child: DirectionalControlWidget(
-                moveLeft: () => cubit.controller(MoveType.left),
-                moveRight: () => cubit.controller(MoveType.right),
-                moveDown: () => cubit.controller(MoveType.down),
-                moveUp: () => cubit.controller(MoveType.up),
-                child: ColoredBox(
-                  color: Colors.transparent,
-                  child: Stack(
-                    children: state.cells!,
+        return ValueListenableBuilder<double>(
+          valueListenable: scaleNotifier,
+          builder: (context, value, _) {
+            return Stack(
+              children: [
+                Transform.scale(
+                  scale: value,
+                  child: CustomPaint(
+                    foregroundPainter: _BoarderPainter(y: 4, x: 3, color: Colors.orangeAccent),
+                    child: SizedBox(
+                      width: GameManager.gameBoardWidth,
+                      height: GameManager.gameBoardHeight,
+                      child: DirectionalControlWidget(
+                        moveLeft: () => cubit.controller(MoveType.left),
+                        moveRight: () => cubit.controller(MoveType.right),
+                        moveDown: () => cubit.controller(MoveType.down),
+                        moveUp: () => cubit.controller(MoveType.up),
+                        child: ColoredBox(
+                          color: Colors.transparent,
+                          child: Stack(
+                            children: state.cells!,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Slider(
+                    value: value,
+                    onChanged: (value) {
+                      scaleNotifier.value = value;
+                    },
+                    min: 0.5,
+                    max: 1.0,
+                    divisions: 6,
+                    activeColor: Theme.of(context).primaryColor,
+                    label: '${value * 100}%',
+                    thumbColor: Theme.of(context).focusColor,
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -232,7 +269,7 @@ class _BoarderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 
   @override

@@ -86,7 +86,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future _loadMore() async {
     int page = state.currentPage! + 1;
-    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: GridPattern.list[SettingManager.patternIndex!].length * 3, page: page);
+    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: GridPattern.list[SettingManager.patternIndex!].length * 8, page: page);
     if (response.statusCode == StatusCode.success) {
       emit(
         state.copyWith(

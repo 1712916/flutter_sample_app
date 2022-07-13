@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../resources/resources.dart';
 import '../../../widgets/widgets.dart';
 
 class InfoPage extends StatefulWidget {
@@ -24,6 +26,9 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -35,25 +40,62 @@ class _InfoPageState extends State<InfoPage> {
           color: Colors.black,
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TitleContent(
-            title: 'Info',
-            content: Text(version ?? ''),
-          ),
-          const SizedBox(height: 8),
-          TitleContent(
-            title: 'Mô tả',
-            content: Text('TÔi sẽ ghi mô tả ở đây'),
-          ),
-          const SizedBox(height: 8),
-          TitleContent(
-            title: 'Liên hệ',
-            content: Text('smile.vinhnt@gmail.com'),
-          ),
-        ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TitleContent(
+              title: LocaleKeys.version.tr(),
+              content: Text(version ?? ''),
+            ),
+            const SizedBox(height: 8),
+            TitleContent(
+              title: LocaleKeys.description.tr(),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+                  Text(LocaleKeys.descriptionDetail.tr()),
+                  const SizedBox(height: 4),
+                  Text('https://thecatapi.com', style: textTheme.subtitle1),
+                  const SizedBox(height: 4),
+                  Text('https://thedogapi.com', style: textTheme.subtitle1),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            TitleContent(
+              title: LocaleKeys.function.tr(),
+              content: getListString(LocaleKeys.functionDetail.tr()),
+            ),
+            const SizedBox(height: 8),
+            TitleContent(
+              title: LocaleKeys.contact.tr(),
+              content: Text('smile.vinhnt@gmail.com'),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+
+Widget getListString(String value) {
+  final List<String> strings = value.split('_');
+  List<Widget> widgets = [];
+
+  List.generate(strings.length, (index) {
+    widgets.add(Text(strings[index]));
+
+    if (index != strings.length - 1) {
+      widgets.add(const SizedBox(height: 4));
+    }
+  });
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: widgets
+  );
 }
