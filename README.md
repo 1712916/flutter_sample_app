@@ -1,10 +1,10 @@
-# flutter_sample_app
+# MEOW_APP
 
-A new Flutter sample project
+This code base from https://github.com/1712916/flutter_sample_app
 
-Use Bloc Cubit to management state.
+Free image source: https://thecatapi.com/, https://thedogapi.com/
 
-- Views is Presentation 
-- Cubits is Business Logic
-- Data is Data
+Function: View image, Download, Share, Play sort game
 
+Version: 1.0.0
+ *Note: Just do in Android [because I have not MacOs :3]
