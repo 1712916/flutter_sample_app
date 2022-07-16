@@ -245,7 +245,7 @@ class _PlayAreaState extends State<_PlayArea> {
                     },
                     min: 0.5,
                     max: 1.0,
-                    divisions: 6,
+                    divisions: 5,
                     activeColor: Theme.of(context).primaryColor,
                     label: '${value * 100}%',
                     thumbColor: Theme.of(context).focusColor,
