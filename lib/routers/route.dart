@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 class RouteManager {
 
   static String get home => '/';
+  static String get event => '/event';
 
   static getRoute(RouteSettings settings) {
     late Widget widget;

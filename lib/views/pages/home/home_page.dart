@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sample_app/routers/route.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
@@ -39,9 +40,19 @@ class _HomePageState extends CustomState<HomePage, HomeCubit> {
           case LoadStatus.init:
             return const SizedBox();
           case LoadStatus.loaded:
-            return FloatingActionButton(onPressed: () {
-              context.read<HomeCubit>().loadMore();
-            });
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton(onPressed: () {
+                  context.read<HomeCubit>().loadMore();
+                }),
+                FloatingActionButton(onPressed: () {
+                  Navigator.of(context).pushNamed(RouteManager.event);
+                },
+                child: Text('Event Page'),
+                ),
+              ],
+            );
           default:
             return const SizedBox();
         }
