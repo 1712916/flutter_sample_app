@@ -26,7 +26,7 @@ class SearchModel {
   final int? height;
 
   factory SearchModel.fromJson(Map<String, dynamic> json) => SearchModel(
-    breeds: List<Breed>.from(json["breeds"].map((x) => Breed.fromJson(x))),
+    breeds: json["breeds"] == null ? null : List<Breed>.from(json["breeds"]?.map((x) => Breed.fromJson(x))),
     id: json["id"],
     url: json["url"],
     width: json["width"],

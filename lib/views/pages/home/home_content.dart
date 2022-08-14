@@ -84,7 +84,6 @@ class _HomeContentState extends State<HomeContent> {
                     // ),
                     childCount: contents?.length ?? 0,
                   ),
-                  cacheExtent: 9999,
                 ),
                 const LoadMoreCircular(),
               ],
