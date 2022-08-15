@@ -12,6 +12,6 @@ class SearchRepository extends ISearchRepository {
 
   @override
   Future<CustomResponse<List<SearchModel>>> search({int? limit, int? page}) {
-    return _service.search(limit: limit, page: page, order: SettingManager.orderType, imageTypes: SettingManager.imageTypes);
+    return _service.search(limit: limit, page: page, order: SettingManager.orderType, imageTypes: SettingManager.imageTypes, apiKey: SettingManager.isMeow ? SettingManager.apiCatKey! : SettingManager.apiDogKey!,);
   }
 }

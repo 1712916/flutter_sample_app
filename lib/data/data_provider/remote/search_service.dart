@@ -14,14 +14,15 @@ class SearchQueryModel {
   final int? page;
   final OrderType? orderType;
   final List<ImageType>? imageTypes;
+  final String apiKey;
 
-  SearchQueryModel({required this.url, this.limit, this.page, this.orderType, this.imageTypes});
+  SearchQueryModel({required this.url, this.limit, this.page, this.orderType, this.imageTypes, required this.apiKey,});
 }
 
 class ISearchService {}
 
 class SearchService {
-  Future<CustomResponse<List<SearchModel>>> search({int? limit, int? page, OrderType? order = OrderType.desc, List<ImageType>? imageTypes}) async {
+  Future<CustomResponse<List<SearchModel>>> search({int? limit, int? page, OrderType? order = OrderType.desc, List<ImageType>? imageTypes,required String apiKey,}) async {
     final response = await compute<SearchQueryModel, CustomResponse<List<SearchModel>>>(
       searchIsolate,
       SearchQueryModel(
@@ -30,6 +31,7 @@ class SearchService {
         page: page,
         orderType: order,
         imageTypes: imageTypes,
+        apiKey: apiKey,
       ),
     );
     return response;
@@ -45,6 +47,7 @@ Future<CustomResponse<List<SearchModel>>> searchIsolate(SearchQueryModel searchQ
     'page': searchQueryModel.page ?? 0,
     'order': _order,
     'mime_types': mimeTypesString,
+    'api_key': searchQueryModel.apiKey,
   });
   if (response == null) {
     return CustomResponse(statusCode: StatusCode.badRequest); //
