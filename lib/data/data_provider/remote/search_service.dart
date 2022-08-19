@@ -44,7 +44,7 @@ Future<CustomResponse<List<SearchModel>>> searchIsolate(SearchQueryModel searchQ
   String _order = searchQueryModel.orderType?.name ?? OrderType.desc.name;
   final Response? response = await ApiRequest.call(HttpMethod.get, url: searchQueryModel.url, queryParameters: {
     'limit': searchQueryModel.limit ?? 20,
-    'page': searchQueryModel.page ?? 0,
+    if (searchQueryModel.page != null) 'page': searchQueryModel.page,
     'order': _order,
     'mime_types': mimeTypesString,
     'api_key': searchQueryModel.apiKey,

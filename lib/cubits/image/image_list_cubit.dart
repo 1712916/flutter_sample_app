@@ -8,16 +8,19 @@ import '../../helpers/helpers.dart';
 import '../../resources/resources.dart';
 import '../../widgets/widgets.dart';
 import 'image_list_state.dart';
+const imageListLimit = 10;
 
 class ImageListCubit extends Cubit<ImageListState> {
   ImageListCubit() : super(ImageListState());
   final ISearchRepository searchRepository = SearchRepository();
 
+  int _page = 0;
+
   void initData(List<SearchModel> searchModels) {
     emit(state.copyWith(
       images: searchModels,
     ));
-    loadMore(5);
+    loadMore(imageListLimit);
   }
 
   Future loadMore(int number) async {
@@ -33,7 +36,7 @@ class ImageListCubit extends Cubit<ImageListState> {
   }
 
   Future _randomLoad(int number) async {
-    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: number);
+    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: number, page: _page);
     if (response.statusCode == StatusCode.success) {
       emit(
         state.copyWith(
@@ -43,6 +46,7 @@ class ImageListCubit extends Cubit<ImageListState> {
           ],
         ),
       );
+      _page++;
     } else if (response.statusCode == StatusCode.requestTimeout) {
       Toast.makeText(message: LocaleKeys.timeOutMessage.tr());
     } else {

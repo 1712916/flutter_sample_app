@@ -44,7 +44,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
             if (!_isLoadMore) {
               _isLoadMore = true;
               if (images.length - 2 == currentIndex) {
-                await cubit.loadMore(10);
+                await cubit.loadMore(imageListLimit);
               }
               _isLoadMore = false;
             }

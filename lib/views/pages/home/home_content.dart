@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,19 +61,31 @@ class _HomeContentState extends State<HomeContent> {
                     pattern: GridPattern.list[SettingManager.patternIndex!].gridPattern,
                   ),
                   childrenDelegate: SliverChildBuilderDelegate(
-                        (context, index) => GestureDetector(
+                    (context, index) => GestureDetector(
                       onTap: () {
                         Navigator.of(context).pushNamed(
                           RouteManager.imageListPage,
-                          arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
+                          // arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
+                          arguments: [contents![index]]
                         );
                       },
-                      child: Image.network(
-                        contents?[index].url ?? '',
-                        fit: BoxFit.cover,
-                        loadingBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200, child: widget,),
-                        errorBuilder: (_, __, ___) => ColoredBox(color: Colors.grey.shade200),
-                      ),
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        const reduceImageSize = 2;
+                        return CachedNetworkImage(
+                          imageUrl: contents?[index].url ?? '',
+                          fit: BoxFit.cover,
+                          progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
+                          errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
+                          memCacheWidth: (contents?[index].width ?? 1) ~/ reduceImageSize,
+                          memCacheHeight: (contents?[index].height ?? 1) ~/ reduceImageSize,
+                        );
+                      },),
+                      // child: Image.network(
+                      //   contents?[index].url ?? '',
+                      //   fit: BoxFit.cover,
+                      //   loadingBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200, child: widget,),
+                      //   errorBuilder: (_, __, ___) => ColoredBox(color: Colors.grey.shade200),
+                      // ),
                     ),
                     // (context, index) => CachedNetworkImage(
                     //   useOldImageOnUrlChange: true,

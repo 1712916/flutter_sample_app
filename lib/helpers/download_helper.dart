@@ -31,7 +31,9 @@ class DownloadHelper {
       // Saved with this method.
       //chọn địa chỉ => Mình sẽ set up ở màn setting
       //sẽ lưu vào một cái folder nào đó
-      var imageId = await ImageDownloader.downloadImage(url, destination: AndroidDestinationType.custom(directory: SettingManager.downloadPath.split('/').last));
+      var imageId = await ImageDownloader.downloadImage(url, destination: AndroidDestinationType.directoryPictures);
+      /// todo lỗi khi chọn cái địa chỉ mình tự gán vào
+      // var imageId = await ImageDownloader.downloadImage(url, destination: AndroidDestinationType.custom(directory: SettingManager.downloadPath.split('/').last));
       if (imageId == null) {
         return;
       }
@@ -59,9 +61,9 @@ class DownloadHelper {
     } catch (e) {
       path = null;
       print('Download image: lỗi tải ảnh');
-    } finally {
-      dio.close();
-      return path;
     }
+    
+    dio.close();
+    return path;
   }
 }
