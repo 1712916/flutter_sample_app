@@ -38,14 +38,16 @@ class ImageListCubit extends Cubit<ImageListState> {
   Future _randomLoad(int number) async {
     CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: number, page: _page);
     if (response.statusCode == StatusCode.success) {
-      emit(
-        state.copyWith(
-          images: [
-            ...?state.images,
-            ...?response.data
-          ],
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            images: [
+              ...?state.images,
+              ...?response.data
+            ],
+          ),
+        );
+      }
       _page++;
     } else if (response.statusCode == StatusCode.requestTimeout) {
       Toast.makeText(message: LocaleKeys.timeOutMessage.tr());
