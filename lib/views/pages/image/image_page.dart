@@ -20,6 +20,8 @@ class ImagePage extends StatefulWidget {
 class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
   SearchModel? searchModel;
 
+  bool _hideBackButton = true;
+
   @override
   void initState() {
     if (widget.searchModel != null) {
@@ -70,13 +72,14 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
               ],
             ),
           ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top,
-            left: 0,
-            child: const BackButton(
-              color: Colors.white,
+          if (!_hideBackButton)
+            Positioned(
+              top: MediaQuery.of(context).padding.top,
+              left: 0,
+              child: const BackButton(
+                color: Colors.white,
+              ),
             ),
-          ),
         ],
       ),
     );

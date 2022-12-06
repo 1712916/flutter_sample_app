@@ -27,30 +27,41 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
 
   @override
   Widget buildContent(BuildContext context) {
-    return BlocBuilder<ImageListCubit, ImageListState>(
-      builder: (context, state) {
-        final images = state.images ?? [];
-        return PageView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: images.length,
-          itemBuilder: (context, index) {
-            return ImagePage(
-              key: UniqueKey(),
-              cubit: ImageCubit(),
-              searchModel: images[index],
+    return Stack(
+      children: [
+        BlocBuilder<ImageListCubit, ImageListState>(
+          builder: (context, state) {
+            final images = state.images ?? [];
+            return PageView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                return ImagePage(
+                  key: UniqueKey(),
+                  cubit: ImageCubit(),
+                  searchModel: images[index],
+                );
+              },
+              onPageChanged: (currentIndex) async {
+                if (!_isLoadMore) {
+                  _isLoadMore = true;
+                  if (images.length - 2 == currentIndex) {
+                    await cubit.loadMore(imageListLimit);
+                  }
+                  _isLoadMore = false;
+                }
+              },
             );
           },
-          onPageChanged: (currentIndex) async {
-            if (!_isLoadMore) {
-              _isLoadMore = true;
-              if (images.length - 2 == currentIndex) {
-                await cubit.loadMore(imageListLimit);
-              }
-              _isLoadMore = false;
-            }
-          },
-        );
-      },
+        ),
+        Positioned(
+          top: MediaQuery.of(context).padding.top,
+          left: 0,
+          child: const BackButton(
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 
