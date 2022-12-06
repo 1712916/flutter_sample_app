@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
@@ -76,9 +77,16 @@ class _HomeContentState extends State<HomeContent> {
                           fit: BoxFit.cover,
                           progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
                           errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
-                          memCacheWidth: (contents?[index].width ?? 1) ~/ reduceImageSize,
-                          memCacheHeight: (contents?[index].height ?? 1) ~/ reduceImageSize,
-                        );
+                          fadeOutDuration: const Duration(milliseconds: 300),
+                          fadeInDuration: const Duration(milliseconds: 300),
+                            cacheManager: CacheManager(
+                              Config(
+                                'image-cache',
+                                stalePeriod: const Duration(seconds: 5),
+                                maxNrOfCacheObjects: 1000,
+                              ),
+                            ),
+                          );
                       },),
                       // child: Image.network(
                       //   contents?[index].url ?? '',

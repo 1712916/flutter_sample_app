@@ -12,6 +12,7 @@ import 'helpers/helpers.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 import 'utils/utils.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
@@ -19,11 +20,13 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   InternetCheckerHelper.connectivity.onConnectivityChanged.listen(InternetCheckerHelper.changeConnectivityResult);
-  await EasyLocalization.ensureInitialized();
-  await SettingManager.loadSetting();
+  await Future.wait([
+    EasyLocalization.ensureInitialized(),
+    SettingManager.loadSetting(),
+    AppDependencies.init(),
+  ]);
   BlocOverrides.runZoned(
     () async {
-      await AppDependencies.init();
       FlutterNativeSplash.remove();
       runApp(
         EasyLocalization(
@@ -88,7 +91,7 @@ class _MaterialApp extends StatelessWidget {
           initialRoute: RouteManager.mainPage,
           onGenerateRoute: (settings) => RouteManager.getRoute(settings),
         );
-      },
+     },
     );
   }
 }
