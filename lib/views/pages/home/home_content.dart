@@ -47,67 +47,72 @@ class _HomeContentState extends State<HomeContent> {
             );
           case LoadStatus.loaded:
             final contents = state.contents;
-            return ListView(
-              controller: widget.scrollController,
-              physics: const RangeMaintainingScrollPhysics(),
-              children: [
-                GridView.custom(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: SliverQuiltedGridDelegate(
-                    crossAxisCount: GridPattern.list[SettingManager.patternIndex!].crossAxisCount,
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 2,
-                    repeatPattern: QuiltedGridRepeatPattern.same,
-                    pattern: GridPattern.list[SettingManager.patternIndex!].gridPattern,
-                  ),
-                  childrenDelegate: SliverChildBuilderDelegate(
-                    (context, index) => GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          RouteManager.imageListPage,
-                          // arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
-                          arguments: [contents![index]]
-                        );
-                      },
-                      child: LayoutBuilder(builder: (context, constraints) {
-                        const reduceImageSize = 2;
-                        return CachedNetworkImage(
-                          imageUrl: contents?[index].url ?? '',
-                          fit: BoxFit.cover,
-                          progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
-                          errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
-                          fadeOutDuration: const Duration(milliseconds: 300),
-                          fadeInDuration: const Duration(milliseconds: 300),
-                            cacheManager: CacheManager(
-                              Config(
-                                'image-cache',
-                                stalePeriod: const Duration(seconds: 5),
-                                maxNrOfCacheObjects: 1000,
-                              ),
-                            ),
-                          );
-                      },),
-                      // child: Image.network(
-                      //   contents?[index].url ?? '',
-                      //   fit: BoxFit.cover,
-                      //   loadingBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200, child: widget,),
-                      //   errorBuilder: (_, __, ___) => ColoredBox(color: Colors.grey.shade200),
-                      // ),
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<HomeCubit>().initData();
+              },
+              child: ListView(
+                controller: widget.scrollController,
+                // physics: const RangeMaintainingScrollPhysics(),
+                children: [
+                  GridView.custom(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: SliverQuiltedGridDelegate(
+                      crossAxisCount: GridPattern.list[SettingManager.patternIndex!].crossAxisCount,
+                      mainAxisSpacing: 2,
+                      crossAxisSpacing: 2,
+                      repeatPattern: QuiltedGridRepeatPattern.same,
+                      pattern: GridPattern.list[SettingManager.patternIndex!].gridPattern,
                     ),
-                    // (context, index) => CachedNetworkImage(
-                    //   useOldImageOnUrlChange: true,
-                    //   placeholder: (context, url) => Container(
-                    //     color: Colors.grey.withOpacity(0.5),
-                    //   ),
-                    //   imageUrl: contents?[index].url ?? '',
-                    //   fit: BoxFit.cover,
-                    // ),
-                    childCount: contents?.length ?? 0,
+                    childrenDelegate: SliverChildBuilderDelegate(
+                      (context, index) => GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            RouteManager.imageListPage,
+                            // arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
+                            arguments: [contents![index]]
+                          );
+                        },
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          const reduceImageSize = 2;
+                          return CachedNetworkImage(
+                            imageUrl: contents?[index].url ?? '',
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
+                            errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
+                            fadeOutDuration: const Duration(milliseconds: 300),
+                            fadeInDuration: const Duration(milliseconds: 300),
+                              cacheManager: CacheManager(
+                                Config(
+                                  'image-cache',
+                                  stalePeriod: const Duration(seconds: 5),
+                                  maxNrOfCacheObjects: 1000,
+                                ),
+                              ),
+                            );
+                        },),
+                        // child: Image.network(
+                        //   contents?[index].url ?? '',
+                        //   fit: BoxFit.cover,
+                        //   loadingBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200, child: widget,),
+                        //   errorBuilder: (_, __, ___) => ColoredBox(color: Colors.grey.shade200),
+                        // ),
+                      ),
+                      // (context, index) => CachedNetworkImage(
+                      //   useOldImageOnUrlChange: true,
+                      //   placeholder: (context, url) => Container(
+                      //     color: Colors.grey.withOpacity(0.5),
+                      //   ),
+                      //   imageUrl: contents?[index].url ?? '',
+                      //   fit: BoxFit.cover,
+                      // ),
+                      childCount: contents?.length ?? 0,
+                    ),
                   ),
-                ),
-                const LoadMoreCircular(),
-              ],
+                  const LoadMoreCircular(),
+                ],
+              ),
             );
           case LoadStatus.error:
             return Center(

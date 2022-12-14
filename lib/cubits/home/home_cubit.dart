@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:meow_app/utils/setting.dart';
 
 import '../../data/models/search_model.dart';
@@ -19,6 +20,7 @@ class HomeCubit extends Cubit<HomeState> {
   void initData() async {
     emit(state.copyWith(
       loadStatus: LoadStatus.loading,
+      currentPage: Random().nextInt(100), //random show image
     ));
     await InternetCheckerHelper.checkInternetAccess(
       onConnected: () async {
