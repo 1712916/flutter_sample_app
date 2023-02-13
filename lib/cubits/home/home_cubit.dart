@@ -48,7 +48,7 @@ class HomeCubit extends Cubit<HomeState> {
       emit(
         state.copyWith(
           loadStatus: LoadStatus.loaded,
-          contents: response.data,
+          contents: response.data?.toSet(),
         ),
       );
     } else if (response.statusCode == StatusCode.requestTimeout) {
@@ -94,10 +94,10 @@ class HomeCubit extends Cubit<HomeState> {
         state.copyWith(
           loadStatus: LoadStatus.loaded,
           loadingMore: false,
-          contents: [
+          contents: {
             ...?state.contents,
             ...?response.data,
-          ],
+          },
           currentPage: page,
         ),
       );

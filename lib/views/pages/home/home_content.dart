@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
@@ -46,7 +46,7 @@ class _HomeContentState extends State<HomeContent> {
               ),
             );
           case LoadStatus.loaded:
-            final contents = state.contents;
+            final contents = state.contents?.toList();
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<HomeCubit>().initData();
@@ -68,21 +68,20 @@ class _HomeContentState extends State<HomeContent> {
                     childrenDelegate: SliverChildBuilderDelegate(
                       (context, index) => GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                            RouteManager.imageListPage,
-                            // arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
-                            arguments: [contents![index]]
-                          );
+                          Navigator.of(context).pushNamed(RouteManager.imageListPage,
+                              // arguments: contents!.sublist(index, (index + 10) < contents.length ? (index + 10) : 0),
+                              arguments: [contents![index]]);
                         },
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          const reduceImageSize = 2;
-                          return CachedNetworkImage(
-                            imageUrl: contents?[index].url ?? '',
-                            fit: BoxFit.cover,
-                            progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
-                            errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
-                            fadeOutDuration: const Duration(milliseconds: 300),
-                            fadeInDuration: const Duration(milliseconds: 300),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            const reduceImageSize = 2;
+                            return CachedNetworkImage(
+                              imageUrl: contents?[index].url ?? '',
+                              fit: BoxFit.cover,
+                              progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
+                              errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
+                              fadeOutDuration: const Duration(milliseconds: 300),
+                              fadeInDuration: const Duration(milliseconds: 300),
                               cacheManager: CacheManager(
                                 Config(
                                   'image-cache',
@@ -91,7 +90,8 @@ class _HomeContentState extends State<HomeContent> {
                                 ),
                               ),
                             );
-                        },),
+                          },
+                        ),
                         // child: Image.network(
                         //   contents?[index].url ?? '',
                         //   fit: BoxFit.cover,

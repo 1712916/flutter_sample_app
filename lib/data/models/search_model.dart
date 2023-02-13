@@ -4,13 +4,15 @@
 
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+
 List<SearchModel> searchModelsFromJson(String str) => List<SearchModel>.from(json.decode(str).map((x) => SearchModel.fromJson(x)));
 
 List<SearchModel> searchModelsList(List data) => List<SearchModel>.from(data.map((x) => SearchModel.fromJson(x)));
 
 String searchModelToJson(List<SearchModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class SearchModel {
+class SearchModel extends Equatable {
   SearchModel({
     this.breeds,
     this.id,
@@ -26,20 +28,26 @@ class SearchModel {
   final int? height;
 
   factory SearchModel.fromJson(Map<String, dynamic> json) => SearchModel(
-    breeds: json["breeds"] == null ? null : List<Breed>.from(json["breeds"]?.map((x) => Breed.fromJson(x))),
-    id: json["id"],
-    url: json["url"],
-    width: json["width"],
-    height: json["height"],
-  );
+        breeds: json["breeds"] == null ? null : List<Breed>.from(json["breeds"]?.map((x) => Breed.fromJson(x))),
+        id: json["id"],
+        url: json["url"],
+        width: json["width"],
+        height: json["height"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "breeds": breeds?.map((x) => x.toJson()).toList(),
-    "id": id,
-    "url": url,
-    "width": width,
-    "height": height,
-  };
+        "breeds": breeds?.map((x) => x.toJson()).toList(),
+        "id": id,
+        "url": url,
+        "width": width,
+        "height": height,
+      };
+
+  @override
+  List<Object?> get props => [
+        id,
+        url,
+      ];
 }
 
 class Breed {
@@ -116,78 +124,78 @@ class Breed {
   final String? referenceImageId;
 
   factory Breed.fromJson(Map<String, dynamic> json) => Breed(
-    weight: Weight.fromJson(json["weight"]),
-    id: json["id"].toString(),
-    name: json["name"],
-    temperament: json["temperament"],
-    origin: json["origin"],
-    countryCodes: json["country_codes"],
-    countryCode: json["country_code"],
-    description: json["description"],
-    lifeSpan: json["life_span"],
-    indoor: json["indoor"],
-    lap: json["lap"],
-    altNames: json["alt_names"],
-    adaptability: json["adaptability"],
-    affectionLevel: json["affection_level"],
-    childFriendly: json["child_friendly"],
-    dogFriendly: json["dog_friendly"],
-    energyLevel: json["energy_level"],
-    grooming: json["grooming"],
-    healthIssues: json["health_issues"],
-    intelligence: json["intelligence"],
-    sheddingLevel: json["shedding_level"],
-    socialNeeds: json["social_needs"],
-    strangerFriendly: json["stranger_friendly"],
-    vocalisation: json["vocalisation"],
-    experimental: json["experimental"],
-    hairless: json["hairless"],
-    natural: json["natural"],
-    rare: json["rare"],
-    rex: json["rex"],
-    suppressedTail: json["suppressed_tail"],
-    shortLegs: json["short_legs"],
-    wikipediaUrl: json["wikipedia_url"],
-    hypoallergenic: json["hypoallergenic"],
-    referenceImageId: json["reference_image_id"],
-  );
+        weight: Weight.fromJson(json["weight"]),
+        id: json["id"].toString(),
+        name: json["name"],
+        temperament: json["temperament"],
+        origin: json["origin"],
+        countryCodes: json["country_codes"],
+        countryCode: json["country_code"],
+        description: json["description"],
+        lifeSpan: json["life_span"],
+        indoor: json["indoor"],
+        lap: json["lap"],
+        altNames: json["alt_names"],
+        adaptability: json["adaptability"],
+        affectionLevel: json["affection_level"],
+        childFriendly: json["child_friendly"],
+        dogFriendly: json["dog_friendly"],
+        energyLevel: json["energy_level"],
+        grooming: json["grooming"],
+        healthIssues: json["health_issues"],
+        intelligence: json["intelligence"],
+        sheddingLevel: json["shedding_level"],
+        socialNeeds: json["social_needs"],
+        strangerFriendly: json["stranger_friendly"],
+        vocalisation: json["vocalisation"],
+        experimental: json["experimental"],
+        hairless: json["hairless"],
+        natural: json["natural"],
+        rare: json["rare"],
+        rex: json["rex"],
+        suppressedTail: json["suppressed_tail"],
+        shortLegs: json["short_legs"],
+        wikipediaUrl: json["wikipedia_url"],
+        hypoallergenic: json["hypoallergenic"],
+        referenceImageId: json["reference_image_id"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "weight": weight?.toJson(),
-    "id": id,
-    "name": name,
-    "temperament": temperament,
-    "origin": origin,
-    "country_codes": countryCodes,
-    "country_code": countryCode,
-    "description": description,
-    "life_span": lifeSpan,
-    "indoor": indoor,
-    "lap": lap,
-    "alt_names": altNames,
-    "adaptability": adaptability,
-    "affection_level": affectionLevel,
-    "child_friendly": childFriendly,
-    "dog_friendly": dogFriendly,
-    "energy_level": energyLevel,
-    "grooming": grooming,
-    "health_issues": healthIssues,
-    "intelligence": intelligence,
-    "shedding_level": sheddingLevel,
-    "social_needs": socialNeeds,
-    "stranger_friendly": strangerFriendly,
-    "vocalisation": vocalisation,
-    "experimental": experimental,
-    "hairless": hairless,
-    "natural": natural,
-    "rare": rare,
-    "rex": rex,
-    "suppressed_tail": suppressedTail,
-    "short_legs": shortLegs,
-    "wikipedia_url": wikipediaUrl,
-    "hypoallergenic": hypoallergenic,
-    "reference_image_id": referenceImageId,
-  };
+        "weight": weight?.toJson(),
+        "id": id,
+        "name": name,
+        "temperament": temperament,
+        "origin": origin,
+        "country_codes": countryCodes,
+        "country_code": countryCode,
+        "description": description,
+        "life_span": lifeSpan,
+        "indoor": indoor,
+        "lap": lap,
+        "alt_names": altNames,
+        "adaptability": adaptability,
+        "affection_level": affectionLevel,
+        "child_friendly": childFriendly,
+        "dog_friendly": dogFriendly,
+        "energy_level": energyLevel,
+        "grooming": grooming,
+        "health_issues": healthIssues,
+        "intelligence": intelligence,
+        "shedding_level": sheddingLevel,
+        "social_needs": socialNeeds,
+        "stranger_friendly": strangerFriendly,
+        "vocalisation": vocalisation,
+        "experimental": experimental,
+        "hairless": hairless,
+        "natural": natural,
+        "rare": rare,
+        "rex": rex,
+        "suppressed_tail": suppressedTail,
+        "short_legs": shortLegs,
+        "wikipedia_url": wikipediaUrl,
+        "hypoallergenic": hypoallergenic,
+        "reference_image_id": referenceImageId,
+      };
 }
 
 class Weight {
@@ -200,12 +208,12 @@ class Weight {
   final String? metric;
 
   factory Weight.fromJson(Map<String, dynamic> json) => Weight(
-    imperial: json["imperial"],
-    metric: json["metric"],
-  );
+        imperial: json["imperial"],
+        metric: json["metric"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "imperial": imperial,
-    "metric": metric,
-  };
+        "imperial": imperial,
+        "metric": metric,
+      };
 }

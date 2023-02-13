@@ -2,7 +2,7 @@ import '../../data/data.dart';
 import '../cubits.dart';
 
 class HomeState extends BaseState implements Copyable<HomeState> {
-  final List<SearchModel>? contents;
+  final Set<SearchModel>? contents;
   final int? currentPage;
   final bool? loadingMore;
 
@@ -31,7 +31,7 @@ class HomeState extends BaseState implements Copyable<HomeState> {
   @override
   HomeState copyWith({
     LoadStatus? loadStatus,
-    List<SearchModel>? contents,
+    Set<SearchModel>? contents,
     int? currentPage,
     bool? loadingMore,
     int? errorStatus,
