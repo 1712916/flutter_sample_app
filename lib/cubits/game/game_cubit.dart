@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:image_cropper/image_cropper.dart';
 
 import '../../helpers/helpers.dart';
 import '../../views/pages/game/game_manager.dart';
@@ -73,9 +73,25 @@ class GameCubit extends Cubit<GameState> {
         sourcePath: imageTemptPath,
         aspectRatioPresets: [CropAspectRatioPreset.square],
         uiSettings: [
-          AndroidUiSettings(toolbarTitle: 'Edit Image', toolbarColor: Colors.greenAccent, toolbarWidgetColor: Colors.black, initAspectRatio: CropAspectRatioPreset.square, lockAspectRatio: true),
+          AndroidUiSettings(
+            toolbarTitle: 'Edit Image',
+            toolbarColor: Colors.greenAccent,
+            toolbarWidgetColor: Colors.black,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+          ),
           IOSUiSettings(
             title: 'Edit Image',
+            minimumAspectRatio: 1.0,
+            aspectRatioLockDimensionSwapEnabled: true,
+            aspectRatioPickerButtonHidden: true,
+            aspectRatioLockEnabled: true,
+            resetAspectRatioEnabled: true,
+            rectHeight: 4000,
+            rectWidth: 4000,
+            rectX: 0,
+            rectY: 0,
+            resetButtonHidden: true,
           ),
         ],
       );
