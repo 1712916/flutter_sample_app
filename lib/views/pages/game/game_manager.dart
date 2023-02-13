@@ -1,17 +1,17 @@
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-
 import 'package:image/image.dart' as imglib;
 
 import 'cell_widget.dart';
 
 void printMatrix(List<List<dynamic>> matrix) {
-  for( int i = 0 ; i < matrix.length ; i++) {
+  for (int i = 0; i < matrix.length; i++) {
     String row = '';
-    for (int j = 0; j < matrix [i].length; j++) {
-      row += '${matrix[i][j].runtimeType} - ';
+    for (int j = 0; j < matrix[i].length; j++) {
+      row += '${matrix[i][j].toString()} - ';
     }
     print(row);
   }
@@ -79,7 +79,6 @@ class GameManager {
   }
 
   List<Widget> _genCellWidgets(imglib.Image image) {
-
     //thêm khoảng trống
     //Khoảng trống này luôn giữ mãnh bên góc bên trái
     matrixCellState.add([GlobalKey()]);
@@ -87,7 +86,7 @@ class GameManager {
     final List<List<GameMatrix>> boardGameMatrix = [];
 
     boardGameMatrix.add([const GameMatrix(x: 0, y: 0)]);
-    boardGameMatrix.addAll(_scramble());
+    boardGameMatrix.addAll(scramble());
 
     final int imageCellWidth = (image.width / GameManager.widthRatio).floor();
     final int imageCellHeight = (image.height / GameManager.heightRatio).floor();
@@ -99,25 +98,19 @@ class GameManager {
       for (int x = 0; x < GameManager.widthRatio; x++) {
         gameStatusRow.add(GlobalKey());
         final cellPosition = boardGameMatrix[y + 1][x];
-        final thumbnail = imglib.copyCrop(
-          image,
-          cellPosition.x * imageCellWidth,
-          cellPosition.y * imageCellHeight,
-          imageCellWidth,
-          imageCellHeight,
-        );
-
         widgets.add(
           CellWidget(
             destination: cellPosition,
             size: GameManager.cellSize,
-            jumpSize:GameManager.cellSize,
+            jumpSize: GameManager.cellSize,
             top: y + 1,
             left: x,
             key: gameStatusRow.last,
-            child: Image.memory(
-              imglib.encodePng(thumbnail) as Uint8List,
-              fit: BoxFit.cover,
+            child: _RenderImage(
+              cellPosition: cellPosition,
+              imageCellWidth: imageCellWidth,
+              imageCellHeight: imageCellHeight,
+              image: image,
             ),
           ),
         );
@@ -131,7 +124,7 @@ class GameManager {
     _cells = _genCellWidgets(image);
   }
 
-  List<List<GameMatrix>> _scramble() {
+  List<List<GameMatrix>> scramble() {
     List<List<GameMatrix>> tempt = _genCell();
 
     List<MoveType> moveTypes = _genMoveList();
@@ -222,14 +215,14 @@ class GameManager {
     return moveTypes[internalRandom.nextInt(3)];
   }
 
-  MoveType _getOppositeMoveType (MoveType moveType) {
+  MoveType _getOppositeMoveType(MoveType moveType) {
     switch (moveType) {
       case MoveType.left:
         return MoveType.right;
       case MoveType.right:
         return MoveType.left;
       case MoveType.up:
-         return MoveType.down;
+        return MoveType.down;
       default:
         return MoveType.down;
     }
@@ -261,7 +254,7 @@ class GameManager {
   }
 }
 
-class GameMatrix {
+class GameMatrix extends Equatable {
   //**        x ---->
   //**      y
   //**      |
@@ -276,10 +269,68 @@ class GameMatrix {
   String toString() {
     return '($y,$x)';
   }
+
+  @override
+  List<Object?> get props => [
+        x,
+        y,
+      ];
 }
 
 class EmptyBox extends GameMatrix {
-  EmptyBox({required int y, required int x}) : super(y: y, x: x);
+  const EmptyBox({required int y, required int x}) : super(y: y, x: x);
 }
 
 enum MoveType { left, right, up, down }
+
+class _RenderImage extends StatefulWidget {
+  const _RenderImage({
+    Key? key,
+    required this.cellPosition,
+    required this.image,
+    required this.imageCellHeight,
+    required this.imageCellWidth,
+  }) : super(key: key);
+
+  final GameMatrix cellPosition;
+  final imglib.Image image;
+  final int imageCellHeight;
+  final int imageCellWidth;
+
+  @override
+  State<_RenderImage> createState() => _RenderImageState();
+}
+
+class _RenderImageState extends State<_RenderImage> {
+  imglib.Image? thumbnail;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  void _loadImage() async {
+    final image = widget.image;
+    final cellPosition = widget.cellPosition;
+    thumbnail = imglib.copyCrop(
+      image,
+      cellPosition.x * widget.imageCellWidth,
+      cellPosition.y * widget.imageCellHeight,
+      widget.imageCellWidth,
+      widget.imageCellHeight,
+    );
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (thumbnail == null) {
+      return const SizedBox();
+    }
+    return Image.memory(
+      imglib.encodePng(thumbnail!) as Uint8List,
+      fit: BoxFit.cover,
+    );
+  }
+}
