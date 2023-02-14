@@ -45,6 +45,10 @@ class GameManager {
 
     switch (moveType) {
       case MoveType.left:
+        if (x == 0 && y == 0) {
+          break;
+        }
+
         if (y + 1 < widthRatio) {
           matrixCellState[x][y] = matrixCellState[x][y + 1];
           _emptyCellIndex = '${x}_${y + 1}';
