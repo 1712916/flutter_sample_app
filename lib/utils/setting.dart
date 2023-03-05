@@ -56,12 +56,13 @@ class SettingManager {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? settingData = prefs.getString(SETTING_KEY);
     log('loading setting: $settingData');
+    const int dPatternIndex = 4;
     if (settingData != null) {
       final _SettingModel _settingModel = _SettingModel.fromJson(jsonDecode(settingData));
       isMeow = _settingModel.isMeow ?? true;
       _imageTypes = _settingModel.imageTypes ?? ImageType.values;
       _orderType = _settingModel.orderType ?? OrderType.desc;
-      patternIndex = _settingModel.patternIndex ?? 0;
+      patternIndex = _settingModel.patternIndex ?? dPatternIndex;
       apiCatKey = _settingModel.apiCatKey ?? ApiConfig.defaultApiCatKey;
       apiDogKey = _settingModel.apiDogKey ?? ApiConfig.defaultApiDogKey;
     } else {
@@ -69,7 +70,7 @@ class SettingManager {
       isMeow = true;
       _imageTypes = ImageType.values;
       _orderType = OrderType.desc;
-      patternIndex = 0;
+      patternIndex = dPatternIndex;
       apiCatKey = ApiConfig.defaultApiCatKey;
       apiDogKey = ApiConfig.defaultApiDogKey;
       save();
