@@ -1,4 +1,4 @@
-package com.example.flutter_sample_app
+package com.vinhnt.meow_app
 
 import io.flutter.embedding.android.FlutterActivity
 
