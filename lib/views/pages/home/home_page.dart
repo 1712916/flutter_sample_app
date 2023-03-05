@@ -43,6 +43,15 @@ class _HomePageState extends CustomState<HomePage, HomeCubit> {
       actions: [
         IconButton(
           onPressed: () {
+            Navigator.of(context).pushNamed(RouteManager.gamePage);
+          },
+          icon: const Icon(
+            Icons.gamepad_outlined,
+            color: Colors.black,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
             Navigator.of(context).pushNamed(RouteManager.infoPage);
           },
           icon: const Icon(

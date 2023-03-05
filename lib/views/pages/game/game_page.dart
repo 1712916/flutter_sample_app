@@ -38,7 +38,9 @@ class _GamePageState extends CustomState<GamePage, GameCubit> {
   void getPageSettings(arguments) async {
     if (arguments is String) {
       cubit.initByUrl(arguments);
-    } else if (true) {}
+    } else if (true) {
+      cubit.openErrorPage();
+    }
   }
 
   @override

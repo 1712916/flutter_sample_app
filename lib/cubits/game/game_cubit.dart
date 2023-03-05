@@ -22,6 +22,10 @@ class GameCubit extends Cubit<GameState> {
 
   void init() async {}
 
+  void openErrorPage() {
+    emit(state.copyWith(loadStatus: LoadStatus.error));
+  }
+
   void initByUrl(String url) async {
     emit(state.copyWith(loadStatus: LoadStatus.loading));
     await _getCroppedFile(url);
