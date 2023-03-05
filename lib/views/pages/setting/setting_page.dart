@@ -49,10 +49,7 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
               content: Align(
                 alignment: Alignment.center,
                 child: SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.5,
                   child: BlocBuilder<SettingsCubit, SettingState>(
                     buildWhen: (previous, current) => false,
                     builder: (context, state) {
@@ -67,44 +64,41 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              LocaleKeys.orderSearch,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline6,
-            ).tr(),
-            const SizedBox(height: 8),
-            BlocBuilder<SettingsCubit, SettingState>(
-              buildWhen: (previous, current) => false,
-              builder: (context, state) {
-                return SingleSelectionWidget<OrderType>(
-                  data: OrderType.values,
-                  defaultIndex: state.orderType!.index,
-                  buildItemNotSelect: (item) {
-                    return MultiSelectionItem(
-                      title: item.name,
-                      isSelected: false,
-                    );
-                  },
-                  buildItemSelected: (item) {
-                    return MultiSelectionItem(
-                      title: item.name,
-                      isSelected: true,
-                    );
-                  },
-                  onChoice: (index) => cubit.onChangeOrderType(OrderType.values[index]),
-                );
-              },
-            ),
+            // const SizedBox(height: 16),
+            // Text(
+            //   LocaleKeys.orderSearch,
+            //   style: Theme
+            //       .of(context)
+            //       .textTheme
+            //       .headline6,
+            // ).tr(),
+            // const SizedBox(height: 8),
+            // BlocBuilder<SettingsCubit, SettingState>(
+            //   buildWhen: (previous, current) => false,
+            //   builder: (context, state) {
+            //     return SingleSelectionWidget<OrderType>(
+            //       data: OrderType.values,
+            //       defaultIndex: state.orderType!.index,
+            //       buildItemNotSelect: (item) {
+            //         return MultiSelectionItem(
+            //           title: item.name,
+            //           isSelected: false,
+            //         );
+            //       },
+            //       buildItemSelected: (item) {
+            //         return MultiSelectionItem(
+            //           title: item.name,
+            //           isSelected: true,
+            //         );
+            //       },
+            //       onChoice: (index) => cubit.onChangeOrderType(OrderType.values[index]),
+            //     );
+            //   },
+            // ),
             const SizedBox(height: 16),
             Text(
               LocaleKeys.imageType,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline6,
+              style: Theme.of(context).textTheme.headline6,
             ).tr(),
             const SizedBox(height: 8),
             BlocBuilder<SettingsCubit, SettingState>(
@@ -152,9 +146,7 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
         LocaleKeys.settings,
         style: TextStyle(color: Colors.black),
       ).tr(),
-      backgroundColor: Theme
-          .of(context)
-          .primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       leading: BackButton(
         color: Colors.black,
         onPressed: () async {
@@ -208,7 +200,11 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
 }
 
 class PatternListWidget extends StatefulWidget {
-  const PatternListWidget({Key? key, required this.initIndex, this.onChange,}) : super(key: key);
+  const PatternListWidget({
+    Key? key,
+    required this.initIndex,
+    this.onChange,
+  }) : super(key: key);
   final int initIndex;
   final Function(int)? onChange;
 
@@ -244,22 +240,13 @@ class _PatternListWidgetState extends State<PatternListWidget> {
           builder: (context, value, _) {
             return Text(
               'Current Pattern: $value',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .caption,
+              style: Theme.of(context).textTheme.caption,
             );
           },
         ),
         SizedBox(
-          height: MediaQuery
-              .of(context)
-              .size
-              .width * 0.6,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
+          height: MediaQuery.of(context).size.width * 0.6,
+          width: MediaQuery.of(context).size.width,
           child: RotatedBox(
             quarterTurns: 3,
             child: ListWheelScrollView.useDelegate(
@@ -269,15 +256,11 @@ class _PatternListWidgetState extends State<PatternListWidget> {
                 index.value = value;
                 widget.onChange?.call(value);
               },
-              itemExtent: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.5,
+              itemExtent: MediaQuery.of(context).size.width * 0.5,
               childDelegate: ListWheelChildLoopingListDelegate(
                   children: GridPattern.list
                       .map(
-                        (e) =>
-                        RotatedBox(
+                        (e) => RotatedBox(
                           quarterTurns: 1,
                           child: PresentationPage(
                             gridPattern: e.gridPattern,
@@ -285,7 +268,7 @@ class _PatternListWidgetState extends State<PatternListWidget> {
                             crossAxisCount: e.crossAxisCount,
                           ),
                         ),
-                  )
+                      )
                       .toList()),
             ),
           ),
