@@ -45,34 +45,41 @@ class _InfoPageState extends State<InfoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TitleContent(
-              title: LocaleKeys.version.tr(),
-              content: Text(version ?? ''),
-            ),
-            const SizedBox(height: 8),
-            TitleContent(
-              title: LocaleKeys.description.tr(),
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
-                  Text(LocaleKeys.descriptionDetail.tr()),
-                  const SizedBox(height: 4),
-                  Text('https://thecatapi.com', style: textTheme.subtitle1),
-                  const SizedBox(height: 4),
-                  Text('https://thedogapi.com', style: textTheme.subtitle1),
-                ],
+            CustomCard(
+              child: TitleContent(
+                title: LocaleKeys.version.tr(),
+                content: Text(version ?? ''),
               ),
             ),
             const SizedBox(height: 8),
-            TitleContent(
-              title: LocaleKeys.function.tr(),
-              content: getListString(LocaleKeys.functionDetail.tr()),
+            CustomCard(
+              child: TitleContent(
+                title: LocaleKeys.description.tr(),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(LocaleKeys.descriptionDetail.tr()),
+                    const SizedBox(height: 4),
+                    Text('https://thecatapi.com', style: textTheme.subtitle1),
+                    const SizedBox(height: 4),
+                    Text('https://thedogapi.com', style: textTheme.subtitle1),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 8),
-            TitleContent(
-              title: LocaleKeys.contact.tr(),
-              content: Text('smile.vinhnt@gmail.com'),
+            CustomCard(
+              child: TitleContent(
+                title: LocaleKeys.function.tr(),
+                content: getListString(LocaleKeys.functionDetail.tr()),
+              ),
+            ),
+            const SizedBox(height: 8),
+            CustomCard(
+              child: TitleContent(
+                title: LocaleKeys.contact.tr(),
+                content: Text('smile.vinhnt@gmail.com'),
+              ),
             ),
           ],
         ),
@@ -80,7 +87,6 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 }
-
 
 Widget getListString(String value) {
   final List<String> strings = value.split('_');
@@ -94,8 +100,25 @@ Widget getListString(String value) {
     }
   });
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: widgets
-  );
+  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets);
+}
+
+class CustomCard extends StatelessWidget {
+  const CustomCard({Key? key, required this.child}) : super(key: key);
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(offset: Offset(2, 4), color: Colors.grey.shade300),
+        ],
+      ),
+      child: child,
+    );
+  }
 }
