@@ -47,6 +47,25 @@ class _HomeContentState extends State<HomeContent> {
             );
           case LoadStatus.loaded:
             final contents = state.contents?.toList();
+            if (contents?.isEmpty ?? true) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<HomeCubit>().initData();
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Have no Image'),
+                      const SizedBox(
+                        height: 120,
+                      ),
+                      Text('Pull to Reload'),
+                    ],
+                  ),
+                ),
+              );
+            }
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<HomeCubit>().initData();
@@ -78,6 +97,8 @@ class _HomeContentState extends State<HomeContent> {
                             return CachedNetworkImage(
                               imageUrl: contents?[index].url ?? '',
                               fit: BoxFit.cover,
+                              width: contents?[index].getWidth(),
+                              height: contents?[index].getHeight(),
                               progressIndicatorBuilder: (_, widget, ___) => ColoredBox(color: Colors.grey.shade200),
                               errorWidget: (context, url, error) => ColoredBox(color: Colors.grey.shade200),
                               fadeOutDuration: const Duration(milliseconds: 300),

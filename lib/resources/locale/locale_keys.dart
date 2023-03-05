@@ -33,4 +33,6 @@ class LocaleKeys {
   static const String function = 'function';
   static const String functionDetail = 'functionDetail';
   static const String contact = 'contact';
+  static const String currentPattern = 'currentPattern';
+  static const String editImage = 'editImage';
 }

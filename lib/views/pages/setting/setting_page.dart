@@ -239,7 +239,7 @@ class _PatternListWidgetState extends State<PatternListWidget> {
           valueListenable: index,
           builder: (context, value, _) {
             return Text(
-              'Current Pattern: $value',
+              '${LocaleKeys.currentPattern.tr()}: $value',
               style: Theme.of(context).textTheme.caption,
             );
           },

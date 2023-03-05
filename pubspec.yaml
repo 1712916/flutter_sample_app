@@ -21,7 +21,7 @@ dependencies:
   photo_view: ^0.14.0
   page_transition: ^2.0.5
   image_downloader: ^0.31.0
-  permission_handler: ^9.2.0
+  permission_handler: any
   connectivity_plus: ^2.3.2
   shared_preferences: ^2.0.15
   flutter_native_splash: 2.2.8
@@ -48,7 +48,6 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
     - assets/locales/
     - assets/icon/
 

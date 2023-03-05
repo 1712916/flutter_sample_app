@@ -24,16 +24,30 @@ class SearchModel extends Equatable {
   final List<Breed>? breeds;
   final String? id;
   final String? url;
-  final int? width;
-  final int? height;
+  final double? width;
+  final double? height;
 
   factory SearchModel.fromJson(Map<String, dynamic> json) => SearchModel(
         breeds: json["breeds"] == null ? null : List<Breed>.from(json["breeds"]?.map((x) => Breed.fromJson(x))),
         id: json["id"],
         url: json["url"],
-        width: json["width"],
-        height: json["height"],
+        width: double.tryParse(json["width"].toString()),
+        height: double.tryParse(json["height"].toString()),
       );
+
+  double? getWidth() {
+    if (width != null) {
+      return width! / 5;
+    }
+    return null;
+  }
+
+  double? getHeight() {
+    if (height != null) {
+      return height! / 5;
+    }
+    return null;
+  }
 
   Map<String, dynamic> toJson() => {
         "breeds": breeds?.map((x) => x.toJson()).toList(),

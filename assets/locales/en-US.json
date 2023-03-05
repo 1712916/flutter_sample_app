@@ -32,5 +32,7 @@
   "descriptionDetail": "Free images from",
   "function": "Function",
   "functionDetail": "Images [cat or dog]_Image/zoom/share/download/sort game_* Can't play in gif format_Format image: jpg, png, gif",
-  "contact": "Contact"
+  "contact": "Contact",
+  "currentPattern": "Current Pattern",
+  "editImage": "Edit Image"
 }

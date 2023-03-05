@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:image_cropper/image_cropper.dart';
+import 'package:meow_app/resources/locale/locale_keys.dart';
 
 import '../../helpers/helpers.dart';
 import '../../views/pages/game/game_manager.dart';
@@ -78,14 +80,14 @@ class GameCubit extends Cubit<GameState> {
         aspectRatioPresets: [CropAspectRatioPreset.square],
         uiSettings: [
           AndroidUiSettings(
-            toolbarTitle: 'Edit Image',
+            toolbarTitle: LocaleKeys.editImage.tr(),
             toolbarColor: Colors.greenAccent,
             toolbarWidgetColor: Colors.black,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
           ),
           IOSUiSettings(
-            title: 'Edit Image',
+            title: LocaleKeys.editImage.tr(),
             minimumAspectRatio: 1.0,
             aspectRatioLockDimensionSwapEnabled: true,
             aspectRatioPickerButtonHidden: true,
