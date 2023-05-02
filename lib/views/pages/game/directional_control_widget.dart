@@ -35,7 +35,7 @@ class DirectionalControlWidget extends StatelessWidget {
           moveDown?.call();
         } else {}
       },
-      child: child,
+      child: ColoredBox(color: Colors.transparent, child: child),
     );
   }
 }

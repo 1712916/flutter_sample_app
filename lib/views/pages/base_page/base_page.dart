@@ -23,7 +23,7 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
     }
   }
 
-  void getPageSettings(Object? arguments){}
+  void getPageSettings(Object? arguments) {}
 
   @override
   Widget build(BuildContext context) {

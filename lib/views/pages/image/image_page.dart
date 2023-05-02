@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meow_app/routers/route.dart';
+import 'package:meow_app/views/pages/game/game_page_2.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../../../cubits/cubits.dart';
@@ -103,7 +103,9 @@ class _ImagePageState extends CustomState<ImagePage, ImageCubit> {
   }
 
   onOpenGame() async {
-    Navigator.of(context).pushNamed(RouteManager.gamePage, arguments: searchModel?.url);
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => GamePage2(url: searchModel?.url),
+    ));
   }
 }
 

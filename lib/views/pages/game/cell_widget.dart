@@ -8,43 +8,35 @@ class CellWidget extends StatefulWidget {
     required this.size,
     required this.jumpSize,
     this.color,
-    this.top,
-    this.left,
     this.child,
     required this.destination,
   }) : super(key: key);
   final double size;
   final double jumpSize;
   final Color? color;
-  final int? top;
-  final int? left;
   final Widget? child;
-  final GameMatrix destination;
+  final GameMatrixItem destination;
 
   @override
   CellWidgetState createState() => CellWidgetState();
 }
 
 class CellWidgetState extends State<CellWidget> {
-  int top = 0;
-  int left = 0;
-
   @override
   void initState() {
-    top = widget.top ?? 0;
-    left = widget.left ?? 0;
     super.initState();
   }
 
   bool isGetDestination() {
-    return top - 1 == widget.destination.y && left == widget.destination.x;
+    return true;
+    // return top == widget.destination.y && left == widget.destination.x;
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      top: top * widget.jumpSize,
-      left: left * widget.jumpSize,
+      top: widget.destination.sy * widget.jumpSize,
+      left: widget.destination.sx * widget.jumpSize,
       height: widget.size,
       width: widget.size,
       duration: const Duration(milliseconds: 150),
@@ -58,22 +50,22 @@ class CellWidgetState extends State<CellWidget> {
   }
 
   void moveForward() {
-    left += 1;
+    widget.destination.sx += 1;
     setState(() {});
   }
 
   void moveBack() {
-    left -= 1;
+    widget.destination.sx -= 1;
     setState(() {});
   }
 
   void moveUp() {
-    top -= 1;
+    widget.destination.sy -= 1;
     setState(() {});
   }
 
   void moveDown() {
-    top += 1;
+    widget.destination.sy += 1;
     setState(() {});
   }
 }
