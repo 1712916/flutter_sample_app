@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:meow_app/views/pages/game/test_game_page.dart';
 
 import 'cubits/cubits.dart';
 import 'dependencies/app_dependencies.dart';
@@ -88,8 +87,7 @@ class _MaterialApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          // initialRoute: RouteManager.mainPage,
-          home: TestGamePage(),
+          initialRoute: RouteManager.mainPage,
           onGenerateRoute: (settings) => RouteManager.getRoute(settings),
         );
       },
