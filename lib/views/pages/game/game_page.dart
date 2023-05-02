@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:image_picker/image_picker.dart';
+import 'package:meow_app/views/pages/game/test_game_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../cubits/cubits.dart';
@@ -152,6 +153,9 @@ class _GameContent extends StatelessWidget {
       listener: (context, state) async {
         if (state.isComplete ?? false) {
           confettiController.play();
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => TestGamePage(image: state.image!),
+          ));
         }
       },
       listenWhen: (oldState, newState) {
@@ -174,11 +178,40 @@ class _Image extends StatelessWidget {
         }
 
         return SizedBox(
-          child: Image.memory(imglib.encodePng(state.image!) as Uint8List),
+          child: _MemoryImage(image: state.image!),
           width: MediaQuery.of(context).size.width / 3,
         );
       },
     );
+  }
+}
+
+class _MemoryImage extends StatefulWidget {
+  const _MemoryImage({Key? key, required this.image}) : super(key: key);
+
+  final imglib.Image image;
+
+  @override
+  State<_MemoryImage> createState() => _MemoryImageState();
+}
+
+class _MemoryImageState extends State<_MemoryImage> {
+  Widget? w = null;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  void _loadImage() async {
+    w = Image.memory(imglib.encodePng(widget.image) as Uint8List);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return w ?? const Placeholder();
   }
 }
 
@@ -217,7 +250,7 @@ class _PlayAreaState extends State<_PlayArea> {
                 Transform.scale(
                   scale: value,
                   child: CustomPaint(
-                    foregroundPainter: _BoarderPainter(y: 4, x: 3, color: Colors.orangeAccent),
+                    foregroundPainter: _BoarderPainter(y: 3, x: 3, color: Colors.orangeAccent),
                     child: SizedBox(
                       width: GameManager.gameBoardWidth,
                       height: GameManager.gameBoardHeight,

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +30,9 @@ class GameCubit extends Cubit<GameState> {
     emit(state.copyWith(loadStatus: LoadStatus.loading));
     await _getCroppedFile(url);
     if (state.image != null) {
-      await initBoardGame();
-      emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
+      // await initBoardGame();
+      emit(state.copyWith(isComplete: true));
+      // emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
     } else {
       emit(state.copyWith(loadStatus: LoadStatus.error));
     }
@@ -42,10 +41,14 @@ class GameCubit extends Cubit<GameState> {
   void initByFilePath(String path) async {
     final preImage = state.image;
     await _getCroppedFile('', path: path);
+    emit(state.copyWith(isComplete: true));
+
     if (preImage != state.image) {
-      emit(state.copyWith(loadStatus: LoadStatus.loading));
-      await initBoardGame();
-      emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
+      emit(state.copyWith(isComplete: true));
+
+      // emit(state.copyWith(loadStatus: LoadStatus.loading));
+      // await initBoardGame();
+      // emit(state.copyWith(loadStatus: LoadStatus.loaded, cells: gameManager.cells));
     }
   }
 
@@ -58,7 +61,7 @@ class GameCubit extends Cubit<GameState> {
     emit(
       state.copyWith(
         loadStatus: LoadStatus.loaded,
-        cells: gameManager.cells,
+        // cells: gameManager.cells,
         isComplete: false,
       ),
     );
@@ -78,6 +81,7 @@ class GameCubit extends Cubit<GameState> {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imageTemptPath,
         aspectRatioPresets: [CropAspectRatioPreset.square],
+        compressQuality: 30,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: LocaleKeys.editImage.tr(),
@@ -113,10 +117,8 @@ class GameCubit extends Cubit<GameState> {
     }
   }
 
-  Future _roundingSizeImage(Uint8List? croppedFile) async {
-    final imageInfo = await decodeImageFromList(croppedFile!);
-    final int roundingSize = (imageInfo.width / GameManager.heightRatio).floor() * GameManager.heightRatio;
-    final imglib.Image? image = imglib.copyCrop(imglib.decodeImage(croppedFile)!, 0, 0, roundingSize, roundingSize);
+  Future _roundingSizeImage(Uint8List croppedFile) async {
+    final imglib.Image? image = await _getImage(ImageParam(croppedFile, GameManager.heightRatio));
 
     emit(
       state.copyWith(
@@ -131,4 +133,18 @@ class GameInfo {
   final imglib.Image image;
 
   GameInfo(this.cellSize, this.image);
+}
+
+class ImageParam {
+  final Uint8List croppedFile;
+  final int heightRatio;
+
+  ImageParam(this.croppedFile, this.heightRatio);
+}
+
+Future<imglib.Image> _getImage(ImageParam imageParam) async {
+  final int roundingSize =
+      ((await decodeImageFromList(imageParam.croppedFile)).width / imageParam.heightRatio).floor() *
+          imageParam.heightRatio;
+  return imglib.copyCrop(imglib.decodeImage(imageParam.croppedFile)!, 0, 0, roundingSize, roundingSize);
 }

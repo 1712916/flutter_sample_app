@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:meow_app/views/pages/game/test_game_page.dart';
 
 import 'cubits/cubits.dart';
 import 'dependencies/app_dependencies.dart';
@@ -12,7 +13,6 @@ import 'helpers/helpers.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 import 'utils/utils.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
@@ -88,10 +88,11 @@ class _MaterialApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          initialRoute: RouteManager.mainPage,
+          // initialRoute: RouteManager.mainPage,
+          home: TestGamePage(),
           onGenerateRoute: (settings) => RouteManager.getRoute(settings),
         );
-     },
+      },
     );
   }
 }
