@@ -443,9 +443,9 @@ class CropModel {
 imglib.Image crop(CropModel cropModel) {
   return imglib.copyCrop(
     cropModel.s,
-    cropModel.x,
-    cropModel.y,
-    cropModel.w,
-    cropModel.h,
+    x: cropModel.x,
+    y: cropModel.y,
+    width: cropModel.w,
+    height: cropModel.h,
   );
 }

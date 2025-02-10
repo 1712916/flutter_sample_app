@@ -103,9 +103,7 @@ class MultiSelectionItem extends StatelessWidget {
           Expanded(
               child: Text(
             title,
-            style: Theme.of(context).textTheme.headline6?.copyWith(
-              color: Colors.black54
-            ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black54),
           )),
         ],
       ),

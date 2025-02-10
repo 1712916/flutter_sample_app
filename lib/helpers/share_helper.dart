@@ -28,7 +28,7 @@ class ShareHelper {
         final temp = await getTemporaryDirectory();
         final path = '${temp.path}/image.${url?.split('.').last}';
         await dio.download(url!, path);
-        await Share.shareFiles([path], subject: LocaleKeys.shareFile.tr());
+        await Share.shareXFiles([XFile(path)], subject: LocaleKeys.shareFile.tr());
       } on PlatformException catch (error) {
         Toast.makeText(message: LocaleKeys.errorWhenTryShare.tr());
       } on DioError catch (error) {

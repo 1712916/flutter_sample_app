@@ -1,4 +1,3 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +7,7 @@ import '../resources/resources.dart';
 import '../views/pages/pages.dart';
 
 class CustomSwitch extends StatefulWidget {
-  const CustomSwitch({Key? key,required this.isMeow, this.onChange}) : super(key: key);
+  const CustomSwitch({Key? key, required this.isMeow, this.onChange}) : super(key: key);
   final bool isMeow;
   final Function(bool)? onChange;
 
@@ -32,7 +31,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
       children: [
         Text(
           LocaleKeys.meowTitle,
-          style: textTheme.headline6!.copyWith(
+          style: textTheme.titleLarge!.copyWith(
             color: isMeow ? Colors.black : Colors.grey,
           ),
         ).tr(),
@@ -69,7 +68,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
         ),
         Text(
           LocaleKeys.dogTitle,
-          style: textTheme.headline6!.copyWith(
+          style: textTheme.titleLarge!.copyWith(
             color: !isMeow ? Colors.black : Colors.grey,
           ),
         ).tr(),

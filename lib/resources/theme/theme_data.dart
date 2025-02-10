@@ -8,17 +8,20 @@ class ThemeResource {
     AppColors appColors = AppColors.getColor(_getColorStyle(themeMode));
     return themeData.copyWith(
       primaryColor: appColors.primaryColor,
-      backgroundColor: appColors.backgroundColor,
-      textTheme: themeData.textTheme.copyWith(
-      ),
+      textTheme: themeData.textTheme.copyWith(),
+      scaffoldBackgroundColor: appColors.backgroundColor,
       canvasColor: appColors.canvasColor,
       cardColor: appColors.cardColor,
       hintColor: appColors.hintColor,
-      errorColor: appColors.errorColor,
       focusColor: appColors.focusColor,
       disabledColor: appColors.disabledColor,
       dividerColor: appColors.dividerColor,
       shadowColor: appColors.shadowColor,
+      colorScheme: themeData.colorScheme.copyWith(
+        primary: appColors.primaryColor,
+        secondary: appColors.accentColor,
+        error: appColors.errorColor,
+      ),
     );
   }
 

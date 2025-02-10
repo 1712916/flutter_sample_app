@@ -112,7 +112,7 @@ class SettingManager {
 
   static set orderType(OrderType orderType) => _orderType = orderType;
 
-  static String _downloadPath = '/storage/emulated/0/meow_app';
+  static String _downloadPath = '/storage/emulated/0/flutter_sample_app';
 
   static String get downloadPath => _downloadPath;
 

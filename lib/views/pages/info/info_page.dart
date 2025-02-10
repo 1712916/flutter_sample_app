@@ -60,9 +60,9 @@ class _InfoPageState extends State<InfoPage> {
                   children: [
                     Text(LocaleKeys.descriptionDetail.tr()),
                     const SizedBox(height: 4),
-                    Text('https://thecatapi.com', style: textTheme.subtitle1),
+                    Text('https://thecatapi.com', style: textTheme.titleMedium),
                     const SizedBox(height: 4),
-                    Text('https://thedogapi.com', style: textTheme.subtitle1),
+                    Text('https://thedogapi.com', style: textTheme.titleMedium),
                   ],
                 ),
               ),
@@ -78,7 +78,7 @@ class _InfoPageState extends State<InfoPage> {
             CustomCard(
               child: TitleContent(
                 title: LocaleKeys.contact.tr(),
-                content: Text('smile.vinhnt@gmail.com'),
+                content: Text('smile.example@gmail.com'),
               ),
             ),
           ],

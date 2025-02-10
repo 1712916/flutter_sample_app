@@ -98,7 +98,7 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
             const SizedBox(height: 16),
             Text(
               LocaleKeys.imageType,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ).tr(),
             const SizedBox(height: 8),
             BlocBuilder<SettingsCubit, SettingState>(
@@ -240,7 +240,7 @@ class _PatternListWidgetState extends State<PatternListWidget> {
           builder: (context, value, _) {
             return Text(
               '${LocaleKeys.currentPattern.tr()}: $value',
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             );
           },
         ),

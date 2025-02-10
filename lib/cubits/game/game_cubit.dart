@@ -80,7 +80,7 @@ class GameCubit extends Cubit<GameState> {
     if (imageTemptPath != null) {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imageTemptPath,
-        aspectRatioPresets: [CropAspectRatioPreset.square],
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         compressQuality: 30,
         uiSettings: [
           AndroidUiSettings(
@@ -146,5 +146,11 @@ Future<imglib.Image> _getImage(ImageParam imageParam) async {
   final int roundingSize =
       ((await decodeImageFromList(imageParam.croppedFile)).width / imageParam.heightRatio).floor() *
           imageParam.heightRatio;
-  return imglib.copyCrop(imglib.decodeImage(imageParam.croppedFile)!, 0, 0, roundingSize, roundingSize);
+  return imglib.copyCrop(
+    imglib.decodeImage(imageParam.croppedFile)!,
+    x: 0,
+    y: 0,
+    width: roundingSize,
+    height: roundingSize,
+  );
 }
