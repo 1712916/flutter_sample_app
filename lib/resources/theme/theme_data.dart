@@ -34,3 +34,23 @@ class ThemeResource {
     }
   }
 }
+
+extension ThemeResourceExtension on ThemeData {
+  Color get iconColor {
+    AppColors appColors = AppColors.getColor(ThemeResource._getColorStyle(ThemeMode.light));
+
+    return appColors.iconColor;
+  }
+
+  Color get imagePlaceholderColor {
+    AppColors appColors = AppColors.getColor(ThemeResource._getColorStyle(ThemeMode.light));
+
+    return Color(0xFFF1F1F1);
+  }
+
+  Color get actionBackground {
+    AppColors appColors = AppColors.getColor(ThemeResource._getColorStyle(ThemeMode.light));
+
+    return Color(0x998C8686);
+  }
+}

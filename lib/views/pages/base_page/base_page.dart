@@ -14,6 +14,8 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
 
   bool isFirstLoad = true;
 
+  ThemeData get theme => Theme.of(context);
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

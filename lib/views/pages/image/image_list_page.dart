@@ -1,10 +1,18 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../data/data.dart';
+import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
-import 'image_page.dart';
+import 'grid_view.dart';
+import 'page_view.dart';
+
+const double iconSize = 36.0;
 
 class ImageListPage extends StatefulWidget {
   const ImageListPage({Key? key, required this.cubit}) : super(key: key);
@@ -26,45 +34,336 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    cubit.init();
+    //add frame call back
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      cubit.showPageView(0);
+    });
+  }
+
+  @override
   Widget buildContent(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: [
-        BlocBuilder<ImageListCubit, ImageListState>(
-          builder: (context, state) {
-            final images = state.images ?? [];
-            return PageView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                return ImagePage(
-                  key: UniqueKey(),
-                  cubit: ImageCubit(),
-                  searchModel: images[index],
-                );
-              },
-              onPageChanged: (currentIndex) async {
-                if (!_isLoadMore) {
-                  _isLoadMore = true;
-                  if (images.length - 2 == currentIndex) {
-                    await cubit.loadMore(imageListLimit);
-                  }
-                  _isLoadMore = false;
-                }
-              },
-            );
-          },
-        ),
+        buildImageView(context),
+        buildMenuView(context),
         Positioned(
-          top: MediaQuery.of(context).padding.top,
-          left: 0,
-          child: const BackButton(
-            color: Colors.white,
+          top: 16,
+          left: 16,
+          right: 16,
+          child: SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  backgroundColor: theme.actionBackground,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedSettings01,
+                      color: theme.iconColor,
+                      // size: iconSize,
+                    ),
+                  ),
+                ),
+                AnimalDropdown(),
+                CircleAvatar(
+                  backgroundColor: theme.actionBackground,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedSettings01,
+                      color: theme.iconColor,
+                      // size: iconSize,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 
+  Widget buildImageView(BuildContext) {
+    return Navigator(
+      key: cubit.navKey,
+      clipBehavior: Clip.none,
+      initialRoute: '/',
+      transitionDelegate: const DefaultTransitionDelegate(),
+      onGenerateRoute: (settings) {
+        Widget page = SizedBox();
+
+        final viewType = ImageViewType.fromPath(settings.name!);
+        final arguments = settings.arguments;
+
+        print('viewType: $viewType');
+        print('arguments: $arguments');
+
+        switch (viewType) {
+          case ImageViewType.grid:
+            {
+              page = ImageGridView();
+              break;
+            }
+          case ImageViewType.page:
+            {
+              page = ImagePageView(initIndex: (arguments as int) ?? 0);
+              break;
+            }
+        }
+
+        if (!true) {
+          return MaterialPageRoute(
+            allowSnapshotting: true,
+            fullscreenDialog: true,
+            settings: settings,
+            builder: (context) {
+              return page;
+              return Scaffold(body: page);
+            },
+            // settings: settings,
+          );
+        }
+
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 600),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              Material(color: theme.scaffoldBackgroundColor, child: page),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0); // Start off-screen (right)
+            const end = Offset.zero; // End at normal position
+            const curve = Curves.linear;
+
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            // return FadeTransition(
+            //   opacity: animation,
+            //   child: Material(color: theme.scaffoldBackgroundColor, child: child),
+            // );
+            return ScaleTransition(
+              scale: Tween<double>(begin: 1.0, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: curve),
+              ),
+              child: child,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildMenuView(BuildContext) {
+    return BlocBuilder<ImageListCubit, ImageListState>(
+      builder: (context, state) {
+        switch (state.viewType) {
+          case ImageViewType.grid:
+            return Positioned(
+              bottom: 40,
+              left: 40,
+              right: 40,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TakeImageButton(
+                        onTapAction: () {},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          case ImageViewType.page:
+            return Positioned(
+              bottom: 40,
+              left: 40,
+              right: 40,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          cubit.showGridView();
+                        },
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedGridView,
+                          color: theme.iconColor,
+                          size: iconSize,
+                        ),
+                      ),
+                      TakeImageButton(
+                        onTapAction: () {},
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedUpload04,
+                          color: theme.iconColor,
+                          size: iconSize,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+        }
+      },
+    );
+  }
+
   @override
   ImageListCubit get cubit => widget.cubit;
+}
+
+class TakeImageButton extends StatefulWidget {
+  final VoidCallback onTapAction;
+
+  const TakeImageButton({
+    super.key,
+    required this.onTapAction,
+  });
+
+  @override
+  State<TakeImageButton> createState() => _TakeImageButtonState();
+}
+
+class _TakeImageButtonState extends State<TakeImageButton> {
+  double _scale = 1.0;
+  bool _isLongPressing = false;
+
+  void _onTap() {
+    if (!_isLongPressing) {
+      widget.onTapAction(); // Tap một cái thực hiện luôn
+    }
+  }
+
+  void _onLongPressDown(LongPressDownDetails details) {
+    setState(() {
+      _scale = 0.9;
+      _isLongPressing = true;
+    });
+  }
+
+  void _onLongPressUp() {
+    setState(() {
+      _scale = 1.0;
+      _isLongPressing = false;
+    });
+    widget.onTapAction(); // Gọi action khi thả tay sau long press
+  }
+
+  void _onLongPressCancel() {
+    setState(() {
+      _scale = 1.0;
+      _isLongPressing = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: widget.onTapAction, // Tap một cái gọi ngay action
+      onLongPressDown: _onLongPressDown,
+      onLongPressUp: _onLongPressUp,
+      onLongPressCancel: _onLongPressCancel,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.yellow, width: 4),
+          ),
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: theme.actionBackground,
+              shape: BoxShape.circle,
+            ),
+            child: HugeIcon(
+              icon: HugeIcons.strokeRoundedGameboy,
+              color: theme.iconColor,
+              size: 32.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AnimalDropdown extends StatefulWidget {
+  const AnimalDropdown({super.key});
+
+  @override
+  State<AnimalDropdown> createState() => _AnimalDropdownState();
+}
+
+class _AnimalDropdownState extends State<AnimalDropdown> {
+  final List<String> items = [
+    'Meow',
+    'Gaow',
+  ];
+
+  Map<String, String> animalMap = {
+    'Meow': 'assets/icon/cat.svg',
+    'Gaow': 'assets/icon/dog.svg',
+  };
+
+  late String selectedValue = items.first; // Default selection
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SizedBox(
+      width: 120,
+      child: CustomDropdownButton<String>(
+        initial: 0,
+        title: (item) {
+          return Text(
+            item ?? '',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.iconColor,
+            ),
+          );
+        },
+        items: items,
+        itemBuilder: (item, isSelected) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  animalMap[item]!,
+                  color: theme.iconColor,
+                  width: 24,
+                  height: 24,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  item,
+                  style: TextStyle(color: theme.iconColor),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

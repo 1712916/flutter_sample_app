@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/data.dart';
@@ -8,13 +9,16 @@ import '../../helpers/helpers.dart';
 import '../../resources/resources.dart';
 import '../../widgets/widgets.dart';
 import 'image_list_state.dart';
+
 const imageListLimit = 10;
 
 class ImageListCubit extends Cubit<ImageListState> {
-  ImageListCubit() : super(ImageListState());
+  ImageListCubit() : super(ImageListState.init());
   final ISearchRepository searchRepository = SearchRepository();
-
+  final PageController controller = PageController();
   int _page = 0;
+
+  final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
   void initData(List<SearchModel> searchModels) {
     emit(state.copyWith(
@@ -24,15 +28,12 @@ class ImageListCubit extends Cubit<ImageListState> {
   }
 
   Future loadMore(int number) async {
-    await InternetCheckerHelper.checkInternetAccess(
-      onConnected: () async {
-        await _randomLoad(number);
-      },
-      onDisconnected: () async {
-        await Future.delayed(const Duration(milliseconds: 300));
-        Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
-      }
-    );
+    await InternetCheckerHelper.checkInternetAccess(onConnected: () async {
+      await _randomLoad(number);
+    }, onDisconnected: () async {
+      await Future.delayed(const Duration(milliseconds: 300));
+      Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
+    });
   }
 
   Future _randomLoad(int number) async {
@@ -41,10 +42,7 @@ class ImageListCubit extends Cubit<ImageListState> {
       if (!isClosed) {
         emit(
           state.copyWith(
-            images: [
-              ...?state.images,
-              ...?response.data
-            ],
+            images: [...?state.images, ...?response.data],
           ),
         );
       }
@@ -54,5 +52,25 @@ class ImageListCubit extends Cubit<ImageListState> {
     } else {
       Toast.makeText(message: LocaleKeys.haveAnError.tr());
     }
+  }
+
+  void showGridView() {
+    emit(
+      state.copyWith(
+        viewType: ImageViewType.grid,
+      ),
+    );
+    navKey.currentState!.pop();
+  }
+
+  void init() {}
+
+  void showPageView(int index) {
+    emit(
+      state.copyWith(
+        viewType: ImageViewType.page,
+      ),
+    );
+    navKey.currentState!.pushNamed(state.viewType.path, arguments: index);
   }
 }

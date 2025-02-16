@@ -49,6 +49,8 @@ class AppColors {
   external Color get shadowColor;
 
   external Color get accentColor;
+
+  external Color get iconColor;
 }
 
 class LightColors extends AppColors {
@@ -56,7 +58,7 @@ class LightColors extends AppColors {
   Color get primaryColor => const Color(0xFFE3FDFD);
 
   @override
-  Color get backgroundColor => const Color(0xFFE3FDFD);
+  Color get backgroundColor => const Color(0xFF0B0B0B);
 
   @override
   Color get canvasColor => const Color(0xFFE3FDFD);
@@ -84,6 +86,9 @@ class LightColors extends AppColors {
 
   @override
   Color get accentColor => Colors.orangeAccent;
+
+  @override
+  Color get iconColor => const Color(0xFFE8E0E0);
 }
 
 class DarkColors extends AppColors {

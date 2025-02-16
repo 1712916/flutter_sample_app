@@ -34,6 +34,10 @@ dependencies:
   image: any
   confetti: ^0.8.0
   image_picker: ^1.1.2
+  hugeicons: ^0.0.7
+  dropdown_button2: ^2.3.9
+  flutter_svg: ^2.0.17
+  hero_animation: ^1.1.4
 
 dev_dependencies:
   flutter_test:

@@ -1,25 +1,51 @@
 import '../../data/data.dart';
 import '../cubits.dart';
 
-class ImageListState extends BaseState implements Copyable<ImageListState> {
-  final List<SearchModel>? images;
+enum ImageViewType {
+  grid('/'),
+  page('/page');
 
-  ImageListState({this.images});
+  const ImageViewType(this.path);
+  final String path;
 
-  @override
-  ImageListState copy() {
-    return this;
+  static ImageViewType fromPath(String path) {
+    return values.firstWhere((element) => element.path == path);
   }
+}
 
-  @override
-  ImageListState copyWith({List<SearchModel>? images}) {
+class ImageListState extends BaseState {
+  final List<SearchModel>? images;
+  final ImageViewType viewType;
+
+  ImageListState({
+    this.images,
+    required this.viewType,
+    super.loadStatus,
+  });
+
+  factory ImageListState.init() {
     return ImageListState(
-      images: images ?? this.images,
+      images: [],
+      viewType: ImageViewType.page,
+      loadStatus: LoadStatus.init,
     );
   }
 
   @override
   List<Object?> get props => [
         images.hashCode,
+        viewType,
+        loadStatus,
       ];
+
+  ImageListState copyWith({
+    List<SearchModel>? images,
+    ImageViewType? viewType,
+  }) {
+    return ImageListState(
+      images: images ?? this.images,
+      viewType: viewType ?? this.viewType,
+      loadStatus: loadStatus,
+    );
+  }
 }
