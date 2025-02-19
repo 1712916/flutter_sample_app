@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 
 import '../data/api_config.dart';
@@ -47,12 +48,12 @@ class ApiRequest {
     options.headers = {
       'Accept': "application/json",
       'Content-type': 'application/json; charset=utf-8',
+      // 'x-api-key': ApiConfig.defaultApiCatKey
     };
     options.sendTimeout = Duration(seconds: 10);
     options.receiveTimeout = Duration(seconds: 10);
-    log('call api: $url');
-    log('call api param: $queryParameters');
     try {
+      _dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
       return await _dio.request(
         url,
         queryParameters: queryParameters,

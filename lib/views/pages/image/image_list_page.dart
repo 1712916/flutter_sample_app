@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
+import 'package:meow_app/views/pages/game/game_page_2.dart';
 
 import '../../../cubits/cubits.dart';
-import '../../../data/data.dart';
 import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 import 'grid_view.dart';
@@ -25,13 +25,6 @@ class ImageListPage extends StatefulWidget {
 
 class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
   bool _isLoadMore = false;
-
-  @override
-  void getPageSettings(Object? arguments) {
-    if (arguments is List<SearchModel>) {
-      cubit.initData(arguments);
-    }
-  }
 
   @override
   void initState() {
@@ -58,14 +51,17 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  backgroundColor: theme.actionBackground,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: HugeIcon(
-                      icon: HugeIcons.strokeRoundedSettings01,
-                      color: theme.iconColor,
-                      // size: iconSize,
+                Opacity(
+                  opacity: 0.0,
+                  child: CircleAvatar(
+                    backgroundColor: theme.actionBackground,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: HugeIcon(
+                        icon: HugeIcons.strokeRoundedSettings01,
+                        color: theme.iconColor,
+                        // size: iconSize,
+                      ),
                     ),
                   ),
                 ),
@@ -117,14 +113,16 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
             }
         }
 
-        if (!true) {
+        if (true) {
           return MaterialPageRoute(
             allowSnapshotting: true,
             fullscreenDialog: true,
             settings: settings,
             builder: (context) {
-              return page;
-              return Scaffold(body: page);
+              return Material(
+                color: theme.scaffoldBackgroundColor,
+                child: page,
+              );
             },
             // settings: settings,
           );
@@ -201,7 +199,15 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                         ),
                       ),
                       TakeImageButton(
-                        onTapAction: () {},
+                        onTapAction: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => GamePage2(
+                                url: cubit.currentUrl,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       IconButton(
                         onPressed: () {},

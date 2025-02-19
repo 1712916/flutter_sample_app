@@ -28,8 +28,14 @@ class _ImageGridViewState extends State<ImageGridView> {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
+            if (index == state.images!.length - 3) {
+              cubit.loadMore(imageListLimit);
+            }
+
             final item = state.images![index];
             final image = item.url ?? '';
+            //print width height
+            print('width: ${item.width} height: ${item.height}');
             return GestureDetector(
               onTap: () {
                 cubit.showPageView(index);
@@ -41,7 +47,8 @@ class _ImageGridViewState extends State<ImageGridView> {
                   child: SizedBox(
                     width: 135.8,
                     child: CachedNetworkImage(
-                      width: 135.8,
+                      memCacheHeight: (item.height! / 3).toInt(),
+                      memCacheWidth: (item.width! / 3).toInt(),
                       imageUrl: image,
                       fit: BoxFit.cover,
                       placeholder: (context, url) {

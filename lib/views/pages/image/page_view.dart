@@ -23,6 +23,12 @@ class _ImagePageViewState extends State<ImagePageView> {
     controller = PageController(initialPage: widget.initIndex);
   }
 
+  void _onPageScroll() {
+    if (true) {
+      context.read<ImageListCubit>().loadMore(imageListLimit);
+    }
+  }
+
   @override
   void dispose() {
     controller.dispose();
@@ -91,7 +97,13 @@ class _ImagePageViewState extends State<ImagePageView> {
               ),
             );
           },
-          onPageChanged: (currentIndex) async {},
+          onPageChanged: (currentIndex) async {
+            context.read<ImageListCubit>().setCurrentImage(images[currentIndex]);
+
+            // if (currentIndex == images.length - 1) {
+            //   context.read<ImageListCubit>().loadMore(imageListLimit);
+            // }
+          },
         );
       },
     );

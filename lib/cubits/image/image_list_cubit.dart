@@ -10,7 +10,7 @@ import '../../resources/resources.dart';
 import '../../widgets/widgets.dart';
 import 'image_list_state.dart';
 
-const imageListLimit = 10;
+const imageListLimit = 30;
 
 class ImageListCubit extends Cubit<ImageListState> {
   ImageListCubit() : super(ImageListState.init());
@@ -19,6 +19,14 @@ class ImageListCubit extends Cubit<ImageListState> {
   int _page = 0;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+
+  String? get currentUrl => currentImage?.url;
+
+  SearchModel? currentImage = null;
+
+  void setCurrentImage(SearchModel? image) {
+    currentImage = image;
+  }
 
   void initData(List<SearchModel> searchModels) {
     emit(state.copyWith(
@@ -42,7 +50,7 @@ class ImageListCubit extends Cubit<ImageListState> {
       if (!isClosed) {
         emit(
           state.copyWith(
-            images: [...?state.images, ...?response.data],
+            images: [...?state.images, ...?response.data].toSet().toList(),
           ),
         );
       }
@@ -63,7 +71,9 @@ class ImageListCubit extends Cubit<ImageListState> {
     navKey.currentState!.pop();
   }
 
-  void init() {}
+  void init() {
+    loadMore(imageListLimit);
+  }
 
   void showPageView(int index) {
     emit(
