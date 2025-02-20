@@ -53,4 +53,14 @@ extension ThemeResourceExtension on ThemeData {
 
     return Color(0x998C8686);
   }
+
+  Color get cardColor2 {
+    AppColors appColors = AppColors.getColor(ThemeResource._getColorStyle(ThemeMode.light));
+
+    return Color(0xFF423f3d);
+  }
+
+  Color get textColor2 {
+    return Color(0xFFefefef);
+  }
 }

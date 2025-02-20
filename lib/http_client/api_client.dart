@@ -61,7 +61,7 @@ class ApiRequest {
         cancelToken: cancelToken,
         options: options,
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log('Time out: $e');
       return Response(
         requestOptions: RequestOptions(path: url),

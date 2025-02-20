@@ -29,10 +29,11 @@
   "importFromPhoto": "Import image from gallery",
   "version": "Version",
   "description": "Description",
-  "descriptionDetail": "Free images from",
+  "descriptionDetail": "We would like to extend our sincere gratitude to That API Company for providing such a valuable resource of high-quality, royalty-free images. Their contribution has significantly enhanced the visual experience of our app, and we truly appreciate their generous support. Thank you for making it easier for us to deliver the best to our users.",
   "function": "Function",
   "functionDetail": "Images [cat or dog]_Image/zoom/share/download/sort game_* Can't play in gif format_Format image: jpg, png, gif",
   "contact": "Contact",
   "currentPattern": "Current Pattern",
-  "editImage": "Edit Image"
+  "editImage": "Edit Image",
+  "source": "Source"
 }

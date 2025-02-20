@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meow_app/views/pages/game/game_page_2.dart';
+import 'package:meow_app/views/pages/setting/setting_page_new.dart';
 
 import '../routers/route.dart';
 import '../views/pages/pages.dart';
@@ -12,7 +13,7 @@ class PageDependencies {
     injector.registerFactory<Widget>(() => ImagePage(cubit: injector()), instanceName: RouteManager.imagePage);
     injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.imageListPage);
     injector.registerFactory<Widget>(
-        () => SettingPage(
+        () => SettingNewPage(
               cubit: injector(),
             ),
         instanceName: RouteManager.settingPage);

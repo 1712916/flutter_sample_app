@@ -34,5 +34,6 @@
   "functionDetail": "Xem danh sách ảnh (mèo hoặc chó)_Xem ảnh/zoom/share/download/game sắp xếp_* Không thể chơi game sắp xếp trên ảnh gif_Có thể lọc định dạng jpg, png, gif",
   "contact": "Liên hệ",
   "currentPattern": "Mẫu lưới hiện tại",
-  "editImage": "Chỉnh ảnh"
+  "editImage": "Chỉnh ảnh",
+  "source": "Nguồn"
 }

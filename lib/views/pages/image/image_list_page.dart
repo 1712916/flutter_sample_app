@@ -7,6 +7,7 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/views/pages/game/game_page_2.dart';
 
 import '../../../cubits/cubits.dart';
+import '../../../routers/route.dart';
 import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 import 'grid_view.dart';
@@ -69,7 +70,9 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                 CircleAvatar(
                   backgroundColor: theme.actionBackground,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(RouteManager.settingPage);
+                    },
                     icon: HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings01,
                       color: theme.iconColor,

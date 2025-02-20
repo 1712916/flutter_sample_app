@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^2.0.17
   hero_animation: ^1.1.4
   curl_logger_dio_interceptor: ^1.0.0  # Logs Dio HTTP requests in a cURL-like format for easier debugging.
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

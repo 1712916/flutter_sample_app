@@ -34,6 +34,7 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
       child: isBody
           ? buildContent(context)
           : Scaffold(
+              backgroundColor: theme.scaffoldBackgroundColor,
               appBar: buildAppbar(context),
               body: buildContent(context),
               floatingActionButton: buildFloatingActionButton(context),
