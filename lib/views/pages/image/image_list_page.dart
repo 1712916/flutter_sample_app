@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
+import 'package:meow_app/utils/setting.dart';
 import 'package:meow_app/views/pages/game/game_page_2.dart';
 
 import '../../../cubits/cubits.dart';
@@ -66,7 +67,15 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                     ),
                   ),
                 ),
-                AnimalDropdown(),
+                AnimalDropdown(
+                  onTapAction: (value) {
+                    if (value == 'Meow') {
+                      cubit.switchToCat();
+                    } else {
+                      cubit.switchToDog();
+                    }
+                  },
+                ),
                 CircleAvatar(
                   backgroundColor: theme.actionBackground,
                   child: IconButton(
@@ -100,9 +109,6 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
         final viewType = ImageViewType.fromPath(settings.name!);
         final arguments = settings.arguments;
 
-        print('viewType: $viewType');
-        print('arguments: $arguments');
-
         switch (viewType) {
           case ImageViewType.grid:
             {
@@ -111,7 +117,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
             }
           case ImageViewType.page:
             {
-              page = ImagePageView(initIndex: (arguments as int) ?? 0);
+              page = ImagePageView();
               break;
             }
         }
@@ -316,7 +322,9 @@ class _TakeImageButtonState extends State<TakeImageButton> {
 }
 
 class AnimalDropdown extends StatefulWidget {
-  const AnimalDropdown({super.key});
+  const AnimalDropdown({super.key, required this.onTapAction});
+
+  final ValueChanged<String> onTapAction;
 
   @override
   State<AnimalDropdown> createState() => _AnimalDropdownState();
@@ -334,6 +342,12 @@ class _AnimalDropdownState extends State<AnimalDropdown> {
   };
 
   late String selectedValue = items.first; // Default selection
+
+  @override
+  void initState() {
+    super.initState();
+    SettingManager.isMeow ? selectedValue = items.first : selectedValue = items.last;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -371,6 +385,9 @@ class _AnimalDropdownState extends State<AnimalDropdown> {
               ],
             ),
           );
+        },
+        onChange: (index) {
+          widget.onTapAction?.call(items[index]);
         },
       ),
     );

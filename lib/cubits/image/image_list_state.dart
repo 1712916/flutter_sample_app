@@ -41,11 +41,12 @@ class ImageListState extends BaseState {
   ImageListState copyWith({
     List<SearchModel>? images,
     ImageViewType? viewType,
+    LoadStatus? loadStatus,
   }) {
     return ImageListState(
       images: images ?? this.images,
       viewType: viewType ?? this.viewType,
-      loadStatus: loadStatus,
+      loadStatus: loadStatus ?? this.loadStatus,
     );
   }
 }

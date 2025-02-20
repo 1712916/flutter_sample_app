@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/cubits/base/base_state.dart';
+import 'package:meow_app/utils/setting.dart';
 
 import '../../data/data.dart';
 import '../../data/response/custom_response.dart';
@@ -15,22 +17,20 @@ const imageListLimit = 30;
 class ImageListCubit extends Cubit<ImageListState> {
   ImageListCubit() : super(ImageListState.init());
   final ISearchRepository searchRepository = SearchRepository();
-  final PageController controller = PageController();
   int _page = 0;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
-
+  PageController? pageController;
   String? get currentUrl => currentImage?.url;
 
-  SearchModel? currentImage = null;
+  SearchModel? get currentImage => state.images?[currentIndex];
 
-  void setCurrentImage(SearchModel? image) {
-    currentImage = image;
-  }
+  int currentIndex = 0;
 
   void initData(List<SearchModel> searchModels) {
     emit(state.copyWith(
       images: searchModels,
+      loadStatus: LoadStatus.init,
     ));
     loadMore(imageListLimit);
   }
@@ -51,6 +51,7 @@ class ImageListCubit extends Cubit<ImageListState> {
         emit(
           state.copyWith(
             images: [...?state.images, ...?response.data].toSet().toList(),
+            loadStatus: LoadStatus.loaded,
           ),
         );
       }
@@ -81,6 +82,40 @@ class ImageListCubit extends Cubit<ImageListState> {
         viewType: ImageViewType.page,
       ),
     );
+    currentIndex = index;
+    if (pageController != null) {
+      pageController!.dispose();
+      pageController = null;
+    }
+
+    pageController = PageController(initialPage: currentIndex);
     navKey.currentState!.pushNamed(state.viewType.path, arguments: index);
+  }
+
+  void switchToCat() async {
+    SettingManager.isMeow = true;
+    await SettingManager.save();
+    refreshData();
+  }
+
+  void switchToDog() async {
+    SettingManager.isMeow = false;
+    await SettingManager.save();
+    refreshData();
+  }
+
+  void refreshData() {
+    emit(state.copyWith(images: [], loadStatus: LoadStatus.loading));
+    _page = 0;
+    currentIndex = 0;
+    pageController?.dispose();
+    pageController = PageController(initialPage: currentIndex);
+    init();
+  }
+
+  @override
+  Future<void> close() {
+    pageController?.dispose();
+    return super.close();
   }
 }
