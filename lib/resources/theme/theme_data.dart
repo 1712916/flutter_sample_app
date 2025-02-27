@@ -63,4 +63,8 @@ extension ThemeResourceExtension on ThemeData {
   Color get textColor2 {
     return Color(0xFFefefef);
   }
+
+  Color get highlightColor2 {
+    return Colors.yellow;
+  }
 }

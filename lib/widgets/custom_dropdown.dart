@@ -10,6 +10,7 @@ class CustomDropdownButton<T> extends StatefulWidget {
   final VoidCallback? onTap;
   final BoxConstraints? constraints;
   final bool isError;
+  final bool hideDecoration;
 
   CustomDropdownButton({
     Key? key,
@@ -21,6 +22,7 @@ class CustomDropdownButton<T> extends StatefulWidget {
     this.onTap,
     this.constraints,
     this.isError = false,
+    this.hideDecoration = false,
   }) : super(key: key) {
     if (initial != null) {
       assert(initial! <= items.length);
@@ -99,43 +101,44 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> {
           ),
         ),
       ),
-      child: ValueListenableBuilder<bool>(
-        valueListenable: _openNotifier,
-        builder: (_, val, __) {
-          return Center(
-            child: GestureDetector(
-              onTap: () async {
-                _openNotifier.value = !val;
-                widget.onTap?.call();
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                  color: theme.actionBackground,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    widget
-                        .title(_currentIndexNotifier.value != null ? widget.items[_currentIndexNotifier.value!] : null),
-                    const SizedBox(width: 8),
-                    AnimatedRotation(
-                      turns: val ? 0.5 : 0.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_outlined,
-                        size: 20,
-                        color: theme.iconColor,
+      child: widget.hideDecoration
+          ? getChild()
+          : ValueListenableBuilder<bool>(
+              valueListenable: _openNotifier,
+              builder: (_, val, __) {
+                return Center(
+                  child: GestureDetector(
+                    onTap: () async {
+                      _openNotifier.value = !val;
+                      widget.onTap?.call();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        color: theme.actionBackground,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          getChild(),
+                          const SizedBox(width: 8),
+                          AnimatedRotation(
+                            turns: val ? 0.5 : 0.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_outlined,
+                              size: 20,
+                              color: theme.iconColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 
@@ -151,6 +154,10 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> {
     _currentIndexNotifier.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Widget getChild() {
+    return widget.title(_currentIndexNotifier.value != null ? widget.items[_currentIndexNotifier.value!] : null);
   }
 }
 
@@ -270,6 +277,7 @@ class _DropDownOverlayViewState extends State<_DropDownOverlayView> with TickerP
     final offset = renderBox?.localToGlobal(Offset.zero) ?? const Offset(0, 0);
     final topOffset = offset.dy + size.height + 5;
     final sz = MediaQuery.of(context).size;
+    final overlayOffset = Offset(0, size.height);
 
     try {
       if (sz.height - offset.dy < 300) {
@@ -286,7 +294,7 @@ class _DropDownOverlayViewState extends State<_DropDownOverlayView> with TickerP
         onTap: () => _toggle(),
         behavior: HitTestBehavior.translucent,
         child: CompositedTransformFollower(
-          offset: Offset(0, size.height),
+          offset: overlayOffset,
           link: _layerLink,
           showWhenUnlinked: false,
           child: Stack(

@@ -1,3 +1,4 @@
+export 'app_bar.dart';
 export 'confirm_dialog.dart';
 export 'custom_dropdown.dart';
 export 'custom_switch.dart';

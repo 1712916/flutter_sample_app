@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/utils/setting.dart';
-import 'package:meow_app/views/pages/game/game_page_2.dart';
+import 'package:meow_app/views/pages/game/crop_image_view.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../routers/route.dart';
@@ -211,11 +211,18 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                         onTapAction: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => GamePage2(
-                                url: cubit.currentUrl,
+                              builder: (context) => CropImageView(
+                                url: cubit.currentUrl!,
                               ),
                             ),
                           );
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => GamePage2(
+                          //       url: cubit.currentUrl,
+                          //     ),
+                          //   ),
+                          // );
                         },
                       ),
                       IconButton(
@@ -300,7 +307,7 @@ class _TakeImageButtonState extends State<TakeImageButton> {
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.yellow, width: 4),
+            border: Border.all(color: theme.highlightColor2, width: 4),
           ),
           child: Container(
             width: 60,
@@ -341,21 +348,13 @@ class _AnimalDropdownState extends State<AnimalDropdown> {
     'Gaow': 'assets/icon/dog.svg',
   };
 
-  late String selectedValue = items.first; // Default selection
-
-  @override
-  void initState() {
-    super.initState();
-    SettingManager.isMeow ? selectedValue = items.first : selectedValue = items.last;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SizedBox(
       width: 120,
       child: CustomDropdownButton<String>(
-        initial: 0,
+        initial: SettingManager.isMeow ? 0 : 1,
         title: (item) {
           return Text(
             item ?? '',
