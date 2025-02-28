@@ -8,7 +8,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'cubits/cubits.dart';
 import 'dependencies/app_dependencies.dart';
-import 'helpers/helpers.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 import 'utils/utils.dart';

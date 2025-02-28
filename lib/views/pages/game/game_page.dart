@@ -7,12 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:image_picker/image_picker.dart';
-import 'package:meow_app/views/pages/game/test_game_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../cubits/cubits.dart';
-import '../../../helpers/helpers.dart';
 import '../../../resources/resources.dart';
+import '../../../utils/utils.dart';
 import '../base_page/base_page.dart';
 import 'directional_control_widget.dart';
 import 'game_manager.dart';
@@ -153,9 +152,6 @@ class _GameContent extends StatelessWidget {
       listener: (context, state) async {
         if (state.isComplete ?? false) {
           confettiController.play();
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => TestGamePage(image: state.image!),
-          ));
         }
       },
       listenWhen: (oldState, newState) {

@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
 
 typedef GameMatrix = List<List<GameMatrixItem>>;
@@ -322,73 +320,6 @@ class GameMatrixItem {
 }
 
 enum MoveType { left, right, up, down }
-
-class RenderImage extends StatefulWidget {
-  const RenderImage({
-    Key? key,
-    required this.cellPosition,
-    required this.image,
-    required this.imageCellHeight,
-    required this.imageCellWidth,
-  }) : super(key: key);
-
-  final GameMatrixItem cellPosition;
-  final imglib.Image image;
-  final int imageCellHeight;
-  final int imageCellWidth;
-
-  @override
-  State<RenderImage> createState() => _RenderImageState();
-}
-
-class _RenderImageState extends State<RenderImage> {
-  imglib.Image? thumbnail;
-  Uint8List? _uint8list;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadImage();
-  }
-
-  void _loadImage() async {
-    final image = widget.image;
-    final cellPosition = widget.cellPosition;
-    thumbnail = await compute(
-        crop,
-        CropModel(
-          image,
-          cellPosition.x * widget.imageCellWidth,
-          cellPosition.y * widget.imageCellHeight,
-          widget.imageCellWidth,
-          widget.imageCellHeight,
-        ));
-    _uint8list = (await compute(imglib.encodePng, thumbnail!) as Uint8List);
-    setState(() {});
-  }
-
-  @override
-  void didUpdateWidget(covariant RenderImage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.image != oldWidget.image) {
-      thumbnail = null;
-      _loadImage();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (thumbnail == null) {
-      return Container(color: Colors.grey.shade200);
-    }
-    return _uint8list != null
-        ? Image.memory(
-            _uint8list!,
-            fit: BoxFit.cover,
-          )
-        : Container(color: Colors.grey.shade200);
-  }
-}
 
 List<MoveType> genMoveList() {
   List<MoveType> moveTypes = [];

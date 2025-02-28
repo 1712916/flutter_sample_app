@@ -2,13 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
+import 'package:meow_app/utils/utils.dart';
 // import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../resources/resources.dart';
 import '../widgets/widgets.dart';
-import 'helpers.dart';
 
 class DownloadHelper {
   DownloadHelper._();

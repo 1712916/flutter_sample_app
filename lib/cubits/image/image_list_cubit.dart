@@ -2,13 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/cubits/base/base_state.dart';
-import 'package:meow_app/utils/setting.dart';
 
 import '../../data/data.dart';
 import '../../data/response/custom_response.dart';
 import '../../data/response/status_code.dart';
-import '../../helpers/helpers.dart';
 import '../../resources/resources.dart';
+import '../../utils/utils.dart';
 import '../../widgets/widgets.dart';
 import 'image_list_state.dart';
 

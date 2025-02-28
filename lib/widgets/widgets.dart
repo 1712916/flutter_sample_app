@@ -5,6 +5,7 @@ export 'custom_switch.dart';
 export 'download_button.dart';
 export 'loading_dialog.dart';
 export 'multi_selection_widget.dart';
+export 'render_image.dart';
 export 'single_selection_widget.dart';
 export 'title_content.dart';
 export 'toast.dart';

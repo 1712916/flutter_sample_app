@@ -4,7 +4,7 @@ import 'package:photo_view/photo_view.dart';
 
 import '../../../cubits/cubits.dart';
 import '../../../data/data.dart';
-import '../../../helpers/helpers.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 

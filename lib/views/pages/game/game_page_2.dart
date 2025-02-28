@@ -11,8 +11,9 @@ import 'package:meow_app/views/pages/game/cell_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../cubits/cubits.dart';
-import '../../../helpers/helpers.dart';
 import '../../../resources/resources.dart';
+import '../../../utils/utils.dart';
+import '../../../widgets/widgets.dart';
 import 'directional_control_widget.dart';
 import 'game_manager.dart';
 

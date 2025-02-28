@@ -4,8 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:image_cropper/image_cropper.dart';
-import 'package:meow_app/helpers/download_helper.dart';
 import 'package:meow_app/resources/locale/locale_keys.dart';
+import 'package:meow_app/utils/download_helper.dart';
 
 class ImageUtil {
   Future<CroppedFile?> openEditImage(String url, {String? path}) async {

@@ -6,7 +6,7 @@ import 'package:image/image.dart' as imglib;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:meow_app/resources/locale/locale_keys.dart';
 
-import '../../helpers/helpers.dart';
+import '../../utils/utils.dart';
 import '../../views/pages/game/game_manager.dart';
 import '../cubits.dart';
 

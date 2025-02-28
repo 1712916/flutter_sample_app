@@ -1,13 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meow_app/utils/setting.dart';
 
 import '../../data/models/search_model.dart';
 import '../../data/repositories/search_repository.dart';
 import '../../data/response/custom_response.dart';
 import '../../data/response/status_code.dart';
-import '../../helpers/helpers.dart';
+import '../../utils/utils.dart';
 import '../../views/views.dart';
 import '../cubits.dart';
 
@@ -43,7 +42,8 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future _loadData() async {
-    CustomResponse<List<SearchModel>>? response = await searchRepository.search(limit: GridPattern.list[SettingManager.patternIndex!].length * 3, page: state.currentPage);
+    CustomResponse<List<SearchModel>>? response = await searchRepository.search(
+        limit: GridPattern.list[SettingManager.patternIndex!].length * 3, page: state.currentPage);
     if (response.statusCode == StatusCode.success) {
       emit(
         state.copyWith(
@@ -88,7 +88,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future _loadMore() async {
     int page = state.currentPage! + 1;
-    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: GridPattern.list[SettingManager.patternIndex!].length * 8, page: page);
+    CustomResponse<List<SearchModel>> response =
+        await searchRepository.search(limit: GridPattern.list[SettingManager.patternIndex!].length * 8, page: page);
     if (response.statusCode == StatusCode.success) {
       emit(
         state.copyWith(
