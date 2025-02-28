@@ -87,8 +87,8 @@ class _OnlyChildDropdownButtonState extends State<OnlyChildDropdownButton> with 
             child: Material(
               color: Colors.transparent,
               child: SizeTransition(
+                axisAlignment: 1,
                 sizeFactor: _expandAnimation,
-                axisAlignment: -1.0,
                 child: Container(
                   constraints: widget.constraints ?? BoxConstraints(maxHeight: 200),
                   decoration: BoxDecoration(

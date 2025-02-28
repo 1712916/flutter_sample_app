@@ -122,6 +122,7 @@ class _GamePage3State extends State<GamePage3> {
                         },
                       ),
                       ZoomViewRange(
+                        initialZoomLevel: () => _gameBoardKey.currentState?.zoomLevel ?? 0.7,
                         onZoom: (value) {
                           _gameBoardKey.currentState?.setZoom(value);
                         },
@@ -276,6 +277,8 @@ class _PlayAreaState extends State<_PlayArea> {
   void setZoom(double value) {
     scaleNotifier.value = value;
   }
+
+  double get zoomLevel => scaleNotifier.value;
 
   EmptyBox emptyBox = EmptyBox(x: 0, y: 0);
 
@@ -661,8 +664,9 @@ class _GameMatrixLevelState extends State<GameMatrixLevel> {
 }
 
 class ZoomViewRange extends StatelessWidget {
-  const ZoomViewRange({super.key, this.onZoom});
+  const ZoomViewRange({super.key, this.onZoom, required this.initialZoomLevel});
   final ValueChanged<double>? onZoom;
+  final double Function() initialZoomLevel;
 
   @override
   Widget build(BuildContext context) {
@@ -682,12 +686,14 @@ class ZoomViewRange extends StatelessWidget {
           ),
         ),
       ),
-      dropdownBuilder: SizedBox(
-        child: ZoomSlider(
-          initialZoomLevel: 0.7,
-          onZoom: onZoom,
-        ),
-      ),
+      dropdownBuilder: Builder(builder: (context) {
+        return SizedBox(
+          child: ZoomSlider(
+            initialZoomLevel: initialZoomLevel(),
+            onZoom: onZoom,
+          ),
+        );
+      }),
     );
   }
 }
