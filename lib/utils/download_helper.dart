@@ -1,11 +1,16 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:collection/collection.dart';
+import 'package:cr_file_saver/file_saver.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/services.dart';
 import 'package:meow_app/utils/utils.dart';
 // import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../resources/resources.dart';
 import '../widgets/widgets.dart';
@@ -14,8 +19,18 @@ class DownloadHelper {
   DownloadHelper._();
 
   static Future downloadImage({required String url}) async {
-    await PermissionHelper.request(Permission.storage, onGranted: () async {
-      await InternetCheckerHelper.checkInternetAccess(
+    Permission permission = Permission.photos;
+
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        /// use [Permissions.storage.status]
+        permission = Permission.storage;
+      }
+    }
+
+    await PermissionHelper.request(permission, onGranted: () async {
+      return await InternetCheckerHelper.checkInternetAccess(
         onConnected: () async => await _downLoadImage(url),
         onDisconnected: () {
           Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
@@ -26,18 +41,26 @@ class DownloadHelper {
 
   static _downLoadImage(String url) async {
     try {
-      // // Saved with this method.
-      // //chọn địa chỉ => Mình sẽ set up ở màn setting
-      // //sẽ lưu vào một cái folder nào đó
-      // var imageId = await ImageDownloader.downloadImage(url, destination: AndroidDestinationType.directoryPictures);
-      // /// todo lỗi khi chọn cái địa chỉ mình tự gán vào
-      // // var imageId = await ImageDownloader.downloadImage(url, destination: AndroidDestinationType.custom(directory: SettingManager.downloadPath.split('/').last));
-      // if (imageId == null) {
-      //   return;
-      // }
+      String? imageType = url.split('.').lastOrNull;
+      if (imageType == null) {
+        return null;
+      }
+
+      // Get the path to external storage (Pictures directory)
+      final directory = await getTemporaryDirectory();
+
+      // Define the file path where the image will be saved
+      final fileName = 'meow_app_${DateTime.now().millisecondsSinceEpoch}.$imageType';
+      final path = '${directory.path}/meow_app/$fileName';
+      print('path: $path');
+
+      final dio = Dio();
+      await dio.download(url, path);
+      await CRFileSaver.saveFile(path, destinationFileName: fileName);
+
       Toast.makeText(message: LocaleKeys.saveToPhone.tr());
-    } on PlatformException catch (error) {
-      Toast.makeText(message: LocaleKeys.haveAnError.tr());
+    } catch (error) {
+      log("download error", error: error);
     }
   }
 
@@ -63,5 +86,30 @@ class DownloadHelper {
 
     dio.close();
     return path;
+  }
+
+  static Future<XFile?> downloadToInternal2(String url) async {
+    if (url.endsWith('.gif')) {
+      return null;
+    }
+
+    String? imageType = url.split('.').lastOrNull;
+    if (imageType == null) {
+      return null;
+    }
+    final dio = Dio();
+    String? path;
+    try {
+      final temp = await getTemporaryDirectory();
+      path = '${temp.path}/game.${imageType}';
+      await dio.download(url, path);
+      dio.close();
+
+      return XFile(path);
+    } catch (e) {
+      print('Download image: lỗi tải ảnh');
+    }
+
+    return null;
   }
 }

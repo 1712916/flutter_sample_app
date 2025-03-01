@@ -20,6 +20,14 @@ class LocaleKeys {
   static const String downloadPath = 'downloadPath';
   static const String errorWhenTryShare = 'errorWhenTryShare';
   static const String waitToShare = 'waitToShare';
+  static const String shareTo = 'shareTo';
+  static const String share = 'share';
+  static const String save = 'save';
+  static const String delete = 'delete';
+  static const String message = 'message';
+  static const String instagram = 'instagram';
+  static const String telegram = 'telegram';
+  static const String saveSuccess = 'saveSuccess';
   static const String shareFile = 'shareFile';
   static const String checkInternetAccess = 'checkInternetAccess';
   static const String timeOutMessage = 'timeOutMessage';

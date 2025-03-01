@@ -1,14 +1,16 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
-import 'package:meow_app/utils/setting.dart';
 import 'package:meow_app/views/pages/game/crop_image_view.dart';
 
 import '../../../cubits/cubits.dart';
+import '../../../resources/resources.dart';
 import '../../../routers/route.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 import 'grid_view.dart';
@@ -226,7 +228,15 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                         },
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          ShareWidget(
+                            url: cubit.currentUrl!,
+                            onDelete: () {
+                              Navigator.of(context).pop();
+                              cubit.onDelete();
+                            },
+                          ).show(context);
+                        },
                         icon: HugeIcon(
                           icon: HugeIcons.strokeRoundedUpload04,
                           color: theme.iconColor,
@@ -388,6 +398,233 @@ class _AnimalDropdownState extends State<AnimalDropdown> {
         onChange: (index) {
           widget.onTapAction?.call(items[index]);
         },
+      ),
+    );
+  }
+}
+
+class ShareWidget extends StatelessWidget {
+  const ShareWidget({super.key, required this.url, required this.onDelete});
+
+  final String url;
+  final VoidCallback onDelete;
+
+  Future show(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      // showDragHandle: true,
+      backgroundColor: Theme.of(context).cardColor2,
+      builder: (context) => this,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final textColor = theme.textColor2;
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                height: 44,
+                child: Text(
+                  LocaleKeys.shareTo.tr(),
+                  style: textTheme.titleMedium?.copyWith(
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                alignment: Alignment.center,
+              ),
+              Positioned(
+                right: 0,
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: theme.actionBackground,
+                  child: IconButton(
+                    iconSize: 20,
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: theme.iconColor,
+                      // size: iconSize,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconTitleWidget(
+                icon: HugeIcons.strokeRoundedShare05,
+                title: LocaleKeys.share.tr(),
+                onTap: () {
+                  ShareHelper.shareImage(url: url).whenComplete(
+                    () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                },
+              ),
+              IconTitleWidget(
+                icon: HugeIcons.strokeRoundedMessage02,
+                title: LocaleKeys.message.tr(),
+                onTap: () {
+                  ShareHelper.shareToMessage(url: url);
+                },
+              ),
+              IconTitleWidget(
+                icon: HugeIcons.strokeRoundedInstagram,
+                title: LocaleKeys.instagram.tr(),
+                onTap: () {
+                  ShareHelper.shareToInstagram(url: url);
+                },
+              ),
+              IconTitleWidget(
+                icon: HugeIcons.strokeRoundedTwitter,
+                title: LocaleKeys.telegram.tr(),
+                onTap: () {
+                  ShareHelper.shareToTwitter(url: url);
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => onDownload(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: theme.actionBackground,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        HugeIcon(icon: HugeIcons.strokeRoundedDownloadSquare01, color: theme.iconColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          LocaleKeys.save.tr(context: context),
+                          style: textTheme.titleMedium?.copyWith(
+                            color: textColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: GestureDetector(
+                  onTap: onDelete,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: theme.actionBackground,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        HugeIcon(icon: HugeIcons.strokeRoundedDelete02, color: theme.iconColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          LocaleKeys.delete.tr(context: context),
+                          style: textTheme.titleMedium?.copyWith(
+                            color: textColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  void onDownload(BuildContext context) {
+    DownloadHelper.downloadImage(url: url).whenComplete(
+      () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+}
+
+class IconTitleWidget extends StatelessWidget {
+  const IconTitleWidget({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final textColor = theme.textColor2;
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              // color: theme.actionBackground,
+              shape: BoxShape.circle,
+              border: Border.all(color: theme.actionBackground, width: 2),
+            ),
+            padding: const EdgeInsets.all(2),
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.actionBackground,
+                shape: BoxShape.circle,
+              ),
+              padding: const EdgeInsets.all(8),
+              child: Icon(
+                icon,
+                size: 20,
+                color: theme.iconColor,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            title,
+            style: textTheme.titleMedium?.copyWith(color: textColor),
+          ),
+        ],
       ),
     );
   }

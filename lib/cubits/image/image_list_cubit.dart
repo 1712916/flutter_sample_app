@@ -117,4 +117,15 @@ class ImageListCubit extends Cubit<ImageListState> {
     pageController?.dispose();
     return super.close();
   }
+
+  void onDelete() {
+    //remove current index
+    try {
+      final List<SearchModel> images = state.images?.toList() ?? [];
+      images.removeAt(currentIndex);
+      emit(state.copyWith(images: images));
+    } catch (e) {
+      print(e);
+    }
+  }
 }
