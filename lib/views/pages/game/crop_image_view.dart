@@ -89,6 +89,7 @@ class _LoadingButtonState extends State<_LoadingButton> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      backgroundColor: Theme.of(context).highlightColor2,
       onPressed: () async {
         setState(() {
           _isLoading = true;

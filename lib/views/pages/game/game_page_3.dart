@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:confetti/confetti.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -743,7 +742,6 @@ class _ZoomSliderState extends State<ZoomSlider> {
             min: 0.3,
             max: 1.0,
             divisions: 50,
-            label: "${_zoomLevel.toStringAsFixed(1)}x",
             onChanged: (value) {
               setState(() {
                 _zoomLevel = value;

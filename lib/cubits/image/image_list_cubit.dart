@@ -71,8 +71,8 @@ class ImageListCubit extends Cubit<ImageListState> {
     navKey.currentState!.pop();
   }
 
-  void init() {
-    loadMore(imageListLimit);
+  Future init() {
+    return loadMore(imageListLimit);
   }
 
   void showPageView(int index) {
@@ -103,13 +103,13 @@ class ImageListCubit extends Cubit<ImageListState> {
     refreshData();
   }
 
-  void refreshData() {
+  Future refreshData() async {
     emit(state.copyWith(images: [], loadStatus: LoadStatus.loading));
     _page = 0;
     currentIndex = 0;
     pageController?.dispose();
     pageController = PageController(initialPage: currentIndex);
-    init();
+    return init();
   }
 
   @override
@@ -124,8 +124,6 @@ class ImageListCubit extends Cubit<ImageListState> {
       final List<SearchModel> images = state.images?.toList() ?? [];
       images.removeAt(currentIndex);
       emit(state.copyWith(images: images));
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 }

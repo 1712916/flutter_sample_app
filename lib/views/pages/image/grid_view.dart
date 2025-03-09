@@ -25,6 +25,7 @@ class _ImageGridViewState extends State<ImageGridView> {
           case LoadStatus.init:
           case LoadStatus.loading:
             return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.only(top: 120, bottom: 80),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -51,50 +52,55 @@ class _ImageGridViewState extends State<ImageGridView> {
               child: Text('Error'),
             );
           case LoadStatus.loaded:
-            return GridView.builder(
-              padding: const EdgeInsets.only(top: 120, bottom: 80),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 2,
-                mainAxisSpacing: 2,
-                childAspectRatio: 1,
-              ),
-              itemBuilder: (context, index) {
-                if (index == state.images!.length - 1) {
-                  cubit.loadMore(imageListLimit);
-                }
+            return RefreshIndicator(
+              onRefresh: cubit.refreshData,
+              edgeOffset: 120,
+              backgroundColor: theme.highlightColor2,
+              color: theme.iconTheme.color,
+              child: GridView.builder(
+                padding: const EdgeInsets.only(top: 120, bottom: 80),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 2,
+                  childAspectRatio: 1,
+                ),
+                itemBuilder: (context, index) {
+                  if (index == state.images!.length - 1) {
+                    cubit.loadMore(imageListLimit);
+                  }
 
-                final item = state.images![index];
-                final image = item.url ?? '';
-                //print width height
-                print('width: ${item.width} height: ${item.height}');
-                return GestureDetector(
-                  onTap: () {
-                    cubit.showPageView(index);
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Hero(
-                      tag: image,
-                      child: SizedBox(
-                        width: 135.8,
-                        child: CachedNetworkImage(
-                          memCacheHeight: (item.height! / 3).toInt(),
-                          memCacheWidth: (item.width! / 3).toInt(),
-                          imageUrl: image,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) {
-                            return Container(
-                              color: theme.imagePlaceholderColor,
-                            );
-                          },
+                  final item = state.images![index];
+                  final image = item.url ?? '';
+                  //print width height
+                  return GestureDetector(
+                    onTap: () {
+                      cubit.showPageView(index);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Hero(
+                        tag: image,
+                        child: SizedBox(
+                          width: 135.8,
+                          child: CachedNetworkImage(
+                            memCacheHeight: (item.height! / 3).toInt(),
+                            memCacheWidth: (item.width! / 3).toInt(),
+                            imageUrl: image,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return Container(
+                                color: theme.imagePlaceholderColor,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-              itemCount: state.images?.length ?? 0,
+                  );
+                },
+                itemCount: state.images?.length ?? 0,
+              ),
             );
         }
       },

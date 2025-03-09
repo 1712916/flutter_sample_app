@@ -55,6 +55,7 @@ class _ImagePageViewState extends State<ImagePageView> {
           case LoadStatus.loaded:
             final images = state.images ?? [];
             return PageView.builder(
+
               controller: controller,
               scrollDirection: Axis.vertical,
               itemCount: images.length,
