@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../../cubits/cubits.dart';
 
@@ -34,7 +35,7 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
       child: isBody
           ? buildContent(context)
           : Scaffold(
-              backgroundColor: theme.scaffoldBackgroundColor,
+              backgroundColor: theme.scaffoldBackgroundColor2,
               appBar: buildAppbar(context),
               body: buildContent(context),
               floatingActionButton: buildFloatingActionButton(context),

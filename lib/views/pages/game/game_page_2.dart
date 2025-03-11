@@ -133,7 +133,7 @@ class _GameContentState extends State<_GameContent> {
                       IconButton(
                         onPressed: reloadScramble,
                         icon: Tooltip(
-                          message: LocaleKeys.reScrambleImage.tr(),
+                          message: LKey.reScrambleImage.tr(),
                           child: const Icon(Icons.refresh),
                         ),
                       ),
@@ -174,7 +174,7 @@ class _GameContentState extends State<_GameContent> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(LocaleKeys.importImageOption.tr()),
+          Text(LKey.importImageOption.tr()),
           _OpenImageFileWidget(onGetPath: initByFilePath),
         ],
       ),
@@ -503,7 +503,7 @@ class _OpenImageFileWidget extends StatelessWidget {
         IconButton(
           onPressed: () => _getPermission(Permission.camera, () => _openImage(ImageSource.camera)),
           icon: Tooltip(
-            message: LocaleKeys.takeAPhoto.tr(),
+            message: LKey.takeAPhoto.tr(),
             child: const Icon(
               Icons.monochrome_photos,
               color: Colors.black,
@@ -513,7 +513,7 @@ class _OpenImageFileWidget extends StatelessWidget {
         IconButton(
           onPressed: () => _getPermission(Permission.photos, () => _openImage(ImageSource.gallery)),
           icon: Tooltip(
-            message: LocaleKeys.importFromPhoto.tr(),
+            message: LKey.importFromPhoto.tr(),
             child: const Icon(
               Icons.add_photo_alternate_outlined,
               color: Colors.black,

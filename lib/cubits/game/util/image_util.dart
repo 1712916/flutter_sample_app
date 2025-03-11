@@ -18,14 +18,14 @@ class ImageUtil {
         compressQuality: 50,
         uiSettings: [
           AndroidUiSettings(
-            toolbarTitle: LocaleKeys.editImage.tr(),
+            toolbarTitle: LKey.editImage.tr(),
             toolbarColor: Colors.greenAccent,
             toolbarWidgetColor: Colors.black,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
           ),
           IOSUiSettings(
-            title: LocaleKeys.editImage.tr(),
+            title: LKey.editImage.tr(),
             minimumAspectRatio: 1.0,
             aspectRatioLockDimensionSwapEnabled: true,
             aspectRatioPickerButtonHidden: true,

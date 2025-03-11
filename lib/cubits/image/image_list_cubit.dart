@@ -39,7 +39,7 @@ class ImageListCubit extends Cubit<ImageListState> {
       await _randomLoad(number);
     }, onDisconnected: () async {
       await Future.delayed(const Duration(milliseconds: 300));
-      Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
+      Toast.makeText(message: LKey.checkInternetAccess.tr());
     });
   }
 
@@ -56,9 +56,9 @@ class ImageListCubit extends Cubit<ImageListState> {
       }
       _page++;
     } else if (response.statusCode == StatusCode.requestTimeout) {
-      Toast.makeText(message: LocaleKeys.timeOutMessage.tr());
+      Toast.makeText(message: LKey.timeOutMessage.tr());
     } else {
-      Toast.makeText(message: LocaleKeys.haveAnError.tr());
+      Toast.makeText(message: LKey.haveAnError.tr());
     }
   }
 

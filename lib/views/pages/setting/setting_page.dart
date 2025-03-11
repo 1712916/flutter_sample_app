@@ -45,7 +45,7 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TitleContent(
-              title: LocaleKeys.catOrDog.tr(),
+              title: LKey.catOrDog.tr(),
               content: Align(
                 alignment: Alignment.center,
                 child: SizedBox(
@@ -97,7 +97,7 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
             // ),
             const SizedBox(height: 16),
             Text(
-              LocaleKeys.imageType,
+              LKey.imageType,
               style: Theme.of(context).textTheme.titleLarge,
             ).tr(),
             const SizedBox(height: 8),
@@ -124,10 +124,10 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
               },
             ),
             const SizedBox(height: 8),
-            TitleContent(title: LocaleKeys.downloadPath.tr(), content: Text(SettingManager.downloadPath)),
+            TitleContent(title: LKey.downloadPath.tr(), content: Text(SettingManager.downloadPath)),
             const SizedBox(height: 8),
             TitleContent(
-              title: LocaleKeys.presentationPattern.tr(),
+              title: LKey.presentationPattern.tr(),
               content: PatternListWidget(
                 initIndex: SettingManager.patternIndex!,
                 onChange: cubit.onChangePattern,
@@ -143,7 +143,7 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
   PreferredSizeWidget? buildAppbar(BuildContext context) {
     return AppBar(
       title: const Text(
-        LocaleKeys.settings,
+        LKey.settings,
         style: TextStyle(color: Colors.black),
       ).tr(),
       backgroundColor: Theme.of(context).primaryColor,
@@ -185,11 +185,11 @@ class _SettingPageState extends CustomState<SettingPage, SettingsCubit> {
       },
       onDone: (isSaved) async {
         if (isSaved is bool && isSaved) {
-          Toast.makeText(message: LocaleKeys.savedSettings.tr());
+          Toast.makeText(message: LKey.savedSettings.tr());
           await Future.delayed(const Duration(milliseconds: 300));
           Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.home, (route) => false);
         } else {
-          Toast.makeText(message: LocaleKeys.savedSettingsFailure.tr());
+          Toast.makeText(message: LKey.savedSettingsFailure.tr());
         }
       },
     );
@@ -239,7 +239,7 @@ class _PatternListWidgetState extends State<PatternListWidget> {
           valueListenable: index,
           builder: (context, value, _) {
             return Text(
-              '${LocaleKeys.currentPattern.tr()}: $value',
+              '${LKey.currentPattern.tr()}: $value',
               style: Theme.of(context).textTheme.bodySmall,
             );
           },
@@ -262,11 +262,7 @@ class _PatternListWidgetState extends State<PatternListWidget> {
                       .map(
                         (e) => RotatedBox(
                           quarterTurns: 1,
-                          child: PresentationPage(
-                            gridPattern: e.gridPattern,
-                            length: e.length,
-                            crossAxisCount: e.crossAxisCount,
-                          ),
+                          child: const SizedBox(),
                         ),
                       )
                       .toList()),

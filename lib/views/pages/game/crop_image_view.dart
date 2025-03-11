@@ -64,7 +64,7 @@ class _CropImageViewState extends State<CropImageView> {
           } catch (e) {
             Toast.makeText(
               context: context,
-              message: LocaleKeys.haveAnErrorDetail.tr(),
+              message: LKey.haveAnErrorDetail.tr(),
               toastLength: Toast.LENGTH_LONG,
             );
           }

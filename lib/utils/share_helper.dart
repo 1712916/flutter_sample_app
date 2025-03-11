@@ -18,7 +18,7 @@ class ShareHelper {
     await InternetCheckerHelper.checkInternetAccess(
       onConnected: () async => await _shareImage(url),
       onDisconnected: () {
-        Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
+        Toast.makeText(message: LKey.checkInternetAccess.tr());
       },
     );
   }
@@ -29,18 +29,18 @@ class ShareHelper {
       final dio = Dio();
       try {
         final file = await DownloadHelper.downloadToInternal2(url!);
-        await Share.shareXFiles([file!], subject: LocaleKeys.shareFile.tr());
+        await Share.shareXFiles([file!], subject: LKey.shareFile.tr());
       } on PlatformException catch (error) {
-        Toast.makeText(message: LocaleKeys.errorWhenTryShare.tr());
+        Toast.makeText(message: LKey.errorWhenTryShare.tr());
       } on DioError catch (error) {
-        Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
+        Toast.makeText(message: LKey.checkInternetAccess.tr());
       } catch (error) {
-        Toast.makeText(message: LocaleKeys.errorWhenTryShare.tr());
+        Toast.makeText(message: LKey.errorWhenTryShare.tr());
       }
       dio.close();
       _lock = false;
     } else {
-      Toast.makeText(message: LocaleKeys.waitToShare.tr());
+      Toast.makeText(message: LKey.waitToShare.tr());
     }
   }
 
@@ -53,7 +53,7 @@ class ShareHelper {
         await AppinioSocialShare().android.shareToSMS('Image from meow_app', file!.path);
       }
     } catch (error) {
-      Toast.makeText(message: LocaleKeys.errorWhenTryShare.tr());
+      Toast.makeText(message: LKey.errorWhenTryShare.tr());
     }
   }
 
@@ -66,7 +66,7 @@ class ShareHelper {
         await AppinioSocialShare().android.shareToInstagramFeed('', file!.path);
       }
     } catch (error) {
-      Toast.makeText(message: LocaleKeys.errorWhenTryShare.tr());
+      Toast.makeText(message: LKey.errorWhenTryShare.tr());
     }
   }
 
@@ -79,7 +79,7 @@ class ShareHelper {
         await AppinioSocialShare().android.shareToTwitter('', file!.path);
       }
     } catch (error) {
-      Toast.makeText(message: LocaleKeys.errorWhenTryShare.tr());
+      Toast.makeText(message: LKey.errorWhenTryShare.tr());
     }
   }
 }

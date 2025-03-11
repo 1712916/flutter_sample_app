@@ -391,10 +391,6 @@ class _DropDownContainerState extends State<DropDownContainer> {
           ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.04), offset: const Offset(0, -2), blurRadius: 4),
-          BoxShadow(color: Colors.black.withOpacity(0.12), offset: const Offset(0, 4), blurRadius: 8),
-        ],
       ),
       child: widget.builder?.call(context) ?? const SizedBox.shrink(),
     );

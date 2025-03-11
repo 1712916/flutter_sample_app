@@ -5,9 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:meow_app/utils/storage.dart';
 
-import 'cubits/cubits.dart';
 import 'dependencies/app_dependencies.dart';
+import 'resources/resources.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 import 'utils/utils.dart';
@@ -22,6 +23,7 @@ void main() async {
     EasyLocalization.ensureInitialized(),
     SettingManager.loadSetting(),
     AppDependencies.init(),
+    SimpleStorage().init(),
   ]);
 
   Bloc.observer = AppBlocObserver();
@@ -31,11 +33,8 @@ void main() async {
   runApp(
     EasyLocalization(
       child: const MyApp(),
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('vi', 'VN'),
-      ],
-      path: 'assets/locales',
+      supportedLocales: LocaleUtils.locales,
+      path: LocaleUtils.path,
     ),
   );
 }
@@ -60,12 +59,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => ThemeCubit()..setUp()),
-      ],
-      child: const _MaterialApp(),
-    );
+    return const _MaterialApp();
   }
 }
 
@@ -74,14 +68,15 @@ class _MaterialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeMode>(
-      builder: (context, state) {
+    return ValueListenableBuilder(
+      valueListenable: ThemeUtils.themeModeNotifier,
+      builder: (context, ThemeMode themeMode, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: navKey,
-          themeMode: state,
-          theme: ThemeResource.getTheme(themeMode: ThemeMode.light, theme: Theme.of(context)),
-          darkTheme: ThemeResource.getTheme(themeMode: ThemeMode.dark, theme: Theme.of(context)),
+          theme: ThemeUtils.lightTheme,
+          darkTheme: ThemeUtils.darkTheme,
+          themeMode: themeMode,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,

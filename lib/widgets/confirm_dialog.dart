@@ -8,15 +8,15 @@ Future showConfirmDialog(BuildContext context, {Function? onYes, Function? onNo}
     context: context,
     builder: (context) {
       return CupertinoAlertDialog(
-        title: const Text(LocaleKeys.changeDetection).tr(),
-        content: const Text(LocaleKeys.doYouWantToSaveChanged).tr(),
+        title: const Text(LKey.changeDetection).tr(),
+        content: const Text(LKey.doYouWantToSaveChanged).tr(),
         actions: [
           // The "Yes" button
           CupertinoDialogAction(
             onPressed: () async {
               await onYes?.call();
             },
-            child: const Text(LocaleKeys.yes).tr(),
+            child: const Text(LKey.yes).tr(),
             isDefaultAction: true,
             isDestructiveAction: true,
           ),
@@ -25,7 +25,7 @@ Future showConfirmDialog(BuildContext context, {Function? onYes, Function? onNo}
             onPressed: () async {
               await onNo?.call();
             },
-            child: const Text(LocaleKeys.no).tr(),
+            child: const Text(LKey.no).tr(),
             isDefaultAction: false,
             isDestructiveAction: false,
           )

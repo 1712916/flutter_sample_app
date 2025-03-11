@@ -131,7 +131,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
             settings: settings,
             builder: (context) {
               return Material(
-                color: theme.scaffoldBackgroundColor,
+                color: theme.scaffoldBackgroundColor2,
                 child: page,
               );
             },
@@ -436,7 +436,7 @@ class ShareWidget extends StatelessWidget {
               Container(
                 height: 44,
                 child: Text(
-                  LocaleKeys.shareTo.tr(),
+                  LKey.shareTo.tr(),
                   style: textTheme.titleMedium?.copyWith(
                     color: textColor,
                     fontWeight: FontWeight.bold,
@@ -471,7 +471,7 @@ class ShareWidget extends StatelessWidget {
             children: [
               IconTitleWidget(
                 icon: HugeIcons.strokeRoundedShare05,
-                title: LocaleKeys.share.tr(),
+                title: LKey.share.tr(),
                 onTap: () {
                   ShareHelper.shareImage(url: url).whenComplete(
                     () {
@@ -482,21 +482,21 @@ class ShareWidget extends StatelessWidget {
               ),
               IconTitleWidget(
                 icon: HugeIcons.strokeRoundedMessage02,
-                title: LocaleKeys.message.tr(),
+                title: LKey.message.tr(),
                 onTap: () {
                   ShareHelper.shareToMessage(url: url);
                 },
               ),
               IconTitleWidget(
                 icon: HugeIcons.strokeRoundedInstagram,
-                title: LocaleKeys.instagram.tr(),
+                title: LKey.instagram.tr(),
                 onTap: () {
                   ShareHelper.shareToInstagram(url: url);
                 },
               ),
               IconTitleWidget(
                 icon: HugeIcons.strokeRoundedTwitter,
-                title: LocaleKeys.telegram.tr(),
+                title: LKey.telegram.tr(),
                 onTap: () {
                   ShareHelper.shareToTwitter(url: url);
                 },
@@ -522,7 +522,7 @@ class ShareWidget extends StatelessWidget {
                         HugeIcon(icon: HugeIcons.strokeRoundedDownloadSquare01, color: theme.iconColor),
                         const SizedBox(width: 4),
                         Text(
-                          LocaleKeys.save.tr(context: context),
+                          LKey.save.tr(context: context),
                           style: textTheme.titleMedium?.copyWith(
                             color: textColor,
                             fontWeight: FontWeight.w600,
@@ -550,7 +550,7 @@ class ShareWidget extends StatelessWidget {
                         HugeIcon(icon: HugeIcons.strokeRoundedDelete02, color: theme.iconColor),
                         const SizedBox(width: 4),
                         Text(
-                          LocaleKeys.delete.tr(context: context),
+                          LKey.delete.tr(context: context),
                           style: textTheme.titleMedium?.copyWith(
                             color: textColor,
                             fontWeight: FontWeight.w600,

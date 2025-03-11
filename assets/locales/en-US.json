@@ -1,11 +1,13 @@
 {
+  "appName": "Meow App",
+  "devInformation": "freelancer.vinhnt@gmail.com",
   "title": "Meow",
   "saveToPhone": "Save to phone",
   "haveAnError": "Have An Error!",
   "haveAnErrorDetail": "There was an error, please try again!",
   "retry": "Retry",
   "meowTitle": "Meow",
-  "dogTitle": "Gauw",
+  "dogTitle": "Gaow",
   "downLoadThisImage": "Download this image",
   "catOrDog": "Cat or Dog",
   "settings": "Settings",
@@ -43,5 +45,10 @@
   "contact": "Contact",
   "currentPattern": "Current Pattern",
   "editImage": "Edit Image",
-  "source": "Source"
+  "source": "Source",
+  "language": "Language",
+  "darkMode": "Dark Mode",
+  "storagePath": "Storage Path",
+  "english": "English",
+  "vietnamese": "Vietnamese"
 }

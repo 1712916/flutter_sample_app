@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../cubits/cubits.dart';
 
 class MultiSelectionWidget<T> extends StatefulWidget {
   final List<T> list;
@@ -85,28 +82,30 @@ class MultiSelectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.read<ThemeCubit>().getColors;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-      margin: const EdgeInsets.only(bottom: 10),
-      color: isSelected ? colors.focusColor : Colors.grey.shade200,
-      child: Row(
-        children: [
-          Container(
-            width: 20,
-            height: 20,
-            padding: const EdgeInsets.all(4),
-            margin: const EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(border: Border.all(color: colors.accentColor)),
-            child: CircleAvatar(backgroundColor: isSelected ? colors.accentColor : Colors.transparent),
-          ),
-          Expanded(
-              child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black54),
-          )),
-        ],
-      ),
-    );
+    return const SizedBox();
+    // final colors = context.read<ThemeCubit>().getColors;
+    // return Container(
+    //   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+    //   margin: const EdgeInsets.only(bottom: 10),
+    //   color:  Colors.grey.shade200,
+    //   // color: isSelected ? colors.focusColor : Colors.grey.shade200,
+    //   child: Row(
+    //     children: [
+    //       Container(
+    //         width: 20,
+    //         height: 20,
+    //         padding: const EdgeInsets.all(4),
+    //         margin: const EdgeInsets.only(right: 10),
+    //         decoration: BoxDecoration(border: Border.all(color: colors.accentColor)),
+    //         child: CircleAvatar(backgroundColor: isSelected ? colors.accentColor : Colors.transparent),
+    //       ),
+    //       Expanded(
+    //           child: Text(
+    //         title,
+    //         style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black54),
+    //       )),
+    //     ],
+    //   ),
+    // );
   }
 }

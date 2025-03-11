@@ -9,7 +9,7 @@ import '../views/pages/pages.dart';
 class PageDependencies {
   static Future<void> init(GetIt injector) async {
     injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.mainPage);
-    injector.registerFactory<Widget>(() => HomePage(cubit: injector()), instanceName: RouteManager.home);
+    // injector.registerFactory<Widget>(() => HomePage(cubit: injector()), instanceName: RouteManager.home);
     injector.registerFactory<Widget>(() => ImagePage(cubit: injector()), instanceName: RouteManager.imagePage);
     injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.imageListPage);
     injector.registerFactory<Widget>(

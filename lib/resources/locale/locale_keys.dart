@@ -1,4 +1,30 @@
-class LocaleKeys {
+import 'dart:ui';
+
+abstract class LocaleUtils {
+  static const List<Locale> locales = const [
+    english,
+    vietnamese,
+  ];
+
+  static const vietnamese = Locale('vi', 'VN');
+
+  static const english = Locale('en', 'US');
+
+  static Map<String, String> get lKeys => {
+        'en': 'english',
+        'vi': 'vietnamese',
+      };
+
+  static String path = 'assets/locales';
+}
+
+class LKey {
+  static const String appName = 'appName';
+  static const String devInformation = 'devInformation';
+
+  //english, vietnamese
+  static const String english = 'English';
+  static const String vietnamese = 'Vietnamese';
   static const String title = 'title';
   static const String saveToPhone = 'saveToPhone';
   static const String haveAnError = 'haveAnError';
@@ -45,4 +71,7 @@ class LocaleKeys {
   static const String currentPattern = 'currentPattern';
   static const String editImage = 'editImage';
   static const String source = 'source';
+  static const String language = 'language';
+  static const String darkMode = 'darkMode';
+  static const String storagePath = 'storagePath';
 }

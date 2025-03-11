@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubits/cubits.dart';
 import '../resources/resources.dart';
 import '../views/pages/pages.dart';
 
@@ -30,7 +28,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
     return Row(
       children: [
         Text(
-          LocaleKeys.meowTitle,
+          LKey.meowTitle,
           style: textTheme.titleLarge!.copyWith(
             color: isMeow ? Colors.black : Colors.grey,
           ),
@@ -46,7 +44,6 @@ class _CustomSwitchState extends State<CustomSwitch> {
               margin: const EdgeInsets.symmetric(horizontal: 8),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: context.read<ThemeCubit>().getColors.focusColor,
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
               ),
               child: AnimatedAlign(
@@ -67,7 +64,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
           ),
         ),
         Text(
-          LocaleKeys.dogTitle,
+          LKey.dogTitle,
           style: textTheme.titleLarge!.copyWith(
             color: !isMeow ? Colors.black : Colors.grey,
           ),

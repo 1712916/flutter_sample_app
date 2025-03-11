@@ -18,6 +18,11 @@ import '../widgets/widgets.dart';
 class DownloadHelper {
   DownloadHelper._();
 
+  static Future<String> storagePath() async {
+    final directory = await getTemporaryDirectory();
+    return '${directory.path}/meow_app';
+  }
+
   static Future downloadImage({required String url}) async {
     Permission permission = Permission.photos;
 
@@ -33,7 +38,7 @@ class DownloadHelper {
       return await InternetCheckerHelper.checkInternetAccess(
         onConnected: () async => await _downLoadImage(url),
         onDisconnected: () {
-          Toast.makeText(message: LocaleKeys.checkInternetAccess.tr());
+          Toast.makeText(message: LKey.checkInternetAccess.tr());
         },
       );
     });
@@ -46,19 +51,15 @@ class DownloadHelper {
         return null;
       }
 
-      // Get the path to external storage (Pictures directory)
-      final directory = await getTemporaryDirectory();
-
-      // Define the file path where the image will be saved
       final fileName = 'meow_app_${DateTime.now().millisecondsSinceEpoch}.$imageType';
-      final path = '${directory.path}/meow_app/$fileName';
+      final path = '${await storagePath()}/$fileName';
       print('path: $path');
 
       final dio = Dio();
       await dio.download(url, path);
       await CRFileSaver.saveFile(path, destinationFileName: fileName);
 
-      Toast.makeText(message: LocaleKeys.saveToPhone.tr());
+      Toast.makeText(message: LKey.saveToPhone.tr());
     } catch (error) {
       log("download error", error: error);
     }

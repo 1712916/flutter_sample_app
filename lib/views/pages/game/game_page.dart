@@ -92,7 +92,7 @@ class _GameContent extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(LocaleKeys.importImageOption.tr()),
+                  Text(LKey.importImageOption.tr()),
                   const _OpenImageFileWidget(),
                 ],
               ),
@@ -115,7 +115,7 @@ class _GameContent extends StatelessWidget {
                                   cubit.reloadScramble();
                                 },
                                 icon: Tooltip(
-                                  message: LocaleKeys.reScrambleImage.tr(),
+                                  message: LKey.reScrambleImage.tr(),
                                   child: const Icon(Icons.refresh),
                                 ),
                               ),
@@ -343,7 +343,7 @@ class _OpenImageFileWidget extends StatelessWidget {
             });
           },
           icon: Tooltip(
-            message: LocaleKeys.takeAPhoto.tr(),
+            message: LKey.takeAPhoto.tr(),
             child: const Icon(
               Icons.monochrome_photos,
               color: Colors.black,
@@ -360,7 +360,7 @@ class _OpenImageFileWidget extends StatelessWidget {
             });
           },
           icon: Tooltip(
-            message: LocaleKeys.importFromPhoto.tr(),
+            message: LKey.importFromPhoto.tr(),
             child: const Icon(
               Icons.add_photo_alternate_outlined,
               color: Colors.black,

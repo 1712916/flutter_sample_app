@@ -23,7 +23,10 @@ class LoadMoreCircular extends StatelessWidget {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.grey,),
+              child: const CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.grey,
+              ),
             ),
           );
         } else if (state.loadingMore == false) {
@@ -53,7 +56,7 @@ class LoadMoreCircular extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.errorStatus == StatusCode.requestTimeout) {
-          Toast.makeText(context: context, message: LocaleKeys.haveAnError.tr());
+          Toast.makeText(context: context, message: LKey.haveAnError.tr());
         }
       },
     );

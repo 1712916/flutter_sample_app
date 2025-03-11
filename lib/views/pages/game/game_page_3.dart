@@ -129,7 +129,7 @@ class _GamePage3State extends State<GamePage3> {
                       IconButton(
                         onPressed: reloadScramble,
                         icon: Tooltip(
-                          message: LocaleKeys.reScrambleImage.tr(),
+                          message: LKey.reScrambleImage.tr(),
                           child: Icon(
                             HugeIcons.strokeRoundedRefresh,
                             color: theme.iconColor,
@@ -175,7 +175,7 @@ class _GamePage3State extends State<GamePage3> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(LocaleKeys.importImageOption.tr()), // _OpenImageFileWidget(onGetPath: initByFilePath),
+          Text(LKey.importImageOption.tr()), // _OpenImageFileWidget(onGetPath: initByFilePath),
         ],
       ),
     );
@@ -512,7 +512,7 @@ class _OpenImageFileWidget extends StatelessWidget {
         IconButton(
           onPressed: () => _getPermission(Permission.camera, () => _openImage(ImageSource.camera)),
           icon: Tooltip(
-            message: LocaleKeys.takeAPhoto.tr(),
+            message: LKey.takeAPhoto.tr(),
             child: const Icon(
               Icons.monochrome_photos,
               color: Colors.black,
@@ -522,7 +522,7 @@ class _OpenImageFileWidget extends StatelessWidget {
         IconButton(
           onPressed: () => _getPermission(Permission.photos, () => _openImage(ImageSource.gallery)),
           icon: Tooltip(
-            message: LocaleKeys.importFromPhoto.tr(),
+            message: LKey.importFromPhoto.tr(),
             child: const Icon(
               Icons.add_photo_alternate_outlined,
               color: Colors.black,
@@ -634,7 +634,7 @@ class _GameMatrixLevelState extends State<GameMatrixLevel> {
       hideDecoration: true,
       title: (item) {
         return Tooltip(
-          message: LocaleKeys.reScrambleImage.tr(),
+          message: LKey.reScrambleImage.tr(),
           child: IgnorePointer(
             child: IconButton(
               onPressed: () {},
@@ -674,7 +674,7 @@ class ZoomViewRange extends StatelessWidget {
       dropdownBackgroundColor: theme.actionBackground,
       borderRadius: BorderRadius.circular(40),
       child: Tooltip(
-        message: LocaleKeys.reScrambleImage.tr(),
+        message: LKey.reScrambleImage.tr(),
         child: IgnorePointer(
           child: IconButton(
             onPressed: () {},

@@ -49,6 +49,8 @@ class _ToastContentState extends State<_ToastContent> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bgColor = theme.cardColor;
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -59,7 +61,7 @@ class _ToastContentState extends State<_ToastContent> {
             curve: Curves.easeIn,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: startAnimation ? Colors.grey.shade200.withOpacity(0.8) : Colors.grey.shade200.withOpacity(0.0),
+              color: startAnimation ? bgColor.withOpacity(0.8) : bgColor.withOpacity(0.0),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(

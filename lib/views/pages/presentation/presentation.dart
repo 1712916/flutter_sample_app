@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:meow_app/cubits/cubits.dart';
 
 class GridPattern {
   static const QuiltedGridTile _sample11 = QuiltedGridTile(1, 1);
@@ -151,36 +148,36 @@ class GridPatternModel {
   });
 }
 
-class PresentationPage extends StatelessWidget {
-  const PresentationPage({
-    Key? key,
-    required this.gridPattern,
-    required this.length,
-    this.crossAxisCount = 3,
-  }) : super(key: key);
-
-  final List<QuiltedGridTile> gridPattern;
-  final int length;
-  final int crossAxisCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.custom(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: SliverQuiltedGridDelegate(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: 2,
-        crossAxisSpacing: 2,
-        repeatPattern: QuiltedGridRepeatPattern.same,
-        pattern: gridPattern,
-      ),
-      childrenDelegate: SliverChildBuilderDelegate(
-        (context, index) => Container(
-          color: context.read<ThemeCubit>().getColors.accentColor,
-        ),
-        childCount: length,
-      ),
-    );
-  }
-}
+// class PresentationPage extends StatelessWidget {
+//   const PresentationPage({
+//     Key? key,
+//     required this.gridPattern,
+//     required this.length,
+//     this.crossAxisCount = 3,
+//   }) : super(key: key);
+//
+//   final List<QuiltedGridTile> gridPattern;
+//   final int length;
+//   final int crossAxisCount;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return GridView.custom(
+//       physics: const NeverScrollableScrollPhysics(),
+//       shrinkWrap: true,
+//       gridDelegate: SliverQuiltedGridDelegate(
+//         crossAxisCount: crossAxisCount,
+//         mainAxisSpacing: 2,
+//         crossAxisSpacing: 2,
+//         repeatPattern: QuiltedGridRepeatPattern.same,
+//         pattern: gridPattern,
+//       ),
+//       childrenDelegate: SliverChildBuilderDelegate(
+//         (context, index) => Container(
+//           color: context.read<ThemeCubit>().getColors.accentColor,
+//         ),
+//         childCount: length,
+//       ),
+//     );
+//   }
+// }

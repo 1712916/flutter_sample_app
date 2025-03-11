@@ -31,7 +31,7 @@ class _DownloadButtonState extends State<DownloadButton> {
           }
         }
       },
-      tooltip: LocaleKeys.downLoadThisImage.tr(),
+      tooltip: LKey.downLoadThisImage.tr(),
       icon: _isDownloading
           ? const CircularProgressIndicator(
               color: Colors.grey,

@@ -47,18 +47,18 @@ class _InfoPageState extends State<InfoPage> {
           children: [
             CustomCard(
               child: TitleContent(
-                title: LocaleKeys.version.tr(),
+                title: LKey.version.tr(),
                 content: Text(version ?? ''),
               ),
             ),
             const SizedBox(height: 8),
             CustomCard(
               child: TitleContent(
-                title: LocaleKeys.description.tr(),
+                title: LKey.description.tr(),
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(LocaleKeys.descriptionDetail.tr()),
+                    Text(LKey.descriptionDetail.tr()),
                     const SizedBox(height: 4),
                     Text('https://thecatapi.com', style: textTheme.titleMedium),
                     const SizedBox(height: 4),
@@ -70,14 +70,14 @@ class _InfoPageState extends State<InfoPage> {
             const SizedBox(height: 8),
             CustomCard(
               child: TitleContent(
-                title: LocaleKeys.function.tr(),
-                content: getListString(LocaleKeys.functionDetail.tr()),
+                title: LKey.function.tr(),
+                content: getListString(LKey.functionDetail.tr()),
               ),
             ),
             const SizedBox(height: 8),
             CustomCard(
               child: TitleContent(
-                title: LocaleKeys.contact.tr(),
+                title: LKey.contact.tr(),
                 content: Text('smile.example@gmail.com'),
               ),
             ),

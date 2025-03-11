@@ -98,9 +98,6 @@ class _OnlyChildDropdownButtonState extends State<OnlyChildDropdownButton> with 
                           decoration: BoxDecoration(
                             color: widget.dropdownBackgroundColor,
                             borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black26, blurRadius: 6),
-                            ],
                           ),
                           child: widget.dropdownBuilder,
                         ),
