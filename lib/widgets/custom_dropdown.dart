@@ -275,19 +275,17 @@ class _DropDownOverlayViewState extends State<_DropDownOverlayView> with TickerP
     RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     final size = renderBox?.size ?? const Size(0, 0);
     final offset = renderBox?.localToGlobal(Offset.zero) ?? const Offset(0, 0);
-    final topOffset = offset.dy + size.height + 5;
     final sz = MediaQuery.of(context).size;
-    final overlayOffset = Offset(0, size.height);
 
-    try {
-      if (sz.height - offset.dy < 300) {
-        Scrollable.ensureVisible(
-          context,
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.bounceIn,
-        );
-      }
-    } catch (e) {}
+    // Check space above and below the button
+    final availableSpaceAbove = offset.dy;
+    final availableSpaceBelow = sz.height - (offset.dy + size.height);
+
+    bool showAbove = availableSpaceAbove > availableSpaceBelow;
+
+    final overlayOffset = showAbove
+        ? Offset(0, -size.height - 5) // Position above
+        : Offset(0, size.height); // Position below (default)
 
     return OverlayEntry(
       builder: (context) => GestureDetector(
@@ -309,7 +307,7 @@ class _DropDownOverlayViewState extends State<_DropDownOverlayView> with TickerP
                   clipBehavior: Clip.none,
                   elevation: 0,
                   child: SizeTransition(
-                    axisAlignment: 1,
+                    axisAlignment: showAbove ? -1 : 1, // Animate from top or bottom
                     sizeFactor: _expandAnimation,
                     child: DropDownContainer(
                       padding: widget.padding,

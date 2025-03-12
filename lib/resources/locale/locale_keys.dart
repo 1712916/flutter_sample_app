@@ -74,4 +74,6 @@ class LKey {
   static const String language = 'language';
   static const String darkMode = 'darkMode';
   static const String storagePath = 'storagePath';
+  static const String camera = 'camera';
+  static const String gallery = 'gallery';
 }

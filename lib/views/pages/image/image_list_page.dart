@@ -11,6 +11,7 @@ import '../../../cubits/cubits.dart';
 import '../../../resources/resources.dart';
 import '../../../routers/route.dart';
 import '../../../utils/utils.dart';
+import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
 import '../base_page/base_page.dart';
 import 'grid_view.dart';
@@ -181,8 +182,18 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // ImagePickerWidget(),
                       TakeImageButton(
-                        onTapAction: () {},
+                        onTapAction: () {
+                          //shows menu select image from gallery or camera
+                          ImagePickerWidget.showOverlay(context, ImagePickerWidget(
+                            onImageSelected: (path) {
+                              if (path != null) {
+                                goToCropImageView(path);
+                              }
+                            },
+                          ));
+                        },
                       ),
                     ],
                   ),
@@ -211,20 +222,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                       ),
                       TakeImageButton(
                         onTapAction: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => CropImageView(
-                                url: cubit.currentUrl!,
-                              ),
-                            ),
-                          );
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => GamePage2(
-                          //       url: cubit.currentUrl,
-                          //     ),
-                          //   ),
-                          // );
+                          goToCropImageView(cubit.currentUrl!);
                         },
                       ),
                       IconButton(
@@ -255,6 +253,16 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
 
   @override
   ImageListCubit get cubit => widget.cubit;
+
+  void goToCropImageView(String url) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CropImageView(
+          url: url,
+        ),
+      ),
+    );
+  }
 }
 
 class TakeImageButton extends StatefulWidget {

@@ -1,11 +1,12 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:crop_image/crop_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:meow_app/resources/theme/theme_data.dart';
+import 'package:meow_app/utils/utils.dart';
 
 import '../../../resources/locale/locale_keys.dart';
 import '../../../widgets/widgets.dart';
@@ -29,20 +30,26 @@ class _CropImageViewState extends State<CropImageView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textColor = theme.iconColor;
+
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CropImage(
-              controller: controller,
-              image: Image.network(widget.url),
-              // paddingSize: 25.0,
-              // alwaysMove: true,
-              // minimumImageSize: 500,
-              // maximumImageSize: 500,
-            ),
+            Builder(builder: (context) {
+              if (widget.url.isUrl) {
+                return CropImage(
+                  controller: controller,
+                  image: Image.network(widget.url),
+                );
+              }
+
+              return CropImage(
+                controller: controller,
+                image: Image.file(File(widget.url)),
+              );
+            }),
           ],
         ),
       ),

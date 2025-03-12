@@ -50,5 +50,7 @@
   "darkMode": "Dark Mode",
   "storagePath": "Storage Path",
   "english": "English",
-  "vietnamese": "Vietnamese"
+  "vietnamese": "Vietnamese",
+  "camera": "Camera",
+  "gallery": "Gallery"
 }
