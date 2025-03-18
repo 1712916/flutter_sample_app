@@ -26,14 +26,6 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   int currentIndex = 0;
 
-  void initData(List<SearchModel> searchModels) {
-    emit(state.copyWith(
-      images: searchModels,
-      loadStatus: LoadStatus.init,
-    ));
-    loadMore(imageListLimit);
-  }
-
   Future loadMore(int number) async {
     await InternetCheckerHelper.checkInternetAccess(onConnected: () async {
       await _randomLoad(number);
@@ -72,7 +64,7 @@ class ImageListCubit extends Cubit<ImageListState> {
   }
 
   Future init() {
-    return loadMore(imageListLimit);
+    return _randomLoad(imageListLimit);
   }
 
   void showPageView(int index) {
