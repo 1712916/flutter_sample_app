@@ -4,9 +4,9 @@ import 'package:crop_image/crop_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
-import 'package:meow_app/utils/state_utils.dart';
 
-import '../views/pages/game/game_manager.dart';
+import '../core/index.dart';
+import '../feature/game/game_manager.dart';
 
 class RenderImage extends StatefulWidget {
   const RenderImage({
@@ -26,7 +26,7 @@ class RenderImage extends StatefulWidget {
   State<RenderImage> createState() => _RenderImageState();
 }
 
-class _RenderImageState extends State<RenderImage> with SafeEmit {
+class _RenderImageState extends State<RenderImage> with SafeSetState {
   Uint8List? _uint8list;
 
   @override

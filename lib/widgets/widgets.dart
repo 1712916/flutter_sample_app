@@ -1,7 +1,6 @@
 export 'app_bar.dart';
 export 'confirm_dialog.dart';
 export 'custom_dropdown.dart';
-export 'custom_switch.dart';
 export 'download_button.dart';
 export 'loading_dialog.dart';
 export 'multi_selection_widget.dart';

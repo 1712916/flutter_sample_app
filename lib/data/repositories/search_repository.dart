@@ -1,4 +1,4 @@
-import '../../utils/utils.dart';
+import '../../core/index.dart';
 import '../data.dart';
 import '../data_provider/data_provider.dart';
 import '../response/custom_response.dart';

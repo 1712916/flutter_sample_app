@@ -1,28 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meow_app/views/pages/game/game_page_2.dart';
-import 'package:meow_app/views/pages/setting/setting_page_new.dart';
+import 'package:meow_app/feature/setting_page_new.dart';
 
+import '../feature/image/image_list_page.dart';
 import '../routers/route.dart';
-import '../views/pages/pages.dart';
 
 class PageDependencies {
   static Future<void> init(GetIt injector) async {
     injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.mainPage);
-    // injector.registerFactory<Widget>(() => HomePage(cubit: injector()), instanceName: RouteManager.home);
-    injector.registerFactory<Widget>(() => ImagePage(cubit: injector()), instanceName: RouteManager.imagePage);
-    injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.imageListPage);
-    injector.registerFactory<Widget>(
-        () => SettingNewPage(
-              cubit: injector(),
-            ),
-        instanceName: RouteManager.settingPage);
-    injector.registerFactory<Widget>(() => const InfoPage(), instanceName: RouteManager.infoPage);
-    injector.registerFactory<Widget>(
-        () => GamePage(
-              cubit: injector(),
-            ),
-        instanceName: RouteManager.gamePage);
-    injector.registerFactory<Widget>(() => GamePage2(), instanceName: RouteManager.gamePage2);
+    injector.registerFactory<Widget>(() => SettingNewPage(), instanceName: RouteManager.settingPage);
   }
 }

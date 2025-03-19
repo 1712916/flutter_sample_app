@@ -5,13 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:meow_app/utils/storage.dart';
 
+import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
 import 'resources/resources.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
-import 'utils/utils.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 

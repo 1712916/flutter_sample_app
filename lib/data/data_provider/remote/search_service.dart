@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../http_client/api_client.dart';
+import '../../../core/index.dart';
 import '../../data.dart';
 import '../../response/custom_response.dart';
 import '../../response/status_code.dart';
