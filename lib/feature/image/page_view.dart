@@ -1,10 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meow_app/resources/theme/theme_data.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../core/base/index.dart';
+import '../../widgets/widgets.dart';
 import 'cubit/image_list_cubit.dart';
 
 class ImagePageView extends StatefulWidget {
@@ -37,13 +35,7 @@ class _ImagePageViewState extends State<ImagePageView> {
                     aspectRatio: 1,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(60),
-                      child: Shimmer.fromColors(
-                        baseColor: theme.imagePlaceholderColor,
-                        highlightColor: Colors.white,
-                        child: Container(
-                          color: theme.imagePlaceholderColor,
-                        ),
-                      ),
+                      child: AppShimmer(),
                     ),
                   ),
                 ],
@@ -51,7 +43,7 @@ class _ImagePageViewState extends State<ImagePageView> {
             );
           case LoadStatus.error:
             return Center(
-              child: Text('Error'),
+              child: LText(LKey.haveAnError),
             );
           case LoadStatus.loaded:
             final images = state.images ?? [];
@@ -75,16 +67,7 @@ class _ImagePageViewState extends State<ImagePageView> {
                         aspectRatio: 1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(60),
-                          child: CachedNetworkImage(
-                            imageUrl: image,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return Container(
-                                color: theme.imagePlaceholderColor,
-                              );
-                            },
-                            // fit: BoxFit.fitWidth,
-                          ),
+                          child: AppImage(image: image),
                         ),
                       ),
                     ],

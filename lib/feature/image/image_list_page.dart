@@ -72,11 +72,7 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                 ),
                 AnimalDropdown(
                   onTapAction: (value) {
-                    if (value == 'Meow') {
-                      cubit.switchToCat();
-                    } else {
-                      cubit.switchToDog();
-                    }
+                    cubit.switchView(value == 'Meow');
                   },
                 ),
                 CircleAvatar(

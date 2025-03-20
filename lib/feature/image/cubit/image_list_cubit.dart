@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/data.dart';
-import '../../../../data/response/custom_response.dart';
 import '../../../../data/response/status_code.dart';
 import '../../../../resources/resources.dart';
 import '../../../../widgets/widgets.dart';
@@ -26,6 +25,10 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   int currentIndex = 0;
 
+  Future init() {
+    return _randomLoad(imageListLimit, retry: true);
+  }
+
   Future loadMore(int number) async {
     await InternetCheckerHelper.checkInternetAccess(onConnected: () async {
       await _randomLoad(number);
@@ -35,22 +38,50 @@ class ImageListCubit extends Cubit<ImageListState> {
     });
   }
 
-  Future _randomLoad(int number) async {
-    CustomResponse<List<SearchModel>> response = await searchRepository.search(limit: number, page: _page);
-    if (response.statusCode == StatusCode.success) {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            images: [...?state.images, ...?response.data].toSet().toList(),
-            loadStatus: LoadStatus.loaded,
-          ),
-        );
+  Future<void> _randomLoad(int number, {bool retry = false}) async {
+    try {
+      final response = await searchRepository.search(
+        limit: number,
+        page: _page,
+      );
+
+      if (response.statusCode == StatusCode.success) {
+        if (!isClosed) {
+          emit(
+            state.copyWith(
+              images: List.from(
+                Set.from([...?state.images, ...?response.data]),
+              ),
+              loadStatus: LoadStatus.loaded,
+            ),
+          );
+        }
+        _page++;
+        return;
       }
-      _page++;
-    } else if (response.statusCode == StatusCode.requestTimeout) {
-      Toast.makeText(message: LKey.timeOutMessage.tr());
-    } else {
-      Toast.makeText(message: LKey.haveAnError.tr());
+
+      if (retry) {
+        await _randomLoad(number);
+      } else {
+        _handleError(response.statusCode ?? 0);
+      }
+    } catch (e, stackTrace) {
+      // Log lỗi để dễ debug hơn
+      debugPrint('Error in _randomLoad: $e\n$stackTrace');
+      if (!retry) {
+        Toast.makeText(message: LKey.haveAnError.tr());
+      }
+    }
+  }
+
+  void _handleError(int statusCode) {
+    switch (statusCode) {
+      case StatusCode.requestTimeout:
+        Toast.makeText(message: LKey.timeOutMessage.tr());
+        break;
+      default:
+        Toast.makeText(message: LKey.haveAnError.tr());
+        break;
     }
   }
 
@@ -61,10 +92,6 @@ class ImageListCubit extends Cubit<ImageListState> {
       ),
     );
     navKey.currentState!.pop();
-  }
-
-  Future init() {
-    return _randomLoad(imageListLimit);
   }
 
   void showPageView(int index) {
@@ -83,14 +110,8 @@ class ImageListCubit extends Cubit<ImageListState> {
     navKey.currentState!.pushNamed(state.viewType.path, arguments: index);
   }
 
-  void switchToCat() async {
-    SettingManager.isMeow = true;
-    await SettingManager.save();
-    refreshData();
-  }
-
-  void switchToDog() async {
-    SettingManager.isMeow = false;
+  void switchView(bool isMeow) async {
+    SettingManager.isMeow = isMeow;
     await SettingManager.save();
     refreshData();
   }

@@ -251,7 +251,7 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
   }
 
   @override
-  PreferredSizeWidget? buildAppbar(BuildContext context) {
+  PreferredSizeWidget? buildAppBar(BuildContext context) {
     final textColor = theme.textColor2;
     return AppBar(
       title: Text(

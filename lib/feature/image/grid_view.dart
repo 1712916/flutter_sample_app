@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../core/base/base_state.dart';
+import '../../widgets/widgets.dart';
 import 'cubit/image_list_cubit.dart';
 
 class ImageGridView extends StatefulWidget {
@@ -37,20 +36,14 @@ class _ImageGridViewState extends State<ImageGridView> {
               itemBuilder: (context, index) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Shimmer.fromColors(
-                    baseColor: theme.imagePlaceholderColor,
-                    highlightColor: Colors.white,
-                    child: Container(
-                      color: theme.imagePlaceholderColor,
-                    ),
-                  ),
+                  child: AppShimmer(),
                 );
               },
               itemCount: 24,
             );
           case LoadStatus.error:
             return Center(
-              child: Text('Error'),
+              child: LText(LKey.haveAnError),
             );
           case LoadStatus.loaded:
             return RefreshIndicator(
@@ -84,16 +77,10 @@ class _ImageGridViewState extends State<ImageGridView> {
                         tag: image,
                         child: SizedBox(
                           width: 135.8,
-                          child: CachedNetworkImage(
+                          child: AppImage(
                             memCacheHeight: (item.height! / 3).toInt(),
                             memCacheWidth: (item.width! / 3).toInt(),
-                            imageUrl: image,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return Container(
-                                color: theme.imagePlaceholderColor,
-                              );
-                            },
+                            image: image,
                           ),
                         ),
                       ),

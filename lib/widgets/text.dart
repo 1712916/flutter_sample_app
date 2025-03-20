@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+export '../../resources/resources.dart';
+
 ///Using this widget to wrap the text widget and localize the text
 ///apply changing the text when locale is changed
 class LText extends Text {

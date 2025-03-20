@@ -69,7 +69,7 @@ class StateTemplate<T extends StatefulWidget> extends State<T> {
 
   ThemeData get theme => Theme.of(context);
 
-  Color get backgroundColor => theme.scaffoldBackgroundColor;
+  Color get backgroundColor => theme.scaffoldBackgroundColor2;
 
   @override
   Widget build(BuildContext context) {

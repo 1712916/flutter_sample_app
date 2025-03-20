@@ -22,7 +22,7 @@ void main() async {
     EasyLocalization.ensureInitialized(),
     SettingManager.loadSetting(),
     AppDependencies.init(),
-    SimpleStorage().init(),
+    SimpleStorage().init().whenComplete(() => ThemeUtils.initThemeMode()),
   ]);
 
   Bloc.observer = AppBlocObserver();
