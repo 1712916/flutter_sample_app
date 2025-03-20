@@ -4,12 +4,13 @@ import 'dart:ui';
 import 'package:crop_image/crop_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:meow_app/core/index.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import '../../../resources/locale/locale_keys.dart';
 import '../../../widgets/widgets.dart';
+import '../image/image_list_page.dart';
 import 'game_page.dart';
 
 class CropImageView extends StatefulWidget {
@@ -32,12 +33,12 @@ class _CropImageViewState extends State<CropImageView> {
     final textColor = theme.iconColor;
 
     return Scaffold(
-      appBar: CustomAppBar(title: ''),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Builder(builder: (context) {
+      appBar: CustomAppBar(title: LKey.cropImage.tr(context: context)),
+      backgroundColor: theme.scaffoldBackgroundColor2,
+      body: Stack(
+        children: [
+          Center(
+            child: Builder(builder: (context) {
               if (widget.url.isUrl) {
                 return CropImage(
                   controller: controller,
@@ -50,32 +51,42 @@ class _CropImageViewState extends State<CropImageView> {
                 image: Image.file(File(widget.url)),
               );
             }),
-          ],
-        ),
-      ),
-      floatingActionButton: _LoadingButton(
-        onPressed: () async {
-          try {
-            final croppedImage = (await controller.croppedBitmap());
-            final byteData = await croppedImage.toByteData(format: ImageByteFormat.png);
-            final image = imglib.decodePng(byteData!.buffer.asUint8List());
-            if (croppedImage != null) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return GamePage(image: image);
-                  },
-                ),
-              );
-            }
-          } catch (e) {
-            Toast.makeText(
-              context: context,
-              message: LKey.haveAnErrorDetail.tr(),
-              toastLength: Toast.LENGTH_LONG,
-            );
-          }
-        },
+          ),
+          Positioned(
+            bottom: 40,
+            left: 40,
+            right: 40,
+            child: TakeImageButton(
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedImageCrop,
+                color: theme.iconColor,
+                size: 32.0,
+              ),
+              onTapAction: () async {
+                try {
+                  final croppedImage = (await controller.croppedBitmap());
+                  final byteData = await croppedImage.toByteData(format: ImageByteFormat.png);
+                  final image = imglib.decodePng(byteData!.buffer.asUint8List());
+                  if (croppedImage != null) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return GamePage(image: image);
+                        },
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  Toast.makeText(
+                    context: context,
+                    message: LKey.haveAnErrorDetail.tr(),
+                    toastLength: Toast.LENGTH_LONG,
+                  );
+                }
+              },
+            ),
+          )
+        ],
       ),
     );
   }
@@ -95,9 +106,8 @@ class _LoadingButtonState extends State<_LoadingButton> {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      backgroundColor: Theme.of(context).highlightColor2,
-      onPressed: () async {
+    return GestureDetector(
+      onTap: () async {
         setState(() {
           _isLoading = true;
         });
@@ -106,13 +116,29 @@ class _LoadingButtonState extends State<_LoadingButton> {
           _isLoading = false;
         });
       },
-      child: _isLoading
-          ? SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(),
-            )
-          : Icon(Icons.crop),
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor2,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).highlightColor2,
+            width: 3,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: _isLoading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(),
+              )
+            : Icon(
+                Icons.crop,
+                color: Theme.of(context).highlightColor2,
+              ),
+      ),
     );
   }
 }

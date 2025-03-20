@@ -76,4 +76,5 @@ class LKey {
   static const String storagePath = 'storagePath';
   static const String camera = 'camera';
   static const String gallery = 'gallery';
+  static const String cropImage = 'cropImage';
 }

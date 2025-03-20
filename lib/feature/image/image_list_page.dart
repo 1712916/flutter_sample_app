@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import '../../../resources/resources.dart';
 import '../../../routers/route.dart';
 import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
@@ -263,10 +262,12 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
 
 class TakeImageButton extends StatefulWidget {
   final VoidCallback onTapAction;
+  final Widget? icon;
 
   const TakeImageButton({
     super.key,
     required this.onTapAction,
+    this.icon,
   });
 
   @override
@@ -330,11 +331,12 @@ class _TakeImageButtonState extends State<TakeImageButton> {
               color: theme.actionBackground,
               shape: BoxShape.circle,
             ),
-            child: HugeIcon(
-              icon: HugeIcons.strokeRoundedGameboy,
-              color: theme.iconColor,
-              size: 32.0,
-            ),
+            child: widget.icon ??
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedGameboy,
+                  color: theme.iconColor,
+                  size: 32.0,
+                ),
           ),
         ),
       ),

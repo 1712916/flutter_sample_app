@@ -25,15 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: showBackButton,
-      title: titleWidget ??
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+      title: titleWidget ?? Text(title),
       backgroundColor: Colors.transparent,
       leading: leading ?? AppBackButton(onBack: onBack),
       actions: actions,
