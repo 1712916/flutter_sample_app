@@ -46,6 +46,7 @@ dependencies:
   device_info_plus: ^11.3.0
   cr_file_saver: ^0.0.2
   country_flags: ^3.2.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

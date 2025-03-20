@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/index.dart';
 import 'app_colors.dart';
@@ -29,13 +30,12 @@ class ThemeUtils {
 
   static ThemeData get lightTheme {
     final lightTheme = ThemeData.light();
-    return lightTheme;
+    return lightTheme.copyWith(textTheme: GoogleFonts.comfortaaTextTheme(lightTheme.textTheme));
   }
 
   static ThemeData get darkTheme {
     final darkTheme = ThemeData.dark();
-    return darkTheme;
-    ;
+    return darkTheme.copyWith(textTheme: GoogleFonts.comfortaaTextTheme(darkTheme.textTheme));
   }
 }
 
