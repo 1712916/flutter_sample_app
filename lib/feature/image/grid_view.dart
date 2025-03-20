@@ -64,6 +64,13 @@ class _ImageGridViewState extends State<ImageGridView> {
                     cubit.loadMore(imageListLimit);
                   }
 
+                  if (index >= state.images!.length) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: AppShimmer(),
+                    );
+                  }
+
                   final item = state.images![index];
                   final image = item.url ?? '';
                   //print width height
@@ -87,11 +94,17 @@ class _ImageGridViewState extends State<ImageGridView> {
                     ),
                   );
                 },
-                itemCount: state.images?.length ?? 0,
+                itemCount: getLength(state.images?.length ?? 0),
               ),
             );
         }
       },
     );
   }
+}
+
+int getLength(int length) {
+  final addLength = 15 - length % 3;
+
+  return length + addLength;
 }

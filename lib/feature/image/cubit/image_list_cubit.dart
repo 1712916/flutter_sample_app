@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/data.dart';
 import '../../../../data/response/status_code.dart';
-import '../../../../resources/resources.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../core/index.dart';
 
@@ -31,10 +30,10 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   Future loadMore(int number) async {
     await InternetCheckerHelper.checkInternetAccess(onConnected: () async {
-      await _randomLoad(number);
+      await _randomLoad(number, retry: true);
     }, onDisconnected: () async {
-      await Future.delayed(const Duration(milliseconds: 300));
       Toast.makeText(message: LKey.checkInternetAccess.tr());
+      await Future.delayed(const Duration(milliseconds: 300));
     });
   }
 
