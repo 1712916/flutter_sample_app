@@ -35,31 +35,8 @@ class _RenderImageState extends State<RenderImage> with SafeSetState {
     _loadImage();
   }
 
-  void _loadImage() async {
-    final croppedImage = await compute(
-      crop,
-      CropModel(
-        widget.image,
-        widget.cellPosition.x * widget.imageCellWidth,
-        widget.cellPosition.y * widget.imageCellHeight,
-        widget.imageCellWidth,
-        widget.imageCellHeight,
-      ),
-    );
-
-    // final croppedImage = crop(CropModel(
-    //   widget.image,
-    //   widget.cellPosition.x * widget.imageCellWidth,
-    //   widget.cellPosition.y * widget.imageCellHeight,
-    //   widget.imageCellWidth,
-    //   widget.imageCellHeight,
-    // ));
-
-    final encodedImage = await compute(imglib.encodePng, croppedImage);
-
-    setState(() {
-      _uint8list = Uint8List.fromList(encodedImage);
-    });
+  void _loadImage() {
+    _uint8list = imglib.encodePng(widget.image) as Uint8List;
   }
 
   @override

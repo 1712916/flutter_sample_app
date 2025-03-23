@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:image/image.dart' as imglib;
+import 'package:image/image.dart';
 
 typedef GameMatrix = List<List<GameMatrixItem>>;
 
@@ -75,7 +75,7 @@ class GameManager {
     // }
   }
 
-  void _genCellWidgets(imglib.Image image) {
+  void _genCellWidgets(Image image) {
     //thêm khoảng trống
     //Khoảng trống này luôn giữ mãnh bên góc bên trái
 
@@ -116,7 +116,7 @@ class GameManager {
     // return widgets;
   }
 
-  void init(imglib.Image image) {
+  void init(Image image) {
     // _cells = _genCellWidgets(image);
   }
 
@@ -362,7 +362,7 @@ MoveType _getOppositeMoveType(MoveType moveType) {
 }
 
 class CropModel {
-  final imglib.Image s;
+  final Image s;
   final int x;
   final int y;
   final int w;
@@ -371,12 +371,43 @@ class CropModel {
   CropModel(this.s, this.x, this.y, this.w, this.h);
 }
 
-imglib.Image crop(CropModel cropModel) {
-  return imglib.copyCrop(
+Image crop(CropModel cropModel) {
+  return copyCrop(
     cropModel.s,
     x: cropModel.x,
     y: cropModel.y,
     width: cropModel.w,
     height: cropModel.h,
   );
+}
+
+List<List<Image>> copyCropMatrix(Image src, int n) {
+  if (n <= 0) {
+    throw ArgumentError('n must be greater than 0');
+  }
+
+  final int partWidth = (src.width / n).floor();
+  final int partHeight = (src.height / n).floor();
+
+  List<List<Image>> matrix = List.generate(n, (_) => List.filled(n, Image(width: 0, height: 0)));
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      final int x = j * partWidth;
+      final int y = i * partHeight;
+
+      final cropped = Image.fromResized(src, width: partWidth, height: partHeight)..clear(); // Xóa nội dung cũ nếu có
+
+      for (int py = 0; py < partHeight; py++) {
+        for (int px = 0; px < partWidth; px++) {
+          final pixel = src.getPixel(x + px, y + py);
+          cropped.setPixel(px, py, pixel);
+        }
+      }
+
+      matrix[i][j] = cropped;
+    }
+  }
+
+  return matrix;
 }

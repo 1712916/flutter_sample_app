@@ -39,8 +39,8 @@ class CellWidgetState extends State<CellWidget> {
       left: widget.destination.sx * widget.jumpSize,
       height: widget.size,
       width: widget.size,
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.linear,
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.linearToEaseOut,
       child: Container(
         padding: const EdgeInsets.all(0.5),
         color: widget.color ?? Colors.transparent,

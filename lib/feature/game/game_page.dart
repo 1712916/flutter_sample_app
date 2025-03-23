@@ -11,7 +11,6 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/custom_dropdown_only_child.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../resources/resources.dart';
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
 import 'cell_widget.dart';
@@ -289,21 +288,24 @@ class _PlayAreaState extends State<_PlayArea> {
   List<Widget> _getCell() {
     final int imageCellWidth = (widget.image.width / gameSize).floor();
     final int imageCellHeight = (widget.image.height / gameSize).floor();
+    List<List<imglib.Image>> croppedImage = getCroppedImage(widget.image, gameSize);
     List<Widget> c = [];
     for (int i = 0; i < gameMatrix.length; i++) {
       for (int j = 0; j < gameMatrix[i].length; j++) {
-        c.add(CellWidget(
-          key: cellMatrix[i][j],
-          size: GameManager.gameBoardWidth / gameSize,
-          jumpSize: GameManager.gameBoardWidth / gameSize,
-          destination: gameMatrix[i][j],
-          child: RenderImage(
-            imageCellHeight: imageCellHeight,
-            imageCellWidth: imageCellWidth,
-            cellPosition: gameMatrix[i][j],
-            image: widget.image,
+        c.add(
+          CellWidget(
+            key: cellMatrix[i][j],
+            size: GameManager.gameBoardWidth / gameSize,
+            jumpSize: GameManager.gameBoardWidth / gameSize,
+            destination: gameMatrix[i][j],
+            child: RenderImage(
+              imageCellHeight: imageCellHeight,
+              imageCellWidth: imageCellWidth,
+              cellPosition: gameMatrix[i][j],
+              image: croppedImage[i][j],
+            ),
           ),
-        ));
+        );
 
         moveTracking[gameMatrix[i][j].getKey()] = cellMatrix[i][j];
       }
@@ -311,8 +313,19 @@ class _PlayAreaState extends State<_PlayArea> {
     return c;
   }
 
+ final Map<int, List<List<imglib.Image>>> _cache = {};
+
+  List<List<imglib.Image>> getCroppedImage(imglib.Image image, int size) {
+    if (_cache.containsKey(size)) {
+      return _cache[size]!;
+    }
+    _cache[size] = copyCropMatrix(image, size);
+    return _cache[size]!;
+  }
+
   @override
   void dispose() {
+    _cache.clear();
     scaleNotifier.dispose();
     super.dispose();
   }
