@@ -52,6 +52,7 @@ class _ImageGridViewState extends State<ImageGridView> {
               backgroundColor: theme.highlightColor2,
               color: theme.iconTheme.color,
               child: GridView.builder(
+                controller: cubit.gridController,
                 padding: const EdgeInsets.only(top: 120, bottom: 80),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,

@@ -13,10 +13,15 @@ const imageListLimit = 30;
 
 class ImageListCubit extends Cubit<ImageListState> {
   ImageListCubit() : super(ImageListState.init());
+
   final ISearchRepository searchRepository = SearchRepository();
+
   int _page = 0;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+
+  final ScrollController gridController = ScrollController();
+
   String? get currentUrl => currentImage?.url;
 
   SearchModel? get currentImage => state.images?[_currentIndex];
@@ -121,6 +126,22 @@ class ImageListCubit extends Cubit<ImageListState> {
       final List<SearchModel> images = state.images?.toList() ?? [];
       images.removeAt(currentIndex);
       emit(state.copyWith(images: images));
+    } catch (e) {}
+  }
+
+  void onPageChanged(int index) {
+    setCurrentIndex(index);
+
+    try {
+      // Tính toán số cột (crossAxisCount) và chiều cao của mỗi hàng
+      int crossAxisCount = 3;
+      double itemHeight = navKey.currentContext!.size!.width / crossAxisCount;
+
+      // Tính hàng hiện tại và scroll đến vị trí của hàng đó
+      int rowIndex = index ~/ crossAxisCount;
+      double targetScrollPosition = rowIndex * itemHeight;
+
+      gridController.jumpTo(targetScrollPosition);
     } catch (e) {}
   }
 }

@@ -89,7 +89,9 @@ class _ImagePageViewState extends State<ImagePageView> {
                     ),
                   );
                 },
-                onPageChanged: cubit.setCurrentIndex,
+                onPageChanged: (index) {
+                  cubit.onPageChanged(index);
+                },
               );
           }
         },
