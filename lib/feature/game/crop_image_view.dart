@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:crop_image/crop_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:meow_app/core/index.dart';
@@ -40,9 +41,25 @@ class _CropImageViewState extends State<CropImageView> {
           Center(
             child: Builder(builder: (context) {
               if (widget.url.isUrl) {
-                return CropImage(
-                  controller: controller,
-                  image: Image.network(widget.url),
+                return FutureBuilder(
+                  future: DefaultCacheManager().getSingleFile(widget.url),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return CropImage(
+                        controller: controller,
+                        image: Image.file(snapshot.data as File),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return CropImage(
+                        controller: controller,
+                        image: Image.network(widget.url),
+                      );
+                    }
+
+                    return const SizedBox();
+                  },
                 );
               }
 

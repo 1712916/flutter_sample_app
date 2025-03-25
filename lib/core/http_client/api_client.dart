@@ -50,8 +50,8 @@ class ApiRequest {
       'Content-type': 'application/json; charset=utf-8',
       // 'x-api-key': ApiConfig.defaultApiCatKey
     };
-    options.sendTimeout = Duration(seconds: 10);
-    options.receiveTimeout = Duration(seconds: 10);
+    options.sendTimeout = Duration(seconds: 30);
+    options.receiveTimeout = Duration(seconds: 30);
     try {
       _dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
       return await _dio.request(

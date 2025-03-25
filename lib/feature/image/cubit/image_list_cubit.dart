@@ -39,12 +39,7 @@ class ImageListCubit extends Cubit<ImageListState> {
   }
 
   Future loadMore(int number) async {
-    await InternetCheckerHelper.checkInternetAccess(onConnected: () async {
-      await _randomLoad(number, retry: true);
-    }, onDisconnected: () async {
-      Toast.makeText(message: LKey.checkInternetAccess.tr());
-      await Future.delayed(const Duration(milliseconds: 300));
-    });
+    await _randomLoad(number, retry: true);
   }
 
   Future<void> _randomLoad(int number, {bool retry = false}) async {

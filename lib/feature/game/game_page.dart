@@ -6,10 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as imglib;
-import 'package:image_picker/image_picker.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/custom_dropdown_only_child.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
@@ -313,7 +311,7 @@ class _PlayAreaState extends State<_PlayArea> {
     return c;
   }
 
- final Map<int, List<List<imglib.Image>>> _cache = {};
+  final Map<int, List<List<imglib.Image>>> _cache = {};
 
   List<List<imglib.Image>> getCroppedImage(imglib.Image image, int size) {
     if (_cache.containsKey(size)) {
@@ -497,64 +495,13 @@ class _BoarderPainter extends CustomPainter {
   }
 }
 
-class _OpenImageFileWidget extends StatelessWidget {
-  const _OpenImageFileWidget({
-    Key? key,
-    this.onGetPath,
-  }) : super(key: key);
-
-  final ValueChanged<String>? onGetPath;
-
-  void _openImage(ImageSource imageSource) async {
-    XFile? imageFile = await ImagePicker().pickImage(source: imageSource, imageQuality: 90);
-    if (imageFile != null) {
-      onGetPath?.call(imageFile.path);
-    }
-  }
-
-  void _getPermission(Permission permission, Function onGranted) async {
-    await PermissionHelper.request(permission, onGranted: onGranted);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          onPressed: () => _getPermission(Permission.camera, () => _openImage(ImageSource.camera)),
-          icon: Tooltip(
-            message: LKey.takeAPhoto.tr(),
-            child: const Icon(
-              Icons.monochrome_photos,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        IconButton(
-          onPressed: () => _getPermission(Permission.photos, () => _openImage(ImageSource.gallery)),
-          icon: Tooltip(
-            message: LKey.importFromPhoto.tr(),
-            child: const Icon(
-              Icons.add_photo_alternate_outlined,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class Game {
   late List<List<GameMatrixItem>> gameMatrix;
   late EmptyBox emptyBox;
   Map<String, GameMatrixItem> moveTracking = {};
   final int size; // Kích thước bảng N x N
 
-  Game({required this.size}) {
-    initializeGame();
-  }
+  Game({required this.size});
 
   void initializeGame() {
     gameMatrix = List.generate(size, (y) {

@@ -27,6 +27,17 @@ class AppImage extends StatelessWidget {
           color: theme.cardColor2,
         );
       },
+      errorWidget: (context, url, error) {
+        return Container(
+          color: theme.cardColor2,
+          child: Center(
+            child: Icon(
+              Icons.error,
+              color: theme.iconColor,
+            ),
+          ),
+        );
+      },
     );
   }
 }
