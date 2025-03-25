@@ -7,7 +7,7 @@ import '../routers/route.dart';
 
 class PageDependencies {
   static Future<void> init(GetIt injector) async {
-    injector.registerFactory<Widget>(() => ImageListPage(cubit: injector()), instanceName: RouteManager.mainPage);
+    injector.registerFactory<Widget>(() => ImageListPage(), instanceName: RouteManager.mainPage);
     injector.registerFactory<Widget>(() => SettingNewPage(), instanceName: RouteManager.settingPage);
   }
 }

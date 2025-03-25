@@ -17,12 +17,17 @@ class ImageListCubit extends Cubit<ImageListState> {
   int _page = 0;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
-  PageController? pageController;
   String? get currentUrl => currentImage?.url;
 
-  SearchModel? get currentImage => state.images?[currentIndex];
+  SearchModel? get currentImage => state.images?[_currentIndex];
 
-  int currentIndex = 0;
+  int _currentIndex = 0;
+
+  int get currentIndex => _currentIndex;
+
+  void setCurrentIndex(int index) {
+    _currentIndex = index;
+  }
 
   Future init() {
     return _randomLoad(imageListLimit, retry: true);
@@ -86,27 +91,15 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   void showGridView() {
     emit(
-      state.copyWith(
-        viewType: ImageViewType.grid,
-      ),
+      state.copyWith(viewType: ImageViewType.grid),
     );
     navKey.currentState!.pop();
   }
 
   void showPageView(int index) {
-    emit(
-      state.copyWith(
-        viewType: ImageViewType.page,
-      ),
-    );
-    currentIndex = index;
-    if (pageController != null) {
-      pageController!.dispose();
-      pageController = null;
-    }
-
-    pageController = PageController(initialPage: currentIndex);
-    navKey.currentState!.pushNamed(state.viewType.path, arguments: index);
+    setCurrentIndex(index);
+    emit(state.copyWith(viewType: ImageViewType.page));
+    navKey.currentState!.pushNamed(state.viewType.path);
   }
 
   void switchView(bool isMeow) async {
@@ -118,16 +111,8 @@ class ImageListCubit extends Cubit<ImageListState> {
   Future refreshData() async {
     emit(state.copyWith(images: [], loadStatus: LoadStatus.loading));
     _page = 0;
-    currentIndex = 0;
-    pageController?.dispose();
-    pageController = PageController(initialPage: currentIndex);
+    setCurrentIndex(0);
     return init();
-  }
-
-  @override
-  Future<void> close() {
-    pageController?.dispose();
-    return super.close();
   }
 
   void onDelete() {

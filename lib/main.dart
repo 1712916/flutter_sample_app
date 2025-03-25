@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get_it/get_it.dart';
 
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
+import 'feature/image/cubit/image_list_cubit.dart';
 import 'resources/resources.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
@@ -62,26 +64,36 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class _MaterialApp extends StatelessWidget {
+class _MaterialApp extends StatefulWidget {
   const _MaterialApp({Key? key}) : super(key: key);
 
+  @override
+  State<_MaterialApp> createState() => _MaterialAppState();
+}
+
+class _MaterialAppState extends State<_MaterialApp> {
+  final ImageListCubit imageListCubit = GetIt.I.get();
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: ThemeUtils.themeModeNotifier,
       builder: (context, ThemeMode themeMode, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          navigatorKey: navKey,
-          theme: ThemeUtils.lightTheme,
-          darkTheme: ThemeUtils.darkTheme,
-          themeMode: themeMode,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          initialRoute: RouteManager.mainPage,
-          // home: TestGamePage(),
-          onGenerateRoute: (settings) => RouteManager.getRoute(settings),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => imageListCubit),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navKey,
+            theme: ThemeUtils.lightTheme,
+            darkTheme: ThemeUtils.darkTheme,
+            themeMode: themeMode,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            initialRoute: RouteManager.mainPage,
+            onGenerateRoute: (settings) => RouteManager.getRoute(settings),
+          ),
         );
       },
     );

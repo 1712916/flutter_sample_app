@@ -81,7 +81,7 @@ class GridScreen extends StatelessWidget {
         reverseTransitionDuration: const Duration(milliseconds: 400),
         barrierColor: Colors.transparent,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return DetailPage(index: index, position: position);
+          return DetailPage(index: index);
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
@@ -94,45 +94,75 @@ class GridScreen extends StatelessWidget {
   }
 }
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final int index;
-  final Offset position;
 
-  const DetailPage({super.key, required this.index, required this.position});
+  const DetailPage({super.key, required this.index});
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  final List<String> items = List.generate(12, (index) => 'Item $index');
+
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.index);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Tính toán khoảng cách để đưa item vào giữa màn hình
-    final screenSize = MediaQuery.of(context).size;
-    final targetX = (screenSize.width - 300) / 2 - position.dx;
-    final targetY = (screenSize.height - 300) / 2 - position.dy;
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Page')),
-      body: Center(
-        child: Hero(
-          tag: 'item_$index',
-          createRectTween: (begin, end) {
-            return MaterialRectCenterArcTween(begin: begin, end: end);
-          },
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: Center(
-                child: Text(
-                  'Item $index',
-                  style: const TextStyle(color: Colors.white, fontSize: 24),
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            scrollDirection: Axis.vertical, // 👉 Vuốt theo chiều dọc
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return Center(
+                child: Hero(
+                  tag: 'item_$index',
+                  flightShuttleBuilder: (_, __, ___, ____, toHeroContext) {
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: toHeroContext.widget,
+                    );
+                  },
+                  createRectTween: (begin, end) {
+                    return MaterialRectCenterArcTween(begin: begin, end: end);
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Text(
+                        items[index],
+                        style: const TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              );
+            },
+          ),
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: const Icon(Icons.close, size: 30, color: Colors.black),
+              onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

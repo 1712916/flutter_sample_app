@@ -78,17 +78,23 @@ class _ImageGridViewState extends State<ImageGridView> {
                     onTap: () {
                       cubit.showPageView(index);
                     },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Hero(
-                        tag: image,
-                        child: SizedBox(
-                          width: 135.8,
-                          child: AppImage(
-                            memCacheHeight: (item.height! / 3).toInt(),
-                            memCacheWidth: (item.width! / 3).toInt(),
-                            image: image,
-                          ),
+                    child: Hero(
+                      tag: index,
+                      flightShuttleBuilder: (_, __, ___, ____, toHeroContext) {
+                        return Material(
+                          type: MaterialType.transparency,
+                          child: toHeroContext.widget,
+                        );
+                      },
+                      createRectTween: (begin, end) {
+                        return MaterialRectCenterArcTween(begin: begin, end: end);
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: AppImage(
+                          memCacheHeight: (item.height! / 3).toInt(),
+                          memCacheWidth: (item.width! / 3).toInt(),
+                          image: image,
                         ),
                       ),
                     ),

@@ -10,7 +10,6 @@ import '../../../routers/route.dart';
 import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
-import '../base_page.dart';
 import '../game/crop_image_view.dart';
 import 'cubit/image_list_cubit.dart';
 import 'grid_view.dart';
@@ -19,20 +18,25 @@ import 'page_view.dart';
 const double iconSize = 36.0;
 
 class ImageListPage extends StatefulWidget {
-  const ImageListPage({Key? key, required this.cubit}) : super(key: key);
-
-  final ImageListCubit cubit;
+  const ImageListPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ImageListPageState createState() => _ImageListPageState();
 }
 
-class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
-  bool _isLoadMore = false;
+class _ImageListPageState extends State<ImageListPage> {
+  late final HeroController _heroControllerScope;
+
+  ImageListCubit get cubit => context.read<ImageListCubit>();
+
+  ThemeData get theme => Theme.of(context);
 
   @override
   void initState() {
     super.initState();
+    _heroControllerScope = MaterialApp.createMaterialHeroController();
     cubit.init();
     //add frame call back
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
@@ -41,171 +45,89 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
   }
 
   @override
+  void dispose() {
+    _heroControllerScope.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: buildContent(context));
+  }
+
   Widget buildContent(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
       children: [
         buildImageView(context),
         buildMenuView(context),
-        Positioned(
-          top: 16,
-          left: 16,
-          right: 16,
-          child: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Opacity(
-                  opacity: 0.0,
-                  child: CircleAvatar(
-                    backgroundColor: theme.actionBackground,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedSettings01,
-                        color: theme.iconColor,
-                        // size: iconSize,
-                      ),
-                    ),
-                  ),
-                ),
-                AnimalDropdown(
-                  onTapAction: (value) {
-                    cubit.switchView(value == 'Meow');
-                  },
-                ),
-                CircleAvatar(
-                  backgroundColor: theme.actionBackground,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(RouteManager.settingPage);
-                    },
-                    icon: HugeIcon(
-                      icon: HugeIcons.strokeRoundedSettings01,
-                      color: theme.iconColor,
-                      // size: iconSize,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        buildAppbar(context),
       ],
     );
   }
 
   Widget buildImageView(BuildContext) {
-    return Navigator(
-      key: cubit.navKey,
-      clipBehavior: Clip.none,
-      initialRoute: '/',
-      transitionDelegate: const DefaultTransitionDelegate(),
-      onGenerateRoute: (settings) {
-        Widget page = SizedBox();
+    return HeroControllerScope(
+      controller: MaterialApp.createMaterialHeroController(),
+      child: Navigator(
+        key: cubit.navKey,
+        initialRoute: '/',
+        onGenerateRoute: (settings) {
+          final viewType = ImageViewType.fromPath(settings.name!);
 
-        final viewType = ImageViewType.fromPath(settings.name!);
-        final arguments = settings.arguments;
-
-        switch (viewType) {
-          case ImageViewType.grid:
-            {
-              page = ImageGridView();
-              break;
-            }
-          case ImageViewType.page:
-            {
-              page = ImagePageView();
-              break;
-            }
-        }
-
-        if (true) {
-          return MaterialPageRoute(
-            allowSnapshotting: true,
-            fullscreenDialog: true,
-            settings: settings,
-            builder: (context) {
-              return Material(
-                color: theme.scaffoldBackgroundColor2,
-                child: page,
-              );
-            },
-            // settings: settings,
-          );
-        }
-
-        return PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 600),
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              Material(color: theme.scaffoldBackgroundColor, child: page),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0); // Start off-screen (right)
-            const end = Offset.zero; // End at normal position
-            const curve = Curves.linear;
-
-            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var offsetAnimation = animation.drive(tween);
-
-            // return FadeTransition(
-            //   opacity: animation,
-            //   child: Material(color: theme.scaffoldBackgroundColor, child: child),
-            // );
-            return ScaleTransition(
-              scale: Tween<double>(begin: 1.0, end: 1.0).animate(
-                CurvedAnimation(parent: animation, curve: curve),
-              ),
-              child: child,
-            );
-          },
-        );
-      },
+          switch (viewType) {
+            case ImageViewType.grid:
+              {
+                return MaterialPageRoute(
+                  allowSnapshotting: true,
+                  fullscreenDialog: true,
+                  settings: settings,
+                  builder: (context) {
+                    return Material(
+                      color: theme.scaffoldBackgroundColor2,
+                      child: ImageGridView(),
+                    );
+                  },
+                  // settings: settings,
+                );
+              }
+            case ImageViewType.page:
+              {
+                return PageRouteBuilder(
+                  fullscreenDialog: true,
+                  transitionDuration: const Duration(milliseconds: 400),
+                  reverseTransitionDuration: const Duration(milliseconds: 400),
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return ImagePageView();
+                  },
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                );
+              }
+          }
+        },
+      ),
     );
   }
 
   Widget buildMenuView(BuildContext) {
-    return BlocBuilder<ImageListCubit, ImageListState>(
-      builder: (context, state) {
-        switch (state.viewType) {
-          case ImageViewType.grid:
-            return Positioned(
-              bottom: 40,
-              left: 40,
-              right: 40,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // ImagePickerWidget(),
-                      TakeImageButton(
-                        onTapAction: () {
-                          //shows menu select image from gallery or camera
-                          ImagePickerWidget.showOverlay(context, ImagePickerWidget(
-                            onImageSelected: (path) {
-                              if (path != null) {
-                                goToCropImageView(path);
-                              }
-                            },
-                          ));
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          case ImageViewType.page:
-            return Positioned(
-              bottom: 40,
-              left: 40,
-              right: 40,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
+    return Positioned(
+      bottom: 40,
+      left: 40,
+      right: 40,
+      child: BlocBuilder<ImageListCubit, ImageListState>(
+        builder: (context, state) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: state.viewType == ImageViewType.page
+                    ? IconButton(
                         onPressed: () {
                           cubit.showGridView();
                         },
@@ -214,13 +136,36 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                           color: theme.iconColor,
                           size: iconSize,
                         ),
-                      ),
-                      TakeImageButton(
-                        onTapAction: () {
-                          goToCropImageView(cubit.currentUrl!);
-                        },
-                      ),
-                      IconButton(
+                      )
+                    : const SizedBox(),
+              ),
+              TakeImageButton(
+                onTapAction: () {
+                  switch (state.viewType) {
+                    case ImageViewType.grid:
+                      //shows menu select image from gallery or camera
+                      ImagePickerWidget.showOverlay(
+                        context,
+                        ImagePickerWidget(
+                          onImageSelected: (path) {
+                            if (path != null) {
+                              goToCropImageView(path);
+                            }
+                          },
+                        ),
+                      );
+                      break;
+                    case ImageViewType.page:
+                      goToCropImageView(cubit.currentUrl!);
+
+                      break;
+                  }
+                },
+              ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: state.viewType == ImageViewType.page
+                    ? IconButton(
                         onPressed: () {
                           ShareWidget(
                             url: cubit.currentUrl!,
@@ -235,19 +180,60 @@ class _ImageListPageState extends CustomState<ImageListPage, ImageListCubit> {
                           color: theme.iconColor,
                           size: iconSize,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      )
+                    : const SizedBox(),
               ),
-            );
-        }
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 
-  @override
-  ImageListCubit get cubit => widget.cubit;
+  Widget buildAppbar(BuildContext) {
+    return Positioned(
+      top: 16,
+      left: 16,
+      right: 16,
+      child: SafeArea(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Opacity(
+              opacity: 0.0,
+              child: CircleAvatar(
+                backgroundColor: theme.actionBackground,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedSettings01, color: theme.iconColor,
+                    // size: iconSize,
+                  ),
+                ),
+              ),
+            ),
+            AnimalDropdown(
+              onTapAction: (value) {
+                cubit.switchView(value == 'Meow');
+              },
+            ),
+            CircleAvatar(
+              backgroundColor: theme.actionBackground,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(RouteManager.settingPage);
+                },
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedSettings01, color: theme.iconColor,
+                  // size: iconSize,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   void goToCropImageView(String url) {
     Navigator.of(context).push(
@@ -311,7 +297,8 @@ class _TakeImageButtonState extends State<TakeImageButton> {
     final theme = Theme.of(context);
 
     return GestureDetector(
-      onTap: widget.onTapAction, // Tap một cái gọi ngay action
+      onTap: widget.onTapAction,
+      // Tap một cái gọi ngay action
       onLongPressDown: _onLongPressDown,
       onLongPressUp: _onLongPressUp,
       onLongPressCancel: _onLongPressCancel,
@@ -417,11 +404,8 @@ class ShareWidget extends StatelessWidget {
 
   Future show(BuildContext context) {
     return showModalBottomSheet(
-      context: context,
-      useSafeArea: true,
-      // showDragHandle: true,
-      backgroundColor: Theme.of(context).cardColor2,
-      builder: (context) => this,
+      context: context, useSafeArea: true, // showDragHandle: true,
+      backgroundColor: Theme.of(context).cardColor2, builder: (context) => this,
     );
   }
 
@@ -462,8 +446,7 @@ class ShareWidget extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     icon: Icon(
-                      Icons.close,
-                      color: theme.iconColor,
+                      Icons.close, color: theme.iconColor,
                       // size: iconSize,
                     ),
                   ),
@@ -608,8 +591,7 @@ class IconTitleWidget extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               // color: theme.actionBackground,
-              shape: BoxShape.circle,
-              border: Border.all(color: theme.actionBackground, width: 2),
+              shape: BoxShape.circle, border: Border.all(color: theme.actionBackground, width: 2),
             ),
             padding: const EdgeInsets.all(2),
             child: Container(
