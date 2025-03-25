@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -6,23 +8,38 @@ class Toast {
   Toast._();
 
   static const int LENGTH_LONG = LENGTH_SHORT * 2;
-
   static const int LENGTH_SHORT = 1000;
 
-  // static Map<String, OverlayEntry> _temp = {};
-  // static const String _tempKey = 'TEMP_KEY';
+  static Timer? _timer;
+  static OverlayEntry? _currentOverlay;
 
   static makeText({BuildContext? context, required String message, int toastLength = LENGTH_SHORT}) {
+    // Remove existing toast if showing
+    _hideCurrentToast();
+
     OverlayState? overlayState = context != null ? Overlay.of(context) : navKey.currentState?.overlay;
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (_) {
-        return _ToastContent(message: message);
-      },
-    );
-    overlayState?.insert(overlayEntry);
-    Future.delayed(Duration(milliseconds: toastLength)).then((_) {
-      overlayEntry.remove();
-    });
+
+    if (overlayState != null) {
+      _currentOverlay = OverlayEntry(
+        builder: (_) {
+          return _ToastContent(message: message);
+        },
+      );
+
+      overlayState.insert(_currentOverlay!);
+
+      // Start a timer to remove the toast after the specified duration
+      _timer = Timer(Duration(milliseconds: toastLength), () {
+        _hideCurrentToast();
+      });
+    }
+  }
+
+  static void _hideCurrentToast() {
+    _timer?.cancel();
+    _timer = null;
+    _currentOverlay?.remove();
+    _currentOverlay = null;
   }
 }
 
