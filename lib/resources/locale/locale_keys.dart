@@ -77,4 +77,19 @@ class LKey {
   static const String camera = 'camera';
   static const String gallery = 'gallery';
   static const String cropImage = 'cropImage';
+
+  ///show case
+  static const String switchViewTitle = 'showcase.switchViewTitle';
+  static const String switchViewDescription = 'showcase.switchViewDescription';
+
+  static const String gridViewTitle = 'showcase.gridViewTitle';
+  static const String gridViewDescription = 'showcase.gridViewDescription';
+
+  static const String shareViewTitle = 'showcase.shareViewTitle';
+  static const String shareViewDescription = 'showcase.shareViewDescription';
+
+  static const String gameBoardTitle = 'showcase.gameBoardTitle';
+  static const String gameBoardDescription = 'showcase.gameBoardDescription';
+
+  static const String enjoyAppDescription = 'enjoyAppDescription';
 }

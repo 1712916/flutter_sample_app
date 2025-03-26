@@ -53,5 +53,19 @@
   "vietnamese": "Tiếng Việt",
   "camera": "Máy ảnh",
   "gallery": "Thư viện",
-  "cropImage": "Cắt hình ảnh"
+  "cropImage": "Cắt hình ảnh",
+  "showcase": {
+    "switchViewTitle": "Chạm để chuyển",
+    "switchViewDescription": "Chạm để chuyển giữa ảnh mèo và ảnh cún",
+
+    "gridViewTitle": "Chạm để xem",
+    "gridViewDescription": "Chạm để xem ảnh theo bố cục dạng lưới",
+
+    "shareViewTitle": "Chạm để chia sẻ",
+    "shareViewDescription": "Chạm để chia sẻ ảnh với bạn bè",
+
+    "gameBoardTitle": "Chạm để chơi",
+    "gameBoardDescription": "Chạm để bắt đầu chơi trò chơi"
+  },
+  "enjoyAppDescription": "Hãy thưởng thức ứng dụng meow nhé <3"
 }

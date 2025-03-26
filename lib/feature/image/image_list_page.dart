@@ -5,12 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../../../routers/route.dart';
 import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
 import '../game/crop_image_view.dart';
+import '../showcase/showcase_util.dart';
+import '../showcase/showcase_widget.dart';
 import 'cubit/image_list_cubit.dart';
 import 'grid_view.dart';
 import 'page_view.dart';
@@ -33,6 +36,8 @@ class _ImageListPageState extends State<ImageListPage> {
 
   ThemeData get theme => Theme.of(context);
 
+  BuildContext? myContext;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +46,9 @@ class _ImageListPageState extends State<ImageListPage> {
     //add frame call back
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       cubit.showPageView(0);
+      Future.delayed(const Duration(milliseconds: 200), () {
+        ShowcaseUtil.startShowcase(myContext!);
+      });
     });
   }
 
@@ -52,7 +60,19 @@ class _ImageListPageState extends State<ImageListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: buildContent(context));
+    return ShowCaseWidget(
+      // enableShowcase: ShowcaseUtil.enableShowcase,
+      onComplete: (p0, p1) {
+        if (p0 == ShowcaseUtil.lastStepIndex) {
+          Toast.makeText(message: LKey.enjoyAppDescription.tr(context: context), toastLength: Toast.LENGTH_LONG);
+        }
+      },
+      builder: (context) {
+        myContext = context;
+
+        return Scaffold(body: buildContent(context));
+      },
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -124,64 +144,73 @@ class _ImageListPageState extends State<ImageListPage> {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                child: state.viewType == ImageViewType.page
-                    ? IconButton(
-                        onPressed: () {
-                          cubit.showGridView();
-                        },
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedGridView,
-                          color: theme.iconColor,
-                          size: iconSize,
-                        ),
-                      )
-                    : const SizedBox(),
-              ),
-              TakeImageButton(
-                onTapAction: () {
-                  switch (state.viewType) {
-                    case ImageViewType.grid:
-                      //shows menu select image from gallery or camera
-                      ImagePickerWidget.showOverlay(
-                        context,
-                        ImagePickerWidget(
-                          onImageSelected: (path) {
-                            if (path != null) {
-                              goToCropImageView(path);
-                            }
+              AppShowcase(
+                info: ShowcaseUtil.gridViewKey,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 400),
+                  child: state.viewType == ImageViewType.page
+                      ? IconButton(
+                          onPressed: () {
+                            cubit.showGridView();
                           },
-                        ),
-                      );
-                      break;
-                    case ImageViewType.page:
-                      goToCropImageView(cubit.currentUrl!);
-
-                      break;
-                  }
-                },
+                          icon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedGridView,
+                            color: theme.iconColor,
+                            size: iconSize,
+                          ),
+                        )
+                      : const SizedBox(),
+                ),
               ),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                child: state.viewType == ImageViewType.page
-                    ? IconButton(
-                        onPressed: () {
-                          ShareWidget(
-                            url: cubit.currentUrl!,
-                            onDelete: () {
-                              Navigator.of(context).pop();
-                              cubit.onDelete();
+              AppShowcase(
+                info: ShowcaseUtil.gameBoardKey,
+                child: TakeImageButton(
+                  onTapAction: () {
+                    switch (state.viewType) {
+                      case ImageViewType.grid:
+                        //shows menu select image from gallery or camera
+                        ImagePickerWidget.showOverlay(
+                          context,
+                          ImagePickerWidget(
+                            onImageSelected: (path) {
+                              if (path != null) {
+                                goToCropImageView(path);
+                              }
                             },
-                          ).show(context);
-                        },
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedUpload04,
-                          color: theme.iconColor,
-                          size: iconSize,
-                        ),
-                      )
-                    : const SizedBox(),
+                          ),
+                        );
+                        break;
+                      case ImageViewType.page:
+                        goToCropImageView(cubit.currentUrl!);
+
+                        break;
+                    }
+                  },
+                ),
+              ),
+              AppShowcase(
+                info: ShowcaseUtil.shareViewKey,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 400),
+                  child: state.viewType == ImageViewType.page
+                      ? IconButton(
+                          onPressed: () {
+                            ShareWidget(
+                              url: cubit.currentUrl!,
+                              onDelete: () {
+                                Navigator.of(context).pop();
+                                cubit.onDelete();
+                              },
+                            ).show(context);
+                          },
+                          icon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedUpload04,
+                            color: theme.iconColor,
+                            size: iconSize,
+                          ),
+                        )
+                      : const SizedBox(),
+                ),
               ),
             ],
           );
@@ -212,10 +241,13 @@ class _ImageListPageState extends State<ImageListPage> {
                 ),
               ),
             ),
-            AnimalDropdown(
-              onTapAction: (value) {
-                cubit.switchView(value == 'Meow');
-              },
+            AppShowcase(
+              info: ShowcaseUtil.switchViewKey,
+              child: AnimalDropdown(
+                onTapAction: (value) {
+                  cubit.switchView(value == 'Meow');
+                },
+              ),
             ),
             CircleAvatar(
               backgroundColor: theme.actionBackground,

@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
+import 'feature/showcase/showcase_util.dart';
 import 'resources/resources.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
@@ -24,7 +25,7 @@ void main() async {
     EasyLocalization.ensureInitialized(),
     SettingManager.loadSetting(),
     AppDependencies.init(),
-    SimpleStorage().init().whenComplete(() => ThemeUtils.initThemeMode()),
+    SimpleStorage().init().whenComplete(() => Future.wait([ThemeUtils.initThemeMode(), ShowcaseUtil.init()])),
   ]);
 
   Bloc.observer = AppBlocObserver();
