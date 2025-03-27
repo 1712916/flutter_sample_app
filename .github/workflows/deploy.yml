@@ -1,0 +1,61 @@
+name: Deploy to Google Play
+
+on:
+  push:
+    branches:
+      - meow-app-v2
+
+jobs:
+  build:
+    name: Build & Deploy to Play Store
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Decode Keystore
+        run: |
+          mkdir -p android/build
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/build/ci_keystore.jks
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+
+      - name: Build release AAB
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: flutter build appbundle --release
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      - name: Create credentials file
+        run: |
+          mkdir -p android/fastlane
+          printf '%s' "$GOOGLE_PLAY_CREDENTIALS" > android/fastlane/credentials.json
+        env:
+          GOOGLE_PLAY_CREDENTIALS: ${{ secrets.GOOGLE_PLAY_CREDENTIALS }}
+
+      - name: Deploy using Fastlane
+        working-directory: android
+        run: |
+          fastlane supply \
+            --json_key fastlane/credentials.json \
+            --package_name com.vinhnt.meow_app \
+            --aab ../build/app/outputs/bundle/release/app-release.aab \
+            --track internal
