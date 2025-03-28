@@ -4,6 +4,7 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/base/index.dart';
 import '../../widgets/widgets.dart';
+import '../favourite/favourite_wrapper.dart';
 import 'cubit/image_list_cubit.dart';
 
 class ImagePageView extends StatefulWidget {
@@ -81,7 +82,10 @@ class _ImagePageViewState extends State<ImagePageView> {
                             aspectRatio: 1,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
-                              child: AppImage(image: image),
+                              child: FavouriteWrapper(
+                                onFavourite: () {},
+                                child: AppImage(image: image),
+                              ),
                             ),
                           ),
                         ),

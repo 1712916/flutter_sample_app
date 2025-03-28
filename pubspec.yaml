@@ -47,6 +47,7 @@ dependencies:
   country_flags: ^3.2.0
   google_fonts: ^6.2.1
   showcaseview: ^4.0.1
+  lottie: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,7 @@ flutter:
   assets:
     - assets/locales/
     - assets/icon/
+    - assets/animations/
 
 
 flutter_native_splash:
