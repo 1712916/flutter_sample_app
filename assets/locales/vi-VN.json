@@ -67,5 +67,9 @@
     "gameBoardTitle": "Chạm để chơi",
     "gameBoardDescription": "Chạm để bắt đầu chơi trò chơi"
   },
-  "enjoyAppDescription": "Hãy thưởng thức ứng dụng meow nhé <3"
+  "enjoyAppDescription": "Hãy thưởng thức ứng dụng meow nhé <3",
+  "favourite": "Yêu thích",
+  "choose": "Chọn",
+  "noFavourite":  "Không có yêu thích",
+  "selected": "đã chọn"
 }

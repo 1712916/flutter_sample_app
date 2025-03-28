@@ -133,4 +133,8 @@ extension ThemeResourceExtension on ThemeData {
         return Color(0xFFFFFBFB);
     }
   }
+
+  Color get favoriteColor {
+    return Color(0xFFff3f55);
+  }
 }

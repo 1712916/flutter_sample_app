@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/base/index.dart';
 import '../../widgets/widgets.dart';
 import '../favourite/favourite_wrapper.dart';
 import 'cubit/image_list_cubit.dart';
+import 'detail_image_page.dart';
 
 class ImagePageView extends StatefulWidget {
   const ImagePageView({super.key});
@@ -83,8 +85,17 @@ class _ImagePageViewState extends State<ImagePageView> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
                               child: FavouriteWrapper(
-                                onFavourite: () {},
-                                child: AppImage(image: image),
+                                onFavourite: () {
+                                  context.read<FavouriteCubit>().addFavouriteItem(image);
+                                },
+                                child: GestureDetector(
+                                    onTap: () {
+                                      DetailImagePage(
+                                        url: image,
+                                        heroTag: '$index',
+                                      ).show(context, duration: const Duration(milliseconds: 100));
+                                    },
+                                    child: AppImage(image: image)),
                               ),
                             ),
                           ),
