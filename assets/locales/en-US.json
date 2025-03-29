@@ -67,5 +67,9 @@
     "gameBoardTitle": "Tap to play",
     "gameBoardDescription": "Tap to start playing the game"
   },
-  "enjoyAppDescription": "Let's enjoy meow app <3"
+  "enjoyAppDescription": "Let's enjoy meow app <3",
+  "favourite": "Favourite",
+  "choose": "Choose",
+  "noFavourite": "No Favourite",
+  "selected": "selected"
 }

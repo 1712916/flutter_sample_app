@@ -92,4 +92,10 @@ class LKey {
   static const String gameBoardDescription = 'showcase.gameBoardDescription';
 
   static const String enjoyAppDescription = 'enjoyAppDescription';
+
+  ///favourite
+  static const String favourite = 'favourite';
+  static const String choose = 'choose';
+  static const String noFavourite = 'noFavourite';
+  static const String selected = 'selected';
 }

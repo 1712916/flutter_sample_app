@@ -18,6 +18,8 @@ class RouteManager {
 
   static String get gamePage2 => '/game2';
 
+  static String get favouritePage => '/favourite';
+
   static getRoute(RouteSettings settings) {
     late Widget widget;
     try {

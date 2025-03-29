@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 
+import 'core/persistence/isar_storage.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
+import 'feature/favourite/cubit/favourite_cubit.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
 import 'resources/resources.dart';
@@ -26,6 +28,7 @@ void main() async {
     SettingManager.loadSetting(),
     AppDependencies.init(),
     SimpleStorage().init().whenComplete(() => Future.wait([ThemeUtils.initThemeMode(), ShowcaseUtil.init()])),
+    IsarDatabase().initialize(),
   ]);
 
   Bloc.observer = AppBlocObserver();
@@ -74,6 +77,7 @@ class _MaterialApp extends StatefulWidget {
 
 class _MaterialAppState extends State<_MaterialApp> {
   final ImageListCubit imageListCubit = GetIt.I.get();
+  final FavouriteCubit favouriteCubit = GetIt.I.get();
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -82,6 +86,7 @@ class _MaterialAppState extends State<_MaterialApp> {
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => imageListCubit),
+            BlocProvider(create: (_) => favouriteCubit),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
