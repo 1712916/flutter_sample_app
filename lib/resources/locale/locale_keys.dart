@@ -98,4 +98,10 @@ class LKey {
   static const String choose = 'choose';
   static const String noFavourite = 'noFavourite';
   static const String selected = 'selected';
+
+  ///game complete
+  static const String gameCompleteTitle = 'gameCompleteTitle';
+  static const String gameCompleteDescription = 'gameCompleteDescription';
+  static const String playAgain = 'playAgain';
+  static const String exit = 'exit';
 }
