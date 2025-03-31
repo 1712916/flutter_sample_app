@@ -4,7 +4,7 @@ import 'package:home_widget/home_widget.dart';
 
 const String appGroupId = 'group.vinhnt.widgets';
 const String iOSWidgetName = 'NewsWidget';
-const String androidWidgetName = 'NewsWidget';
+const String androidWidgetName = 'NewAppWidget';
 
 class HomeWidgetData {
   final String url;
@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
       await HomeWidget.updateWidget(
         name: androidWidgetName,
         iOSName: iOSWidgetName,
+        androidName: androidWidgetName,
       );
 
       // ✅ Hiển thị SnackBar
