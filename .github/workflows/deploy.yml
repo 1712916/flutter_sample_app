@@ -20,10 +20,22 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        
+
+      - name: Auto set version in pubspec.yaml
+        id: versioning
+        run: |
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          GIT_TAG=$(git describe --tags --abbrev=0 || echo "0.0.0")
+          VERSION_NAME="$GIT_TAG+$COMMIT_COUNT"
+
+          echo "🔖 Version set to $VERSION_NAME"
+          sed -i "s/^version: .*/version: $VERSION_NAME/" pubspec.yaml
+
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+
       - name: Run build_runner
         run: flutter pub run build_runner build --delete-conflicting-outputs
-        
+
       - name: Decode Keystore
         run: |
           mkdir -p android/build
@@ -62,3 +74,11 @@ jobs:
             --package_name com.vinhnt.meow_app \
             --aab ../build/app/outputs/bundle/release/app-release.aab \
             --track internal
+
+      - name: Tag Git with version
+        if: github.ref == 'refs/heads/meow-app-v2'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag v${{ env.VERSION_NAME }}
+          git push origin v${{ env.VERSION_NAME }}
