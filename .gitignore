@@ -53,3 +53,5 @@ ios/Runner.xcodeproj/project.pbxproj
 ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme
 ios/Runner.xcworkspace/contents.xcworkspacedata
 favourite_collection.g.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
