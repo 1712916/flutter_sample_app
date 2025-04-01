@@ -10,7 +10,9 @@ import 'package:get_it/get_it.dart';
 import 'core/persistence/isar_storage.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
+import 'feature/background_worker/background_worker.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
+import 'feature/home_widget/home_widget_page.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
 import 'resources/resources.dart';
@@ -29,6 +31,12 @@ void main() async {
     AppDependencies.init(),
     SimpleStorage().init().whenComplete(() => Future.wait([ThemeUtils.initThemeMode(), ShowcaseUtil.init()])),
     IsarDatabase().initialize(),
+    AppHomeWidget.init(),
+    BackgroundWorker.init().whenComplete(
+      () {
+        BackgroundWorker.registerLoadHomeWidgetData();
+      },
+    ),
   ]);
 
   Bloc.observer = AppBlocObserver();

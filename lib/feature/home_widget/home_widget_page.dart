@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
@@ -5,6 +7,27 @@ import 'package:home_widget/home_widget.dart';
 const String appGroupId = 'group.vinhnt.widgets';
 const String iOSWidgetName = 'NewsWidget';
 const String androidWidgetName = 'NewAppWidget';
+
+abstract class AppHomeWidget {
+  static Future<void> init() async {
+    HomeWidget.setAppGroupId(appGroupId);
+  }
+
+  static Future<void> updateWidget(HomeWidgetData data) async {
+    try {
+      await HomeWidget.saveWidgetData<String>('app_url', data.url);
+      await HomeWidget.updateWidget(
+        name: androidWidgetName,
+        iOSName: iOSWidgetName,
+        androidName: androidWidgetName,
+      );
+    } catch (e) {
+      log('❌ Error updating widget: $e');
+    }
+  }
+
+  static const String backgroundTaskName = 'home_widget_background_task';
+}
 
 class HomeWidgetData {
   final String url;

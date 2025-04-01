@@ -96,3 +96,9 @@ flutter {
 dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828' // Use the latest version available
 }
+
+configurations {
+    all {
+        exclude group: 'androidx.work', module: 'work-runtime-ktx'
+    }
+}
