@@ -1,14 +1,14 @@
 package com.vinhnt.meow_app
 
-import android.appwidget.*
-import android.content.*
-import android.widget.*
-import com.squareup.picasso.*
-import es.antonborri.home_widget.*
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.Context
+import android.content.Intent
+import android.widget.RemoteViews
+import com.squareup.picasso.Picasso
+import es.antonborri.home_widget.HomeWidgetPlugin
 
-/**
- * Implementation of App Widget functionality.
- */
 class NewAppWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -16,7 +16,6 @@ class NewAppWidget : AppWidgetProvider() {
         appWidgetIds: IntArray,
     ) {
         for (appWidgetId in appWidgetIds) {
-            // Get reference to SharedPreferences (or some data source)
             val widgetData = HomeWidgetPlugin.getData(context)
             val views = RemoteViews(context.packageName, R.layout.new_app_widget)
 
@@ -25,13 +24,21 @@ class NewAppWidget : AppWidgetProvider() {
 
             // Only load the image if the URL is valid
             if (!imageUrl.isNullOrEmpty()) {
-                // Create AppWidgetTarget for Glide to load the image into the widget
                 Picasso.get()
-                    .load(imageUrl)  // Image URL to load
+                    .load(imageUrl)
                     .into(views, R.id.widget_image, intArrayOf(appWidgetId))
             }
 
-            // Update the widget with the modified views
+            // ➕ Setup tap-to-launch app
+            val intent = Intent(context, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            views.setOnClickPendingIntent(R.id.widget_container, pendingIntent)
+
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
