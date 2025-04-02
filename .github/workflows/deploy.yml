@@ -26,7 +26,8 @@ jobs:
       - name: Auto set version in pubspec.yaml
         id: versioning
         run: |
-          VERSION_NAME=$(git describe --tags --abbrev=0 || echo "0.0.0")
+          RAW_TAG=$(git describe --tags --abbrev=0 || echo "0.0.0")
+          VERSION_NAME="${RAW_TAG#v}"  # remove 'v' prefix if exists
           VERSION_CODE=${GITHUB_RUN_NUMBER}
       
           echo "🔖 Version set to $VERSION_NAME+$VERSION_CODE"
