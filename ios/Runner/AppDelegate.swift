@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import FBSDKCoreKit
 import WidgetKit
+import FirebaseCore
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -9,6 +10,8 @@ import WidgetKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    FirebaseApp.configure()
+
     GeneratedPluginRegistrant.register(with: self)
 
     FBSDKCoreKit.ApplicationDelegate.shared.application(

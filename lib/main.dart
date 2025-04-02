@@ -12,6 +12,7 @@ import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/background_worker/background_worker.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
+import 'feature/firebase/firebase.dart';
 import 'feature/home_widget/home_widget_page.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
@@ -24,6 +25,7 @@ GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await configFirebase();
   InternetCheckerHelper.connectivity.onConnectivityChanged.listen(InternetCheckerHelper.changeConnectivityResult);
   await Future.wait([
     EasyLocalization.ensureInitialized(),
