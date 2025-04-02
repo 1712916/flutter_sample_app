@@ -2,8 +2,8 @@ name: Deploy to Google Play
 
 on:
   push:
-    branches:
-      - meow-app-v2
+    tags:
+      - 'v*' # Chỉ trigger khi push tag như v1.7.0
 
 jobs:
   build:
@@ -13,7 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch full history and tags
+          fetch-depth: 0
+
+      - name: Check if tag is from meow-app-v2 branch
+        id: check_branch
+        run: |
+          git fetch origin meow-app-v2
+          if git merge-base --is-ancestor origin/meow-app-v2 $GITHUB_SHA; then
+            echo "✅ Tag commit is on meow-app-v2"
+          else
+            echo "❌ Tag commit is NOT on meow-app-v2. Skipping deployment."
+            exit 1
+          fi
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -23,16 +34,16 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Auto set version in pubspec.yaml
+      - name: Set version from tag
         id: versioning
         run: |
-          RAW_TAG=$(git describe --tags --abbrev=0 || echo "0.0.0")
-          VERSION_NAME="${RAW_TAG#v}"  # remove 'v' prefix if exists
+          TAG_NAME="${GITHUB_REF_NAME}"
+          VERSION_NAME="${TAG_NAME#v}"
           VERSION_CODE=${GITHUB_RUN_NUMBER}
-      
+
           echo "🔖 Version set to $VERSION_NAME+$VERSION_CODE"
           sed -i "s/^version: .*/version: $VERSION_NAME+$VERSION_CODE/" pubspec.yaml
-      
+
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       - name: Run build_runner
@@ -51,7 +62,6 @@ jobs:
 
       - name: Build release AAB
         env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -80,11 +90,3 @@ jobs:
             --package_name com.vinhnt.meow_app \
             --aab ../build/app/outputs/bundle/release/app-release.aab \
             --track internal
-
-      - name: Tag Git with version
-        if: github.ref == 'refs/heads/meow-app-v2'
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git tag v${{ env.VERSION_NAME }}
-          git push origin v${{ env.VERSION_NAME }}
