@@ -26,13 +26,12 @@ jobs:
       - name: Auto set version in pubspec.yaml
         id: versioning
         run: |
-          COMMIT_COUNT=$(git rev-list --count HEAD)
-          GIT_TAG=$(git describe --tags --abbrev=0 || echo "0.0.0")
-          VERSION_NAME="$GIT_TAG+$COMMIT_COUNT"
-
-          echo "🔖 Version set to $VERSION_NAME"
-          sed -i "s/^version: .*/version: $VERSION_NAME/" pubspec.yaml
-
+          VERSION_NAME=$(git describe --tags --abbrev=0 || echo "0.0.0")
+          VERSION_CODE=${GITHUB_RUN_NUMBER}
+      
+          echo "🔖 Version set to $VERSION_NAME+$VERSION_CODE"
+          sed -i "s/^version: .*/version: $VERSION_NAME+$VERSION_CODE/" pubspec.yaml
+      
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       - name: Run build_runner
