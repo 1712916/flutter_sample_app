@@ -1,6 +1,7 @@
 export 'app_bar.dart';
 export 'confirm_dialog.dart';
 export 'custom_dropdown.dart';
+export 'diaglog.dart';
 export 'download_button.dart';
 export 'image_view.dart';
 export 'loading_dialog.dart';

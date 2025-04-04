@@ -6,14 +6,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:meow_app/feature/game/game_complete_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/custom_dropdown_only_child.dart';
 
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
-import 'cell_widget.dart';
-import 'directional_control_widget.dart';
 import 'game_manager.dart';
+import 'play_area_widget.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({
@@ -70,7 +70,7 @@ class _GamePageState extends State<GamePage> {
 
   LoadStatus _loadStatus = LoadStatus.init;
 
-  final GlobalKey<_PlayAreaState> _gameBoardKey = GlobalKey();
+  final GlobalKey<PlayAreaState> _gameBoardKey = GlobalKey();
 
   int gameSize = 3;
 
@@ -138,10 +138,23 @@ class _GamePageState extends State<GamePage> {
               ),
               const Divider(color: Colors.black),
               Expanded(
-                child: _PlayArea(
+                child: PlayArea(
                   key: _gameBoardKey,
                   image: _image!,
-                  onComplete: () => confettiController.play(),
+                  onComplete: () {
+                    confettiController.play();
+                    GameCompleteWidget(
+                      countStep: _gameBoardKey.currentState!.countMoveStep,
+                      onExit: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                      onPlayAgain: () {
+                        Navigator.of(context).pop();
+                        reloadScramble();
+                      },
+                    ).show(context);
+                  },
                   gameSize: gameSize,
                 ),
               ),
@@ -238,330 +251,6 @@ class _MemoryImageState extends State<_MemoryImage> {
   @override
   Widget build(BuildContext context) {
     return w ?? const Placeholder();
-  }
-}
-
-class _PlayArea extends StatefulWidget {
-  const _PlayArea({
-    Key? key,
-    required this.image,
-    this.onComplete,
-    this.gameSize = 3,
-  }) : super(key: key);
-
-  final imglib.Image image;
-  final VoidCallback? onComplete;
-  final int gameSize;
-
-  @override
-  State<_PlayArea> createState() => _PlayAreaState();
-}
-
-class _PlayAreaState extends State<_PlayArea> {
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
-  final ValueNotifier<double> scaleNotifier = ValueNotifier(0.7);
-
-  int get gameSize => widget.gameSize;
-
-  void setZoom(double value) {
-    scaleNotifier.value = value;
-  }
-
-  double get zoomLevel => scaleNotifier.value;
-
-  EmptyBox emptyBox = EmptyBox(x: 0, y: 0);
-
-  late GameMatrix gameMatrix;
-
-  List<List<GlobalKey<CellWidgetState>>> cellMatrix = [];
-
-  Map<String, GlobalKey<CellWidgetState>> moveTracking = {};
-
-  List<Widget> _getCell() {
-    final int imageCellWidth = (widget.image.width / gameSize).floor();
-    final int imageCellHeight = (widget.image.height / gameSize).floor();
-    List<List<imglib.Image>> croppedImage = getCroppedImage(widget.image, gameSize);
-    List<Widget> c = [];
-    for (int i = 0; i < gameMatrix.length; i++) {
-      for (int j = 0; j < gameMatrix[i].length; j++) {
-        c.add(
-          CellWidget(
-            key: cellMatrix[i][j],
-            size: GameManager.gameBoardWidth / gameSize,
-            jumpSize: GameManager.gameBoardWidth / gameSize,
-            destination: gameMatrix[i][j],
-            child: RenderImage(
-              imageCellHeight: imageCellHeight,
-              imageCellWidth: imageCellWidth,
-              cellPosition: gameMatrix[i][j],
-              image: croppedImage[i][j],
-            ),
-          ),
-        );
-
-        moveTracking[gameMatrix[i][j].getKey()] = cellMatrix[i][j];
-      }
-    }
-    return c;
-  }
-
-  final Map<int, List<List<imglib.Image>>> _cache = {};
-
-  List<List<imglib.Image>> getCroppedImage(imglib.Image image, int size) {
-    if (_cache.containsKey(size)) {
-      return _cache[size]!;
-    }
-    _cache[size] = copyCropMatrix(image, size);
-    return _cache[size]!;
-  }
-
-  @override
-  void dispose() {
-    _cache.clear();
-    scaleNotifier.dispose();
-    super.dispose();
-  }
-
-  void validate() {
-    for (var r in gameMatrix) {
-      for (var c in r) {
-        if (!c.validate()) {
-          return;
-        }
-      }
-    }
-    widget.onComplete?.call();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setUp();
-    setUpMatrix();
-  }
-
-  @override
-  void didUpdateWidget(covariant _PlayArea oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.image != widget.image || oldWidget.gameSize != widget.gameSize) {
-      setUp();
-    }
-
-    if (oldWidget.gameSize != widget.gameSize) {
-      setUpMatrix();
-    }
-  }
-
-  void setUpMatrix() {
-    cellMatrix = List.generate(gameSize, (i) {
-      return List.generate(gameSize, (j) {
-        return GlobalKey<CellWidgetState>();
-      });
-    });
-  }
-
-  void setUp() {
-    final game = Game(size: gameSize)..initializeGame();
-    gameMatrix = game.gameMatrix;
-    emptyBox = game.emptyBox;
-  }
-
-  bool isScrambling = false;
-
-  void reScramble() {
-    if (isScrambling) {
-      return;
-    }
-
-    isScrambling = true;
-    setUp();
-    isScrambling = false;
-    setState(() {});
-  }
-
-  void _moveLeft() {
-    final k = moveTracking[emptyBox.getRightKey()];
-    if (k != null) {
-      k.currentState?.moveBack();
-      moveTracking[emptyBox.getKey()] = k;
-      emptyBox.moveRight();
-    }
-  }
-
-  void _moveRight() {
-    final k = moveTracking[emptyBox.getLeftKey()];
-    if (k != null) {
-      k.currentState?.moveForward();
-      moveTracking[emptyBox.getKey()] = k;
-      emptyBox.moveLeft();
-    }
-  }
-
-  void _moveDown() {
-    final k = moveTracking[emptyBox.getUpKey()];
-    if (k != null) {
-      k.currentState?.moveDown();
-      moveTracking[emptyBox.getKey()] = k;
-      emptyBox.moveUp();
-      if (emptyBox.getKey() == '0_-1') {
-        validate();
-      }
-    }
-  }
-
-  void _moveUp() {
-    final k = moveTracking[emptyBox.getDownKey()];
-    if (k != null) {
-      k.currentState?.moveUp();
-      moveTracking[emptyBox.getKey()] = k;
-      emptyBox.moveDown();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<double>(
-      valueListenable: scaleNotifier,
-      builder: (context, value, _) {
-        return DirectionalControlWidget(
-          moveLeft: _moveLeft,
-          moveRight: _moveRight,
-          moveDown: _moveDown,
-          moveUp: _moveUp,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Transform.scale(
-                scale: value,
-                child: CustomPaint(
-                  foregroundPainter: _BoarderPainter(
-                    y: gameSize,
-                    x: gameSize,
-                    color: Theme.of(context).highlightColor2,
-                  ),
-                  child: SizedBox(
-                    width: GameManager.gameBoardWidth,
-                    height: GameManager.gameBoardHeight,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: _getCell(),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _BoarderPainter extends CustomPainter {
-  final int y;
-  final int x;
-  final Color? color;
-
-  _BoarderPainter({required this.y, required this.x, this.color});
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = color ?? Colors.cyan
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-
-    Path path = Path();
-    path.moveTo(0, -size.height / y);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width, size.height);
-    path.lineTo(size.width, 0);
-
-    path.lineTo(size.width / x, 0);
-    path.lineTo(size.width / x, -size.height / y);
-    path.lineTo(-1, -size.height / y);
-    canvas.drawPath(path, paint);
-  }
-}
-
-class Game {
-  late List<List<GameMatrixItem>> gameMatrix;
-  late EmptyBox emptyBox;
-  Map<String, GameMatrixItem> moveTracking = {};
-  final int size; // Kích thước bảng N x N
-
-  Game({required this.size});
-
-  void initializeGame() {
-    gameMatrix = List.generate(size, (y) {
-      return List.generate(size, (x) {
-        return GameMatrixItem(x: x, y: y);
-      });
-    });
-
-    // Đặt vị trí ô trống ban đầu
-    emptyBox = EmptyBox(x: 0, y: 0);
-    gameMatrix[0][0].sx = 0;
-    gameMatrix[0][0].sy = -1;
-
-    // Khởi tạo moveTracking
-    for (var row in gameMatrix) {
-      for (var item in row) {
-        moveTracking[item.getKey()] = item;
-      }
-    }
-
-    // Tạo danh sách di chuyển
-    var moveTypes = genMoveList();
-    moveTypes.forEach(_move);
-  }
-
-  void _move(MoveType moveType) {
-    switch (moveType) {
-      case MoveType.left:
-        final r = moveTracking[emptyBox.getRightKey()];
-        if (r != null) {
-          r.sx--;
-          moveTracking[emptyBox.getKey()] = r;
-          emptyBox.moveRight();
-        }
-        break;
-      case MoveType.right:
-        final r = moveTracking[emptyBox.getLeftKey()];
-        if (r != null) {
-          r.sx++;
-          moveTracking[emptyBox.getKey()] = r;
-          emptyBox.moveLeft();
-        }
-        break;
-      case MoveType.up:
-        final r = moveTracking[emptyBox.getDownKey()];
-        if (r != null) {
-          r.sy--;
-          moveTracking[emptyBox.getKey()] = r;
-          emptyBox.moveDown();
-        }
-        break;
-      case MoveType.down:
-        final r = moveTracking[emptyBox.getUpKey()];
-        if (r != null) {
-          r.sy++;
-          moveTracking[emptyBox.getKey()] = r;
-          emptyBox.moveUp();
-        }
-        break;
-    }
   }
 }
 

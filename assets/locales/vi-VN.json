@@ -71,5 +71,9 @@
   "favourite": "Yêu thích",
   "choose": "Chọn",
   "noFavourite":  "Không có yêu thích",
-  "selected": "đã chọn"
+  "selected": "đã chọn",
+  "gameCompleteTitle": "\uD83C\uDF89 Hoàn thành trò chơi!",
+  "gameCompleteDescription": "Bạn đã hoàn thành trò chơi trong {countStep} bước!",
+  "playAgain": "Chơi lại",
+  "exit": "Thoát"
 }

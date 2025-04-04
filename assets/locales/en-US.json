@@ -57,13 +57,10 @@
   "showcase": {
     "switchViewTitle": "Tap to switch",
     "switchViewDescription": "Tap to toggle between image meow and image gaow",
-
     "gridViewTitle": "Tap to view",
     "gridViewDescription": "Tap to view images in grid layout",
-
     "shareViewTitle": "Tap to share",
     "shareViewDescription": "Tap to share image with your friends",
-
     "gameBoardTitle": "Tap to play",
     "gameBoardDescription": "Tap to start playing the game"
   },
@@ -71,5 +68,9 @@
   "favourite": "Favourite",
   "choose": "Choose",
   "noFavourite": "No Favourite",
-  "selected": "selected"
+  "selected": "selected",
+  "gameCompleteTitle": "\uD83C\uDF89 Game Complete!",
+  "gameCompleteDescription": "You completed the game in {countStep} steps!",
+  "playAgain": "Play Again",
+  "exit": "Exit"
 }
