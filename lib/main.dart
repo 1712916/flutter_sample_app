@@ -13,6 +13,7 @@ import 'dependencies/app_dependencies.dart';
 import 'feature/background_worker/background_worker.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
 import 'feature/firebase/firebase.dart';
+import 'feature/game/cubit/game_setting_cubit.dart';
 import 'feature/home_widget/home_widget_page.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
@@ -88,6 +89,7 @@ class _MaterialApp extends StatefulWidget {
 class _MaterialAppState extends State<_MaterialApp> {
   final ImageListCubit imageListCubit = GetIt.I.get();
   final FavouriteCubit favouriteCubit = GetIt.I.get();
+  final GameSettingCubit gameSettingCubit = GetIt.I.get();
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -97,6 +99,7 @@ class _MaterialAppState extends State<_MaterialApp> {
           providers: [
             BlocProvider(create: (_) => imageListCubit),
             BlocProvider(create: (_) => favouriteCubit),
+            BlocProvider(create: (_) => gameSettingCubit),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

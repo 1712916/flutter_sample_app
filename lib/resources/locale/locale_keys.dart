@@ -104,4 +104,6 @@ class LKey {
   static const String gameCompleteDescription = 'gameCompleteDescription';
   static const String playAgain = 'playAgain';
   static const String exit = 'exit';
+
+  static const String gameController = 'gameController';
 }

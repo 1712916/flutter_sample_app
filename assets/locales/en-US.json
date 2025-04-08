@@ -72,5 +72,6 @@
   "gameCompleteTitle": "\uD83C\uDF89 Game Complete!",
   "gameCompleteDescription": "You completed the game in {countStep} steps!",
   "playAgain": "Play Again",
-  "exit": "Exit"
+  "exit": "Exit",
+  "gameController": "Game Controller"
 }
