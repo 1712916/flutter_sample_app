@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
@@ -29,23 +30,6 @@ class ControlBarWidget extends StatefulWidget {
 
 class _ControlBarWidgetState extends State<ControlBarWidget> {
   bool _isVisible = true;
-
-  void _handleSwipeClose(DragEndDetails details) {
-    final velocity = details.primaryVelocity ?? 0;
-    setState(() {
-      if (velocity > 0) {
-        _isVisible = false;
-      } else if (velocity < 0) {
-        _isVisible = true;
-      }
-    });
-  }
-
-  void _handleSwipeToOpen(DragEndDetails details) {
-    setState(() {
-      _isVisible = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,9 +152,26 @@ class _ControlBarWidgetState extends State<ControlBarWidget> {
       ],
     );
   }
+
+  void _handleSwipeClose(DragEndDetails details) {
+    final velocity = details.primaryVelocity ?? 0;
+    setState(() {
+      if (velocity > 0) {
+        _isVisible = false;
+      } else if (velocity < 0) {
+        _isVisible = true;
+      }
+    });
+  }
+
+  void _handleSwipeToOpen(DragEndDetails details) {
+    setState(() {
+      _isVisible = true;
+    });
+  }
 }
 
-class ControlBarWrapper extends StatelessWidget {
+class ControlBarWrapper extends StatefulWidget {
   const ControlBarWrapper({
     super.key,
     required this.onDirectionTap,
@@ -189,35 +190,98 @@ class ControlBarWrapper extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocSelector<GameSettingCubit, GameSettingState, bool>(
-      selector: (state) => state.gameController,
-      builder: (context, isShow) {
-        if (!isShow) {
-          return child;
-        }
+  State<ControlBarWrapper> createState() => _ControlBarWrapperState();
+}
 
-        return Stack(
-          fit: StackFit.loose,
-          children: [
-            child,
-            Positioned(
-              bottom: 40,
-              left: 0,
-              right: 0,
-              child: ControlBarWidget(
-                onDirectionTap: onDirectionTap,
-                iconColor: iconColor,
-                duration: duration,
-                barColor: Theme.of(context).highlightColor2,
-                centerHoleColor: centerHoleColor,
-                toggleButtonColor: toggleButtonColor,
+class _ControlBarWrapperState extends State<ControlBarWrapper> with WidgetsBindingObserver {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+
+    super.initState();
+
+    _focusNode.addListener(_handleFocusChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleFocusChanged();
+    });
+  }
+
+  void _handleFocusChanged() {
+    if (!_focusNode.hasFocus) {
+      _focusNode.requestFocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_handleFocusChanged);
+    _focusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _handleFocusChanged();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyboardListener(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKeyEvent: _handleKeyPress,
+      child: BlocSelector<GameSettingCubit, GameSettingState, bool>(
+        selector: (state) => state.gameController,
+        builder: (context, isShow) {
+          if (!isShow) {
+            return widget.child;
+          }
+
+          return Stack(
+            fit: StackFit.loose,
+            children: [
+              widget.child,
+              Positioned(
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: ControlBarWidget(
+                  onDirectionTap: widget.onDirectionTap,
+                  iconColor: widget.iconColor,
+                  duration: widget.duration,
+                  barColor: Theme.of(context).highlightColor2,
+                  centerHoleColor: widget.centerHoleColor,
+                  toggleButtonColor: widget.toggleButtonColor,
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
+  }
+
+  void _handleKeyPress(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      final data = event.logicalKey;
+
+      if (data == LogicalKeyboardKey.arrowUp) {
+        widget.onDirectionTap(Direction.up);
+      } else if (data == LogicalKeyboardKey.arrowDown) {
+        widget.onDirectionTap(Direction.down);
+      } else if (data == LogicalKeyboardKey.arrowLeft) {
+        widget.onDirectionTap(Direction.left);
+      } else if (data == LogicalKeyboardKey.arrowRight) {
+        widget.onDirectionTap(Direction.right);
+      }
+    }
   }
 }
 
