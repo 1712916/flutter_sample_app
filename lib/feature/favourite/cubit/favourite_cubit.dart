@@ -26,7 +26,7 @@ class FavouriteState extends Equatable {
 class FavouriteCubit extends Cubit<FavouriteState> {
   FavouriteCubit() : super(FavouriteState(items: []));
 
-  final LandCertificateRepository _landCertificateRepository = LandCertificateRepositoryImpl();
+  final FavouriteRepository _landCertificateRepository = FavouriteRepositoryImpl();
 
   void addFavouriteItem(String url) async {
     final existingItem = await _landCertificateRepository.getOneByName(url);

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/feature/image/data/image_repository.dart';
 
 import '../../../../data/data.dart';
 import '../../../../data/response/status_code.dart';
@@ -15,8 +16,10 @@ class ImageListCubit extends Cubit<ImageListState> {
   ImageListCubit() : super(ImageListState.init());
 
   final ISearchRepository searchRepository = SearchRepository();
+  final ImageRepository _cacheImageRepository = ImageRepositoryImpl();
 
   int _page = 0;
+  int _cacheOffset = 0;
 
   final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
@@ -50,6 +53,16 @@ class ImageListCubit extends Cubit<ImageListState> {
       );
 
       if (response.statusCode == StatusCode.success) {
+        _cacheImageRepository.addList(
+          response.data
+                  ?.where((e) => e.url != null)
+                  .map((e) => ImageItem(
+                        url: e.url!,
+                      ))
+                  .toList() ??
+              [],
+        );
+
         if (!isClosed) {
           emit(
             state.copyWith(
@@ -60,33 +73,49 @@ class ImageListCubit extends Cubit<ImageListState> {
             ),
           );
         }
+
         _page++;
         return;
       }
 
       if (retry) {
         await _randomLoad(number);
-      } else {
-        _handleError(response.statusCode ?? 0);
+        return;
       }
+
+      _handleError(response.statusCode ?? StatusCode.badRequest);
     } catch (e, stackTrace) {
-      // Log lỗi để dễ debug hơn
       debugPrint('Error in _randomLoad: $e\n$stackTrace');
       if (!retry) {
         Toast.makeText(message: LKey.haveAnError.tr());
       }
+      _handleError(StatusCode.badRequest);
     }
   }
 
   void _handleError(int statusCode) {
-    switch (statusCode) {
-      case StatusCode.requestTimeout:
-        Toast.makeText(message: LKey.timeOutMessage.tr());
-        break;
-      default:
-        Toast.makeText(message: LKey.haveAnError.tr());
-        break;
-    }
+    _cacheImageRepository.getList(limit: 10, offset: _cacheOffset).then((images) {
+      if (images.isNotEmpty) {
+        emit(
+          state.copyWith(
+            images: List.from(
+              Set.from([...?state.images, ...images.map((e) => SearchModel(url: e.url))]),
+            ),
+            loadStatus: LoadStatus.loaded,
+          ),
+        );
+        _cacheOffset++;
+      } else {
+        switch (statusCode) {
+          case StatusCode.requestTimeout:
+            Toast.makeText(message: LKey.timeOutMessage.tr());
+            break;
+          default:
+            Toast.makeText(message: LKey.haveAnError.tr());
+            break;
+        }
+      }
+    });
   }
 
   void showGridView() {
@@ -111,6 +140,7 @@ class ImageListCubit extends Cubit<ImageListState> {
   Future refreshData() async {
     emit(state.copyWith(images: [], loadStatus: LoadStatus.loading));
     _page = 0;
+    _cacheOffset = 0;
     setCurrentIndex(0);
     return init();
   }
