@@ -12,6 +12,7 @@ import 'package:meow_app/widgets/custom_dropdown_only_child.dart';
 
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
+import '../../routers/route.dart';
 import 'game_manager.dart';
 import 'play_area_widget.dart';
 
@@ -37,13 +38,15 @@ class _GamePageState extends State<GamePage> {
       appBar: CustomAppBar(
         title: '',
         actions: [
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: Icon(
-          //     Icons.settings,
-          //     color: theme.iconColor,
-          //   ),
-          // ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(RouteManager.gameSettingPage);
+            },
+            icon: Icon(
+              HugeIcons.strokeRoundedSettings01,
+              color: theme.iconColor,
+            ),
+          ),
         ],
       ),
       body: Builder(

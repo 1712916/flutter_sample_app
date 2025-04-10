@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:meow_app/feature/game/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../widgets/widgets.dart';
 import 'cell_widget.dart';
 import 'directional_control_widget.dart';
 import 'game_manager.dart';
-import 'game_page.dart';
 
 class PlayArea extends StatefulWidget {
   const PlayArea({
@@ -213,36 +213,41 @@ class PlayAreaState extends State<PlayArea> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<double>(
-      valueListenable: scaleNotifier,
-      builder: (context, scale, _) {
-        return DirectionalControlWidget(
-          moveLeft: () => _move(Direction.left),
-          moveRight: () => _move(Direction.right),
-          moveUp: () => _move(Direction.up),
-          moveDown: () => _move(Direction.down),
-          child: Center(
-            child: Transform.scale(
-              scale: scale,
-              child: CustomPaint(
-                foregroundPainter: _BoarderPainter(
-                  x: gameSize,
-                  y: gameSize,
-                  color: Theme.of(context).highlightColor2,
-                ),
-                child: SizedBox(
-                  width: GameManager.gameBoardWidth,
-                  height: GameManager.gameBoardHeight,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: _buildCells(),
+    return ControlBarWrapper(
+      onDirectionTap: (value) {
+        _move(value);
+      },
+      child: ValueListenableBuilder<double>(
+        valueListenable: scaleNotifier,
+        builder: (context, scale, _) {
+          return DirectionalControlWidget(
+            moveLeft: () => _move(Direction.left),
+            moveRight: () => _move(Direction.right),
+            moveUp: () => _move(Direction.up),
+            moveDown: () => _move(Direction.down),
+            child: Center(
+              child: Transform.scale(
+                scale: scale,
+                child: CustomPaint(
+                  foregroundPainter: _BoarderPainter(
+                    x: gameSize,
+                    y: gameSize,
+                    color: Theme.of(context).highlightColor2,
+                  ),
+                  child: SizedBox(
+                    width: GameManager.gameBoardWidth,
+                    height: GameManager.gameBoardHeight,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: _buildCells(),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
