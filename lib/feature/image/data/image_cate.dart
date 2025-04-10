@@ -1,0 +1,4 @@
+enum ImageCate {
+  cat,
+  dog;
+}

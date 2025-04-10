@@ -22,14 +22,13 @@ class FavouriteItem extends GetId<int> {
   });
 }
 
-abstract class LandCertificateRepository
+abstract class FavouriteRepository
     implements
         CrudRepository<FavouriteItem, int>,
         GetOneByNameRepository<FavouriteItem>,
         GetListRepository<FavouriteItem> {}
 
-class LandCertificateRepositoryImpl extends LandCertificateRepository
-    with IsarCrudRepository<FavouriteItem, FavouriteCollection> {
+class FavouriteRepositoryImpl extends FavouriteRepository with IsarCrudRepository<FavouriteItem, FavouriteCollection> {
   final Isar _isar = Isar.getInstance()!;
 
   @override
