@@ -58,6 +58,8 @@ class ImageListCubit extends Cubit<ImageListState> {
                   ?.where((e) => e.url != null)
                   .map((e) => ImageItem(
                         url: e.url!,
+                        width: e.width,
+                        height: e.height,
                       ))
                   .toList() ??
               [],

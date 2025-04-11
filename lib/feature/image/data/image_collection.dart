@@ -9,6 +9,8 @@ class ImageCollection {
   Id id = Isar.autoIncrement;
 
   late String url;
+  late double? width;
+  late double? height;
 
   @enumerated
   late ImageCate cate;
