@@ -12,10 +12,14 @@ class ImageItem extends GetId<int> {
   final int? id;
 
   final String url;
+  final double? width;
+  final double? height;
 
   ImageItem({
     this.id,
     required this.url,
+    required this.width,
+    required this.height,
   });
 }
 
@@ -37,6 +41,8 @@ class ImageRepositoryImpl extends ImageRepository {
     return ImageItem(
       id: collection.id,
       url: collection.url,
+      width: collection.width,
+      height: collection.height,
     );
   }
 
@@ -56,6 +62,8 @@ class ImageRepositoryImpl extends ImageRepository {
         items
             .map((item) => ImageCollection()
               ..url = item.url
+              ..width = item.width
+              ..height = item.height
               ..cate = _cate)
             .toList(),
       );

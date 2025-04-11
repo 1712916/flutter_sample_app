@@ -6,6 +6,8 @@ import '../../core/base/base_state.dart';
 import '../../widgets/widgets.dart';
 import 'cubit/image_list_cubit.dart';
 
+final crossAxisCount = 3;
+
 class ImageGridView extends StatefulWidget {
   const ImageGridView({super.key});
 
@@ -46,6 +48,7 @@ class _ImageGridViewState extends State<ImageGridView> {
               child: LText(LKey.haveAnError),
             );
           case LoadStatus.loaded:
+            final w = MediaQuery.of(context).size.width;
             return RefreshIndicator(
               onRefresh: cubit.refreshData,
               edgeOffset: 120,
@@ -55,7 +58,7 @@ class _ImageGridViewState extends State<ImageGridView> {
                 controller: cubit.gridController,
                 padding: const EdgeInsets.only(top: 120, bottom: 80),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 2,
                   mainAxisSpacing: 2,
                   childAspectRatio: 1,
@@ -74,7 +77,9 @@ class _ImageGridViewState extends State<ImageGridView> {
 
                   final item = state.images![index];
                   final image = item.url ?? '';
-                  //print width height
+                  final memCacheHeight = ((item.height ?? w) / crossAxisCount).toInt();
+                  final memCacheWidth = ((item.width ?? w) / crossAxisCount).toInt();
+
                   return GestureDetector(
                     onTap: () {
                       cubit.showPageView(index);
@@ -93,8 +98,8 @@ class _ImageGridViewState extends State<ImageGridView> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: AppImage(
-                          memCacheHeight: (item.height! / 3).toInt(),
-                          memCacheWidth: (item.width! / 3).toInt(),
+                          memCacheHeight: memCacheHeight,
+                          memCacheWidth: memCacheWidth,
                           image: image,
                         ),
                       ),
