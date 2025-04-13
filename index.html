@@ -1,35 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Redirecting...</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        window.onload = function () {
-          const userAgent = navigator.userAgent || navigator.vendor;
+  <title>Meow App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    h1, h2 { color: #ff4081; }
+    .readme-content { margin-top: 3rem; }
+  </style>
+  <script>
+    window.onload = function () {
+      const userAgent = navigator.userAgent || navigator.vendor;
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get("ref") || "default";
 
-          // Lấy ref từ query (nếu có)
-          const urlParams = new URLSearchParams(window.location.search);
-          const ref = urlParams.get("ref") || "default";
+      const deepLink = `meowapp://invite?ref=${ref}`;
+      const iosStore = "https://apps.apple.com/app/idYOUR_APP_ID";
+      const androidStore = "https://play.google.com/store/apps/details?id=com.vinhnt.meow_app";
 
-          const deepLink = `meowapp://invite?ref=${ref}`;
-          const iosStore = "https://apps.apple.com/app/idYOUR_APP_ID";
-          const androidStore = "https://play.google.com/store/apps/details?id=com.vinhnt.meow_app";
+      // Mở app
+      window.location.href = deepLink;
 
-          // Mở app qua deep link
-          window.location.href = deepLink;
+      // Fallback sau 2s + tiếp tục hiển thị nội dung web
+      setTimeout(function () {
+        if (/android/i.test(userAgent)) {
+          window.location.href = androidStore;
+        } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+          window.location.href = iosStore;
+        }
 
-          // Fallback nếu app chưa cài
-          setTimeout(function () {
-            if (/android/i.test(userAgent)) {
-              window.location.href = androidStore;
-            } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-              window.location.href = iosStore;
-            }
-          }, 2000);
-        };
-    </script>
+        // Hiển thị nội dung thêm dưới
+        document.getElementById("status").innerText = "Ứng dụng không mở? Bạn có thể tải tại link bên dưới.";
+        document.getElementById("readme").style.display = 'block';
+      }, 2000);
+    };
+  </script>
 </head>
 <body>
-<p>Đang chuyển hướng đến ứng dụng...</p>
+  <h1>🚀 Meow App</h1>
+  <p id="status">Đang chuyển hướng đến ứng dụng...</p>
+
+  <div id="readme" class="readme-content" style="display: none;">
+    <h2>👋 Chào mừng đến với Meow</h2>
+    <p>Meow là trò chơi giải đố thú vị dành cho mọi lứa tuổi. Bạn có thể chơi, chia sẻ, và nhận thưởng qua lời mời bạn bè!</p>
+    <ul>
+      <li>🧠 Tăng độ khó dần theo từng màn chơi</li>
+      <li>🏆 Chia sẻ để nhận phần thưởng đặc biệt</li>
+      <li>📱 Hỗ trợ Android và iOS</li>
+    </ul>
+    <p><a href="https://play.google.com/store/apps/details?id=com.vinhnt.meow_app" target="_blank">Tải Meow trên CH Play</a></p>
+  </div>
 </body>
 </html>
