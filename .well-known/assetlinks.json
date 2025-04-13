@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.vinhnt.meow_app",
+      "sha256_cert_fingerprints": [
+        "8B:61:A2:F0:E2:24:81:9D:D7:BF:D6:A7:C9:5C:DC:1E:7B:48:6D:42:09:41:22:57:DE:4D:2F:DE:E0:8A:7B:FD"
+      ]
+    }
+  }
+]

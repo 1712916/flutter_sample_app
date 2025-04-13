@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:app_links/app_links.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +92,45 @@ class _MaterialAppState extends State<_MaterialApp> {
   final ImageListCubit imageListCubit = GetIt.I.get();
   final FavouriteCubit favouriteCubit = GetIt.I.get();
   final GameSettingCubit gameSettingCubit = GetIt.I.get();
+
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    initDeepLinks();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+
+    super.dispose();
+  }
+
+  Future<void> initDeepLinks() async {
+    // Handle links
+    _linkSubscription = AppLinks().uriLinkStream.listen((uri) {
+      debugPrint('onAppLink: $uri');
+      openAppLink(uri);
+    });
+  }
+
+  void openAppLink(Uri uri) {
+    final fragment = uri.fragment; // VD: /invite
+    final queryParams = uri.queryParameters;
+
+    print('📲 Deep link opened: $fragment');
+    print('📦 Query params: $queryParams');
+
+    if (fragment.isEmpty) {
+      navKey.currentState?.popUntil((route) => route.isFirst);
+    } else {
+      navKey.currentState?.pushNamed(fragment, arguments: queryParams);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
