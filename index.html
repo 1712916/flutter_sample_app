@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        window.onload = function () {
+          const userAgent = navigator.userAgent || navigator.vendor;
+
+          // Lấy ref từ query (nếu có)
+          const urlParams = new URLSearchParams(window.location.search);
+          const ref = urlParams.get("ref") || "default";
+
+          const deepLink = `meowapp://invite?ref=${ref}`;
+          const iosStore = "https://apps.apple.com/app/idYOUR_APP_ID";
+          const androidStore = "https://play.google.com/store/apps/details?id=com.vinhnt.meow_app";
+
+          // Mở app qua deep link
+          window.location.href = deepLink;
+
+          // Fallback nếu app chưa cài
+          setTimeout(function () {
+            if (/android/i.test(userAgent)) {
+              window.location.href = androidStore;
+            } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+              window.location.href = iosStore;
+            }
+          }, 2000);
+        };
+    </script>
+</head>
+<body>
+<p>Đang chuyển hướng đến ứng dụng...</p>
+</body>
+</html>

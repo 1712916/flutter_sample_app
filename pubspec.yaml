@@ -55,6 +55,7 @@ dependencies:
   workmanager: ^0.5.2
   firebase_core: ^3.13.0
   firebase_crashlytics: ^4.3.5
+  app_links: ^6.4.0
 
 dev_dependencies:
   flutter_test:
