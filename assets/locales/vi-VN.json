@@ -76,5 +76,6 @@
   "gameCompleteDescription": "Bạn đã hoàn thành trò chơi trong {countStep} bước!",
   "playAgain": "Chơi lại",
   "exit": "Thoát",
-  "gameController": "Điều khiển trò chơi"
+  "gameController": "Điều khiển trò chơi",
+  "shareGameDescription": "\uD83C\uDF89 Tôi vừa hoàn thành trò chơi chỉ với {countStep} bước!\nThử sức bạn tại đây \uD83D\uDC49 {url}"
 }
