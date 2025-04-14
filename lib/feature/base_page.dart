@@ -71,6 +71,12 @@ class StateTemplate<T extends StatefulWidget> extends State<T> {
 
   Color get backgroundColor => theme.scaffoldBackgroundColor2;
 
+  bool isLandscape(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.landscape;
+  }
+
+  bool get isPortrait => !isLandscape(context);
+
   @override
   Widget build(BuildContext context) {
     if (isScaffold) {

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:meow_app/feature/base_page.dart';
 import 'package:meow_app/feature/game/game_complete_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/custom_dropdown_only_child.dart';
@@ -28,47 +29,7 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
-  ThemeData get theme => Theme.of(context);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: '',
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(RouteManager.gameSettingPage);
-            },
-            icon: Icon(
-              HugeIcons.strokeRoundedSettings01,
-              color: theme.iconColor,
-            ),
-          ),
-        ],
-      ),
-      body: Builder(
-        builder: (context) {
-          switch (_loadStatus) {
-            case LoadStatus.init:
-              return const SizedBox();
-            case LoadStatus.loading:
-              return _loadingWidget();
-            case LoadStatus.error:
-              return _errorWidget();
-            case LoadStatus.loaded:
-              GameManager.cellSize = MediaQuery.of(context).size.width / GameManager.widthRatio;
-              return _gameWidget();
-            default:
-              return const SizedBox();
-          }
-        },
-      ),
-    );
-  }
-
+class _GamePageState extends StateTemplate<GamePage> {
   imglib.Image? _image;
 
   LoadStatus _loadStatus = LoadStatus.init;
@@ -99,7 +60,137 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
+  @override
+  PreferredSizeWidget? buildAppBar(BuildContext context) {
+    return CustomAppBar(
+      title: '',
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(RouteManager.gameSettingPage);
+          },
+          icon: Icon(
+            HugeIcons.strokeRoundedSettings01,
+            color: theme.iconColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget buildBody(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        switch (_loadStatus) {
+          case LoadStatus.init:
+            return const SizedBox();
+          case LoadStatus.loading:
+            return _loadingWidget();
+          case LoadStatus.error:
+            return _errorWidget();
+          case LoadStatus.loaded:
+            GameManager.cellSize = MediaQuery.of(context).size.width / GameManager.widthRatio;
+            return _gameWidget();
+          default:
+            return const SizedBox();
+        }
+      },
+    );
+  }
+
   SafeArea _gameWidget() {
+    if (!isPortrait) {
+      return SafeArea(
+        child: Stack(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: PlayArea(
+                        key: _gameBoardKey,
+                        image: _image!,
+                        onComplete: () {
+                          confettiController.play();
+                          GameCompleteWidget(
+                            countStep: _gameBoardKey.currentState!.countMoveStep,
+                            onExit: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            onPlayAgain: () {
+                              Navigator.of(context).pop();
+                              reloadScramble();
+                            },
+                          ).show(context);
+                        },
+                        gameSize: gameSize,
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          GameMatrixLevel(
+                            onTapAction: (x) {
+                              gameSize = x;
+                              setState(() {});
+                            },
+                          ),
+                          ZoomViewRange(
+                            initialZoomLevel: () => _gameBoardKey.currentState?.zoomLevel ?? 0.7,
+                            onZoom: (value) {
+                              _gameBoardKey.currentState?.setZoom(value);
+                            },
+                          ),
+                          IconButton(
+                            onPressed: reloadScramble,
+                            icon: Tooltip(
+                              message: LKey.reScrambleImage.tr(),
+                              child: Icon(
+                                HugeIcons.strokeRoundedRefresh,
+                                color: theme.iconColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 12),
+                      Flexible(child: _Image(image: _image!)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                key: UniqueKey(),
+                confettiController: confettiController,
+                numberOfParticles: 30,
+                // number of particles to emit
+                gravity: 0.05,
+                // gravity - or fall speed
+                shouldLoop: false,
+                blastDirection: pi / 2,
+                colors: const [Colors.green, Colors.blue, Colors.pink], // manually specify the colors to be used
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return SafeArea(
       child: Stack(
         children: [
