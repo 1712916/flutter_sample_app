@@ -180,9 +180,8 @@ class PlayAreaState extends State<PlayArea> {
     return _imageCache.putIfAbsent(size, () => copyCropMatrix(image, size));
   }
 
-  List<Widget> _buildCells() {
-    final imageCellWidth = (widget.image.width / gameSize).floor();
-    final imageCellHeight = (widget.image.height / gameSize).floor();
+  List<Widget> _buildCells(double s) {
+    final cellSize = (s / gameSize).floor();
     final croppedImage = _getCroppedImages(widget.image, gameSize);
 
     final List<Widget> widgets = [];
@@ -193,12 +192,12 @@ class PlayAreaState extends State<PlayArea> {
         widgets.add(
           CellWidget(
             key: cellKey,
-            size: GameManager.gameBoardWidth / gameSize,
-            jumpSize: GameManager.gameBoardWidth / gameSize,
+            size: cellSize.toDouble(),
+            jumpSize: cellSize.toDouble(),
             destination: cell,
             child: RenderImage(
-              imageCellWidth: imageCellWidth,
-              imageCellHeight: imageCellHeight,
+              imageCellWidth: cellSize,
+              imageCellHeight: cellSize,
               cellPosition: cell,
               image: croppedImage[i][j],
             ),
@@ -234,14 +233,15 @@ class PlayAreaState extends State<PlayArea> {
                     y: gameSize,
                     color: Theme.of(context).highlightColor2,
                   ),
-                  child: SizedBox(
-                    width: GameManager.gameBoardWidth,
-                    height: GameManager.gameBoardHeight,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: _buildCells(),
-                    ),
-                  ),
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return AspectRatio(
+                      aspectRatio: 1,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: _buildCells(constraints.maxWidth),
+                      ),
+                    );
+                  }),
                 ),
               ),
             ),

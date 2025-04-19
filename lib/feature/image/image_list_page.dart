@@ -425,8 +425,12 @@ class ShareWidget extends StatelessWidget {
 
   Future show(BuildContext context) {
     return showModalBottomSheet(
-      context: context, useSafeArea: true, // showDragHandle: true,
-      backgroundColor: Theme.of(context).cardColor2, builder: (context) => this,
+      context: context,
+      useSafeArea: true,
+      // showDragHandle: true,
+      backgroundColor: Theme.of(context).cardColor2,
+      builder: (context) => this,
+      isScrollControlled: true,
     );
   }
 
