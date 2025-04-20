@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_widget/home_widget.dart';
+
+import '../image/cubit/image_list_cubit.dart';
 
 const String appGroupId = 'group.vinhnt.widgets';
 const String iOSWidgetName = 'NewsWidget';
@@ -27,6 +30,27 @@ abstract class AppHomeWidget {
   }
 
   static const String backgroundTaskName = 'home_widget_background_task';
+
+  static void handleLaunch(BuildContext context) {
+    HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
+      _launchedFromWidget(context, uri);
+    });
+    HomeWidget.widgetClicked.listen(
+      (uri) {
+        _launchedFromWidget(context, uri);
+      },
+    );
+  }
+
+  static void _launchedFromWidget(BuildContext context, Uri? uri) {
+    if (uri != null) {
+      final imageUrl = uri.queryParameters['image_url'];
+      if (imageUrl != null) {
+        final cubit = context.read<ImageListCubit>();
+        cubit.showImageFromHomeWidget(imageUrl);
+      }
+    }
+  }
 }
 
 class HomeWidgetData {

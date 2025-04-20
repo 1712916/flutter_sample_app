@@ -179,4 +179,29 @@ class ImageListCubit extends Cubit<ImageListState> {
       gridController.jumpTo(targetScrollPosition);
     } catch (e) {}
   }
+
+  void showImageFromHomeWidget(String url) {
+    try {
+      final newItem = SearchModel(url: url);
+      final images = List<SearchModel>.from(state.images ?? []);
+
+      if (state.viewType == ImageViewType.grid) {
+        // Skip if the same image is already at the top
+        if (images.isEmpty || images[0].url != url) {
+          images.insert(0, newItem);
+          emit(state.copyWith(images: images));
+        }
+
+        showPageView(0);
+      } else {
+        // Skip if the image at currentIndex is already the same
+        if (images.isEmpty || images[currentIndex].url != url) {
+          images.insert(currentIndex, newItem);
+          emit(state.copyWith(images: images));
+        }
+      }
+    } catch (e) {
+      debugPrint('Error in showImageFromHomeWidget: $e');
+    }
+  }
 }

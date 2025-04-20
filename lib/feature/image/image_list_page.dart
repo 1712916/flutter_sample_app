@@ -15,6 +15,7 @@ import '../../core/index.dart';
 import '../base_page.dart';
 import '../favourite/count_favourite_widget.dart';
 import '../game/crop_image_view.dart';
+import '../home_widget/home_widget_page.dart';
 import '../showcase/showcase_util.dart';
 import '../showcase/showcase_widget.dart';
 import 'cubit/image_list_cubit.dart';
@@ -61,6 +62,12 @@ class _ImageListPageState extends State<ImageListPage> {
   void dispose() {
     _heroControllerScope.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    AppHomeWidget.handleLaunch(context);
   }
 
   @override

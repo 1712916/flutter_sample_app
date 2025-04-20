@@ -5,9 +5,13 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.RemoteViews
 import com.squareup.picasso.Picasso
 import es.antonborri.home_widget.HomeWidgetPlugin
+import es.antonborri.home_widget.HomeWidgetBackgroundIntent
+import es.antonborri.home_widget.HomeWidgetLaunchIntent
+import es.antonborri.home_widget.HomeWidgetProvider
 
 class NewAppWidget : AppWidgetProvider() {
     override fun onUpdate(
@@ -30,13 +34,21 @@ class NewAppWidget : AppWidgetProvider() {
             }
 
             // ➕ Setup tap-to-launch app
-            val intent = Intent(context, MainActivity::class.java)
-            val pendingIntent = PendingIntent.getActivity(
+            // ➕ Setup tap-to-launch app with URI
+            // Detect App opened via Click inside Flutter
+            val uri = Uri.Builder()
+                .scheme("homewidget")           // ✅ no underscore
+                .authority("open")              // logical name, e.g., like a route
+                .appendPath("image_uri")        // treated as route name
+                .appendQueryParameter("image_url", imageUrl)
+                .build()
+
+            val pendingIntent = HomeWidgetLaunchIntent.getActivity(
                 context,
-                0,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                MainActivity::class.java,
+                uri
             )
+
             views.setOnClickPendingIntent(R.id.widget_container, pendingIntent)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
