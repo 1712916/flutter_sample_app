@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../core/base/index.dart';
+import 'image/cubit/image_list_cubit.dart';
 
 abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends State<T> {
   bool isBody = false;
@@ -134,5 +136,27 @@ mixin LoadingState<T extends StatefulWidget> on State<T> {
 
   Widget buildLoading(BuildContext context) {
     return const SizedBox();
+  }
+}
+
+mixin HandlePopPage<T extends StatefulWidget> on State<T> {
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        try {
+          ImageListCubit cubit = context.read<ImageListCubit>();
+          final navKey = cubit.navKey;
+          final nestedNavigator = navKey.currentState;
+          if (nestedNavigator != null && nestedNavigator.canPop()) {
+            nestedNavigator.pop();
+          } else {
+            SystemNavigator.pop();
+          }
+        } catch (e) {}
+      },
+      child: super.build(context),
+    );
   }
 }

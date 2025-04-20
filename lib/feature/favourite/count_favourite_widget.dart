@@ -38,7 +38,7 @@ class _CountFavouriteWidgetState extends State<CountFavouriteWidget> with Single
 
     isar.favouriteCollections.watchLazy(fireImmediately: true).listen((_) async {
       final count = await isar.favouriteCollections.count();
-      if (count != _favouriteCountNotifier.value) {
+      if (count != _favouriteCountNotifier.value && mounted) {
         _favouriteCountNotifier.value = count;
         _controller.forward(from: 0);
       }

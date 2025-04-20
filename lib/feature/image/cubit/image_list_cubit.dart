@@ -120,17 +120,25 @@ class ImageListCubit extends Cubit<ImageListState> {
     });
   }
 
-  void showGridView() {
+  void enableMenuGrid() {
     emit(
       state.copyWith(viewType: ImageViewType.grid),
     );
+  }
+
+  void showGridView() {
+    enableMenuGrid();
     navKey.currentState!.pop();
   }
 
   void showPageView(int index) {
     setCurrentIndex(index);
     emit(state.copyWith(viewType: ImageViewType.page));
-    navKey.currentState!.pushNamed(state.viewType.path);
+    navKey.currentState!.pushNamed(state.viewType.path).whenComplete(() {
+      if (state.viewType == ImageViewType.page) {
+        enableMenuGrid();
+      }
+    });
   }
 
   void switchView(bool isMeow) async {

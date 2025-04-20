@@ -12,6 +12,7 @@ import '../../../routers/route.dart';
 import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
+import '../base_page.dart';
 import '../favourite/count_favourite_widget.dart';
 import '../game/crop_image_view.dart';
 import '../showcase/showcase_util.dart';
@@ -28,8 +29,10 @@ class ImageListPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ImageListPageState createState() => _ImageListPageState();
+  _ImageListPageState createState() => _HandlePopImageListPageState();
 }
+
+class _HandlePopImageListPageState extends _ImageListPageState with HandlePopPage<ImageListPage> {}
 
 class _ImageListPageState extends State<ImageListPage> {
   late final HeroController _heroControllerScope;
@@ -116,6 +119,7 @@ class _ImageListPageState extends State<ImageListPage> {
             case ImageViewType.page:
               {
                 return PageRouteBuilder(
+                  settings: settings,
                   fullscreenDialog: true,
                   transitionDuration: const Duration(milliseconds: 400),
                   reverseTransitionDuration: const Duration(milliseconds: 400),
