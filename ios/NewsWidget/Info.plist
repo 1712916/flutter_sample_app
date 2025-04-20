@@ -10,6 +10,6 @@
 
     <!-- ✅ Add this for home_widget -->
     <key>HomeWidgetGroup</key>
-    <string>group.vinhnt.widgets</string>
+    <string>group.com.vinhnt.meow</string>
 </dict>
 </plist>

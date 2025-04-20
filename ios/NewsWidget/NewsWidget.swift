@@ -15,7 +15,7 @@ struct Provider: TimelineProvider {
     func getSnapshot(in context: Context, completion: @escaping (NewsArticleEntry) -> ()) {
         let url: String
 
-        if let userDefaults = UserDefaults(suiteName: "group.vinhnt.widgets") {
+        if let userDefaults = UserDefaults(suiteName: "group.com.vinhnt.meow") {
             url = userDefaults.string(forKey: "app_url") ?? "❌ NOT FOUND"
         } else {
             url = "❌ Cannot load suite"

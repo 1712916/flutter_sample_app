@@ -29,7 +29,7 @@ import FirebaseCore
         if call.method == "readFromAppGroup" {
           if let args = call.arguments as? [String: Any],
              let key = args["key"] as? String {
-            let sharedDefaults = UserDefaults(suiteName: "group.vinhnt.widgets")
+            let sharedDefaults = UserDefaults(suiteName: "group.com.vinhnt.meow")
             let value = sharedDefaults?.string(forKey: key)
             print("[iOS Native] 🔍 AppGroup[\(key)] = \(value ?? "nil")")
             result(value ?? "null")

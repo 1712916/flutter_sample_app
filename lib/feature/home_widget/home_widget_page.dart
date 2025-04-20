@@ -7,7 +7,7 @@ import 'package:home_widget/home_widget.dart';
 
 import '../image/cubit/image_list_cubit.dart';
 
-const String appGroupId = 'group.vinhnt.widgets';
+const String appGroupId = 'group.com.vinhnt.meow';
 const String iOSWidgetName = 'NewsWidget';
 const String androidWidgetName = 'NewAppWidget';
 
