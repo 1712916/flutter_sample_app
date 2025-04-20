@@ -12,6 +12,7 @@ import 'package:get_it/get_it.dart';
 import 'core/persistence/isar_storage.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
+import 'feature/app_menu/cubit/app_menu_cubit.dart';
 import 'feature/background_worker/background_worker.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
 import 'feature/firebase/firebase.dart';
@@ -24,6 +25,7 @@ import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+final AppMenuCubit appMenuCubit = GetIt.I.get();
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -141,6 +143,7 @@ class _MaterialAppState extends State<_MaterialApp> {
             BlocProvider(create: (_) => imageListCubit),
             BlocProvider(create: (_) => favouriteCubit),
             BlocProvider(create: (_) => gameSettingCubit),
+            BlocProvider(create: (_) => appMenuCubit),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

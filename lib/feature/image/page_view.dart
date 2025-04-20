@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
 import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
 
 import '../../core/base/index.dart';
@@ -93,10 +94,12 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
                 },
                 child: GestureDetector(
                   onTap: () {
-                    DetailImagePage(
-                      url: image,
-                      heroTag: '$index',
-                    ).show(context, duration: const Duration(milliseconds: 100));
+                    final AppMenuCubit appMenuCubit = context.read<AppMenuCubit>();
+                    appMenuCubit.hideAll();
+                    final ImageListCubit imageListCubit = context.read<ImageListCubit>();
+                    DetailImagePage(url: image, heroTag: '$index')
+                        .show(imageListCubit.navKey.currentContext!, rootNavigator: false)
+                        .whenComplete(appMenuCubit.previousMenu);
                   },
                   child: AppImage(image: image),
                 ),

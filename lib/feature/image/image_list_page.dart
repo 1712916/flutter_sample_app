@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -136,123 +137,139 @@ class _ImageListPageState extends State<ImageListPage> {
   }
 
   Widget buildMenuView(BuildContext) {
-    return Positioned(
-      bottom: 40,
-      left: 40,
-      right: 40,
-      child: BlocBuilder<ImageListCubit, ImageListState>(
-        builder: (context, state) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppShowcase(
-                info: ShowcaseUtil.gridViewKey,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  child: state.viewType == ImageViewType.page
-                      ? IconButton(
-                          onPressed: () {
-                            cubit.showGridView();
-                          },
-                          icon: HugeIcon(
-                            icon: HugeIcons.strokeRoundedGridView,
-                            color: theme.iconColor,
-                            size: iconSize,
-                          ),
-                        )
-                      : const SizedBox(),
-                ),
-              ),
-              AppShowcase(
-                info: ShowcaseUtil.gameBoardKey,
-                child: TakeImageButton(
-                  onTapAction: () {
-                    switch (state.viewType) {
-                      case ImageViewType.grid:
-                        //shows menu select image from gallery or camera
-                        ImagePickerWidget.showOverlay(
-                          context,
-                          ImagePickerWidget(
-                            onImageSelected: (path) {
-                              if (path != null) {
-                                goToCropImageView(path);
-                              }
-                            },
-                          ),
-                        );
-                        break;
-                      case ImageViewType.page:
-                        goToCropImageView(cubit.currentUrl!);
+    return BlocBuilder<AppMenuCubit, AppMenuState>(
+      builder: (context, state) {
+        if (state.isHideAll) {
+          return const SizedBox();
+        }
 
-                        break;
-                    }
-                  },
-                ),
-              ),
-              AppShowcase(
-                info: ShowcaseUtil.shareViewKey,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  child: state.viewType == ImageViewType.page
-                      ? IconButton(
-                          onPressed: () {
-                            ShareWidget(
-                              url: cubit.currentUrl!,
-                              onDelete: () {
-                                Navigator.of(context).pop();
-                                cubit.onDelete();
+        return Positioned(
+          bottom: 40,
+          left: 40,
+          right: 40,
+          child: BlocBuilder<ImageListCubit, ImageListState>(
+            builder: (context, state) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppShowcase(
+                    info: ShowcaseUtil.gridViewKey,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      child: state.viewType == ImageViewType.page
+                          ? IconButton(
+                              onPressed: () {
+                                cubit.showGridView();
                               },
-                            ).show(context);
-                          },
-                          icon: HugeIcon(
-                            icon: HugeIcons.strokeRoundedUpload04,
-                            color: theme.iconColor,
-                            size: iconSize,
-                          ),
-                        )
-                      : const SizedBox(),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                              icon: HugeIcon(
+                                icon: HugeIcons.strokeRoundedGridView,
+                                color: theme.iconColor,
+                                size: iconSize,
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+                  AppShowcase(
+                    info: ShowcaseUtil.gameBoardKey,
+                    child: TakeImageButton(
+                      onTapAction: () {
+                        switch (state.viewType) {
+                          case ImageViewType.grid:
+                            //shows menu select image from gallery or camera
+                            ImagePickerWidget.showOverlay(
+                              context,
+                              ImagePickerWidget(
+                                onImageSelected: (path) {
+                                  if (path != null) {
+                                    goToCropImageView(path);
+                                  }
+                                },
+                              ),
+                            );
+                            break;
+                          case ImageViewType.page:
+                            goToCropImageView(cubit.currentUrl!);
+
+                            break;
+                        }
+                      },
+                    ),
+                  ),
+                  AppShowcase(
+                    info: ShowcaseUtil.shareViewKey,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      child: state.viewType == ImageViewType.page
+                          ? IconButton(
+                              onPressed: () {
+                                ShareWidget(
+                                  url: cubit.currentUrl!,
+                                  onDelete: () {
+                                    Navigator.of(context).pop();
+                                    cubit.onDelete();
+                                  },
+                                ).show(context);
+                              },
+                              icon: HugeIcon(
+                                icon: HugeIcons.strokeRoundedUpload04,
+                                color: theme.iconColor,
+                                size: iconSize,
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
   Widget buildAppbar(BuildContext) {
-    return Positioned(
-      top: 16,
-      left: 16,
-      right: 16,
-      child: SafeArea(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CountFavouriteWidget(),
-            AppShowcase(
-              info: ShowcaseUtil.switchViewKey,
-              child: AnimalDropdown(
-                onTapAction: (value) {
-                  cubit.switchView(value == 'Meow');
-                },
-              ),
-            ),
-            CircleAvatar(
-              backgroundColor: theme.actionBackground,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(RouteManager.settingPage);
-                },
-                icon: HugeIcon(
-                  icon: HugeIcons.strokeRoundedSettings01, color: theme.iconColor,
-                  // size: iconSize,
+    return BlocBuilder<AppMenuCubit, AppMenuState>(
+      builder: (context, state) {
+        if (state.isHideAll) {
+          return const SizedBox();
+        }
+
+        return Positioned(
+          top: 16,
+          left: 16,
+          right: 16,
+          child: SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CountFavouriteWidget(),
+                AppShowcase(
+                  info: ShowcaseUtil.switchViewKey,
+                  child: AnimalDropdown(
+                    onTapAction: (value) {
+                      cubit.switchView(value == 'Meow');
+                    },
+                  ),
                 ),
-              ),
+                CircleAvatar(
+                  backgroundColor: theme.actionBackground,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(RouteManager.settingPage);
+                    },
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedSettings01, color: theme.iconColor,
+                      // size: iconSize,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

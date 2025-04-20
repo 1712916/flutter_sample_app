@@ -68,7 +68,6 @@ class _FavouriteWrapperState extends State<FavouriteWrapper> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTapDown: _onDoubleTap,
-      onDoubleTap: () {},
       child: Stack(
         fit: StackFit.expand,
         children: [
