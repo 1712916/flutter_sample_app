@@ -40,5 +40,4 @@
     <resources>
         <image name="LaunchImage" width="512" height="512"/>
         <image name="LaunchBackground" width="1" height="1"/>
-    </resources>
-</document>
+    </resources></document>
