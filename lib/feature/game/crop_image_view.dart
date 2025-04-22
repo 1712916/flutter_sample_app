@@ -11,6 +11,7 @@ import 'package:meow_app/core/index.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../../widgets/widgets.dart';
+import '../app_store_review/app_store_review.dart';
 import '../image/image_list_page.dart';
 import 'game_page.dart';
 
@@ -91,7 +92,9 @@ class _CropImageViewState extends State<CropImageView> {
                           return GamePage(image: image);
                         },
                       ),
-                    );
+                    ).whenComplete(() {
+                      InAppReviewUtil().checkAndShowReviewDialog();
+                    });
                   }
                 } catch (e) {
                   Toast.makeText(

@@ -107,4 +107,6 @@ class LKey {
 
   static const String gameController = 'gameController';
   static const String shareGameDescription = 'shareGameDescription';
+
+  static const String reviewApp = 'reviewApp';
 }

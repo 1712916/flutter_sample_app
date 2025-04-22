@@ -1,14 +1,13 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../core/index.dart';
-import '../resources/resources.dart';
 import '../widgets/widgets.dart';
+import 'app_store_review/app_store_review.dart';
 import 'base_page.dart';
 
 class SettingNewPage extends StatefulWidget {
@@ -192,58 +191,84 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 16),
-          IconTitleWidget(
-            icon: Icon(
-              Icons.mail,
-              color: theme.iconColor,
-              size: 20,
-            ),
-            title: LKey.contact.tr(),
-          ),
-          SizedBox(height: 4),
-          Card(
-            color: theme.cardColor2,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          email,
-                          style: theme.textTheme.bodyMedium?.copyWith(
+                  FutureBuilder<bool>(
+                    initialData: false,
+                    future: InAppReviewUtil().isAvailable(),
+                    builder: (context, snapshot) {
+                      // Check if in-app review is available
+                      if (!snapshot.hasData || !(snapshot.data ?? false)) {
+                        return const SizedBox();
+                      }
+                      return ListTile(
+                        title: LText(
+                          LKey.reviewApp,
+                          style: theme.textTheme.titleMedium?.copyWith(
                             color: textColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          //copy to clipboard
-                          Clipboard.setData(ClipboardData(text: email)).then(
-                            (value) {
-                              Toast.makeText(message: LKey.saveToPhone.tr());
-                            },
-                          );
-                        },
-                        icon: Icon(
-                          Icons.copy,
-                          color: textColor,
+                        leading: Icon(
+                          Icons.star_border_outlined,
+                          color: theme.iconColor,
                         ),
-                      )
-                    ],
+                        onTap: () {
+                          InAppReviewUtil().openStoreListing();
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
             ),
           ),
+          SizedBox(height: 16), // IconTitleWidget(
+          //   icon: Icon(
+          //     Icons.mail,
+          //     color: theme.iconColor,
+          //     size: 20,
+          //   ),
+          //   title: LKey.contact.tr(),
+          // ),
+          // SizedBox(height: 4),
+          // Card(
+          //   color: theme.cardColor2,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         Row(
+          //           children: [
+          //             Expanded(
+          //               child: Text(
+          //                 email,
+          //                 style: theme.textTheme.bodyMedium?.copyWith(
+          //                   color: textColor,
+          //                   fontWeight: FontWeight.w600,
+          //                 ),
+          //               ),
+          //             ),
+          //             IconButton(
+          //               onPressed: () {
+          //                 //copy to clipboard
+          //                 Clipboard.setData(ClipboardData(text: email)).then(
+          //                   (value) {
+          //                     Toast.makeText(message: LKey.saveToPhone.tr());
+          //                   },
+          //                 );
+          //               },
+          //               icon: Icon(
+          //                 Icons.copy,
+          //                 color: textColor,
+          //               ),
+          //             )
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+
           const SizedBox(height: 16),
         ],
       ),
