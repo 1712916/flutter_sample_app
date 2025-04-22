@@ -62,5 +62,7 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSPhotoLibraryUsageDescription</key>
+        <string>Ứng dụng cần quyền truy cập thư viện ảnh để cho phép người dùng chọn và tải để chơi game.</string>
 	</dict>
 </plist>
