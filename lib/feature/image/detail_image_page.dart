@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:meow_app/feature/image/image_list_page.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/image_view.dart';
+
+import '../../routers/route.dart';
+import '../../widgets/text.dart';
 
 class DetailImagePage extends StatefulWidget {
   final String url;
@@ -117,18 +121,60 @@ class _DetailImagePageState extends State<DetailImagePage> with SingleTickerProv
                   ),
                 ),
               ),
-              Positioned(
-                top: 16,
-                left: 16,
+              Align(
+                alignment: Alignment.topCenter,
                 child: SafeArea(
-                  child: CircleAvatar(
-                    backgroundColor: theme.actionBackground,
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(
-                        Icons.close,
-                        color: theme.iconColor,
+                  child: SizedBox(
+                    height: 56,
+                    child: AppBar(
+                      backgroundColor: Colors.transparent,
+                      leading: Center(
+                        child: CircleAvatar(
+                          backgroundColor: theme.actionBackground,
+                          child: IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
+                      actions: [
+                        PopupMenuButton<String>(
+                          color: theme.actionBackground,
+                          offset: const Offset(0, 56),
+                          onSelected: (String value) {
+                            final url = widget.url;
+                            if (value == 'share') {
+                              // Handle share action
+                              // Example: Share.share('Check out this game!');
+                              ShareWidget(
+                                url: url,
+                                onDelete: null,
+                              ).show(context);
+                            } else if (value == 'play') {
+                              // Handle play game action
+                              // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => GameScreen()));
+                              goToCropImageView(url);
+                            }
+                          },
+                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'share',
+                              child: LText(LKey.share),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'play',
+                              child: LText(LKey.playGame),
+                            ),
+                          ],
+                          icon: Icon(
+                            Icons.more_vert_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

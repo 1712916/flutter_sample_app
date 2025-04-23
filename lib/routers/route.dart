@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import '../feature/game/crop_image_view.dart';
+import '../main.dart';
+
 class RouteManager {
   static String get mainPage => '/';
 
@@ -41,4 +44,14 @@ class RouteManager {
     // return PageTransition(child: widget, type: PageTransitionType.leftToRight, settings: settings);
     return MaterialPageRoute(builder: (_) => widget, settings: settings);
   }
+}
+
+void goToCropImageView(String url, {BuildContext? context}) {
+  Navigator.of(context ?? navKey.currentContext!).push(
+    MaterialPageRoute(
+      builder: (context) => CropImageView(
+        url: url,
+      ),
+    ),
+  );
 }

@@ -14,7 +14,6 @@ import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
 import '../base_page.dart';
 import '../favourite/count_favourite_widget.dart';
-import '../game/crop_image_view.dart';
 import '../home_widget/home_widget_page.dart';
 import '../showcase/showcase_util.dart';
 import '../showcase/showcase_widget.dart';
@@ -283,16 +282,6 @@ class _ImageListPageState extends State<ImageListPage> {
       },
     );
   }
-
-  void goToCropImageView(String url) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CropImageView(
-          url: url,
-        ),
-      ),
-    );
-  }
 }
 
 class TakeImageButton extends StatefulWidget {
@@ -449,7 +438,7 @@ class ShareWidget extends StatelessWidget {
   const ShareWidget({super.key, required this.url, required this.onDelete});
 
   final String url;
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
 
   Future show(BuildContext context) {
     return showModalBottomSheet(
@@ -575,34 +564,36 @@ class ShareWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: GestureDetector(
-                  onTap: onDelete,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: theme.actionBackground,
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        HugeIcon(icon: HugeIcons.strokeRoundedDelete02, color: theme.iconColor),
-                        const SizedBox(width: 4),
-                        Text(
-                          LKey.delete.tr(context: context),
-                          style: textTheme.titleMedium?.copyWith(
-                            color: textColor,
-                            fontWeight: FontWeight.w600,
+              if (onDelete != null) ...[
+                const SizedBox(width: 16),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: onDelete,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        color: theme.actionBackground,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          HugeIcon(icon: HugeIcons.strokeRoundedDelete02, color: theme.iconColor),
+                          const SizedBox(width: 4),
+                          Text(
+                            LKey.delete.tr(context: context),
+                            style: textTheme.titleMedium?.copyWith(
+                              color: textColor,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
+                )
+              ]
             ],
           ),
           const SizedBox(height: 16),
