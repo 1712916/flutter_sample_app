@@ -178,10 +178,6 @@ class PlayAreaState extends State<PlayArea> {
     }
   }
 
-  List<List<imglib.Image>> _getCroppedImages(imglib.Image image, int size) {
-    return _imageCache.putIfAbsent(size, () => copyCropMatrix(image, size));
-  }
-
   List<Widget> _buildCells(double s) {
     final cellSize = (s / gameSize).floor();
 
@@ -199,8 +195,8 @@ class PlayAreaState extends State<PlayArea> {
             child: GridTileImage(
               image: widget.image,
               gridSize: gameSize,
-              col: i,
-              row: j,
+              col: cell.x,
+              row: cell.y,
             ),
           ),
         );
