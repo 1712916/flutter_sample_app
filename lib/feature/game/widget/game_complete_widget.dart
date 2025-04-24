@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../widgets/diaglog.dart';
-import '../../widgets/text.dart';
+import '../../../widgets/widgets.dart';
 
 class GameCompleteWidget extends StatelessWidget with ShowDialog {
   const GameCompleteWidget({

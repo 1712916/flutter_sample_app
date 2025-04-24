@@ -1,7 +1,11 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../feature/game/crop_image_view.dart';
+import '../feature/app_store_review/app_store_review.dart';
+import '../feature/game/game_page.dart';
+import '../feature/game/widget/crop_image_view.dart';
 import '../main.dart';
 
 class RouteManager {
@@ -54,4 +58,16 @@ void goToCropImageView(String url, {BuildContext? context}) {
       ),
     ),
   );
+}
+
+void goToSortGamePage(ui.Image image, {BuildContext? context}) {
+  Navigator.of(context ?? navKey.currentContext!).pushReplacement(
+    MaterialPageRoute(
+      builder: (context) {
+        return GamePage(image: image);
+      },
+    ),
+  ).whenComplete(() {
+    InAppReviewUtil().checkAndShowReviewDialog();
+  });
 }

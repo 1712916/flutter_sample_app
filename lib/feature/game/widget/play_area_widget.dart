@@ -1,13 +1,15 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
-import 'package:meow_app/feature/game/control_bar_widget.dart';
+import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import '../../widgets/widgets.dart';
+import '../game_manager.dart';
 import 'cell_widget.dart';
 import 'directional_control_widget.dart';
-import 'game_manager.dart';
+import 'image_widget.dart';
 
 class PlayArea extends StatefulWidget {
   const PlayArea({
@@ -17,7 +19,7 @@ class PlayArea extends StatefulWidget {
     this.gameSize = 3,
   }) : super(key: key);
 
-  final imglib.Image image;
+  final ui.Image image;
   final VoidCallback? onComplete;
   final int gameSize;
 
@@ -88,7 +90,7 @@ class PlayAreaState extends State<PlayArea> {
     });
   }
 
-  void _setupGame() {
+  void _setupGame() async {
     final game = Game(size: gameSize)..initializeGame();
     gameMatrix = game.gameMatrix;
     emptyBox = game.emptyBox;
@@ -182,7 +184,6 @@ class PlayAreaState extends State<PlayArea> {
 
   List<Widget> _buildCells(double s) {
     final cellSize = (s / gameSize).floor();
-    final croppedImage = _getCroppedImages(widget.image, gameSize);
 
     final List<Widget> widgets = [];
     for (int i = 0; i < gameMatrix.length; i++) {
@@ -195,11 +196,11 @@ class PlayAreaState extends State<PlayArea> {
             size: cellSize.toDouble(),
             jumpSize: cellSize.toDouble(),
             destination: cell,
-            child: RenderImage(
-              imageCellWidth: cellSize,
-              imageCellHeight: cellSize,
-              cellPosition: cell,
-              image: croppedImage[i][j],
+            child: GridTileImage(
+              image: widget.image,
+              gridSize: gameSize,
+              col: i,
+              row: j,
             ),
           ),
         );

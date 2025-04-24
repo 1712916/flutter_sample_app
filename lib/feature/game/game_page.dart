@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:confetti/confetti.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:meow_app/feature/base_page.dart';
-import 'package:meow_app/feature/game/game_complete_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/custom_dropdown_only_child.dart';
 
@@ -15,7 +15,8 @@ import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
 import '../../routers/route.dart';
 import 'game_manager.dart';
-import 'play_area_widget.dart';
+import 'widget/game_complete_widget.dart';
+import 'widget/play_area_widget.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({
@@ -23,14 +24,14 @@ class GamePage extends StatefulWidget {
     this.image,
   }) : super(key: key);
 
-  final imglib.Image? image;
+  final ui.Image? image;
 
   @override
   _GamePageState createState() => _GamePageState();
 }
 
 class _GamePageState extends StateTemplate<GamePage> {
-  imglib.Image? _image;
+  ui.Image? _image;
 
   LoadStatus _loadStatus = LoadStatus.init;
 
@@ -44,7 +45,7 @@ class _GamePageState extends StateTemplate<GamePage> {
     setImage(widget.image);
   }
 
-  void setImage(imglib.Image? image) {
+  void setImage(ui.Image? image) {
     if (image != null) {
       _image = image;
       _loadStatus = LoadStatus.loaded;
@@ -99,7 +100,7 @@ class _GamePageState extends StateTemplate<GamePage> {
     );
   }
 
-  SafeArea _gameWidget() {
+  Widget _gameWidget() {
     if (!isPortrait) {
       return SafeArea(
         child: Stack(
@@ -301,12 +302,12 @@ class _GamePageState extends StateTemplate<GamePage> {
 class _Image extends StatelessWidget {
   const _Image({Key? key, required this.image}) : super(key: key);
 
-  final imglib.Image image;
+  final ui.Image image;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: _MemoryImage(image: image),
+      child: RawImage(image: image),
       width: MediaQuery.of(context).size.width / 3,
     );
   }

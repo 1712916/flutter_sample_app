@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'game_manager.dart';
+import '../game_manager.dart';
 
 class CellWidget extends StatefulWidget {
   const CellWidget({

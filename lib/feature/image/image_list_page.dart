@@ -183,7 +183,7 @@ class _ImageListPageState extends State<ImageListPage> {
                   AppShowcase(
                     info: ShowcaseUtil.gameBoardKey,
                     child: TakeImageButton(
-                      onTapAction: () {
+                      onTapAction: () async {
                         switch (state.viewType) {
                           case ImageViewType.grid:
                             //shows menu select image from gallery or camera
@@ -285,7 +285,7 @@ class _ImageListPageState extends State<ImageListPage> {
 }
 
 class TakeImageButton extends StatefulWidget {
-  final VoidCallback onTapAction;
+  final Future Function() onTapAction;
   final Widget? icon;
 
   const TakeImageButton({
@@ -320,7 +320,7 @@ class _TakeImageButtonState extends State<TakeImageButton> {
       _scale = 1.0;
       _isLongPressing = false;
     });
-    widget.onTapAction(); // Gọi action khi thả tay sau long press
+    _onTap(); // Gọi action khi thả tay sau long press
   }
 
   void _onLongPressCancel() {
@@ -330,12 +330,24 @@ class _TakeImageButtonState extends State<TakeImageButton> {
     });
   }
 
+  bool _isLoading = false;
+
+  void onTap() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await widget.onTapAction.call();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return GestureDetector(
-      onTap: widget.onTapAction,
+      onTap: onTap,
       // Tap một cái gọi ngay action
       onLongPressDown: _onLongPressDown,
       onLongPressUp: _onLongPressUp,
@@ -356,12 +368,28 @@ class _TakeImageButtonState extends State<TakeImageButton> {
               color: theme.actionBackground,
               shape: BoxShape.circle,
             ),
-            child: widget.icon ??
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedGameboy,
-                  color: theme.iconColor,
-                  size: 32.0,
-                ),
+            child: Builder(
+              builder: (context) {
+                if (_isLoading) {
+                  return Center(
+                    child: const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  );
+                }
+
+                return widget.icon ??
+                    HugeIcon(
+                      icon: HugeIcons.strokeRoundedGameboy,
+                      color: theme.iconColor,
+                      size: 32.0,
+                    );
+              },
+            ),
           ),
         ),
       ),
@@ -657,6 +685,57 @@ class IconTitleWidget extends StatelessWidget {
             style: textTheme.titleMedium?.copyWith(color: textColor),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _LoadingButton extends StatefulWidget {
+  const _LoadingButton({super.key, this.onPressed});
+
+  final Future Function()? onPressed;
+
+  @override
+  State<_LoadingButton> createState() => _LoadingButtonState();
+}
+
+class _LoadingButtonState extends State<_LoadingButton> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        setState(() {
+          _isLoading = true;
+        });
+        await widget.onPressed?.call();
+        setState(() {
+          _isLoading = false;
+        });
+      },
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor2,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).highlightColor2,
+            width: 3,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: _isLoading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(),
+              )
+            : Icon(
+                Icons.crop,
+                color: Theme.of(context).highlightColor2,
+              ),
       ),
     );
   }

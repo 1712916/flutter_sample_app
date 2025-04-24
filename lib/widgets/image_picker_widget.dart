@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meow_app/resources/resources.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import 'text.dart';
 
 Future<String?> openImage(ImageSource imageSource) async {
-  XFile? imageFile = await ImagePicker().pickImage(source: imageSource, imageQuality: 90);
+  XFile? imageFile = await ImagePicker().pickImage(source: imageSource, imageQuality: 70);
   if (imageFile != null) {
     return imageFile.path;
   }

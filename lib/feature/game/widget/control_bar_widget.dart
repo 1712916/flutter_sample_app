@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import 'cubit/game_setting_cubit.dart';
+import '../cubit/game_setting_cubit.dart';
 import 'play_area_widget.dart';
 
 class ControlBarWidget extends StatefulWidget {

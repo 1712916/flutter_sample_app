@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:image/image.dart';
 
-import 'play_area_widget.dart';
+import 'widget/play_area_widget.dart';
 
 typedef GameMatrix = List<List<GameMatrixItem>>;
 

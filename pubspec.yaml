@@ -29,7 +29,6 @@ dependencies:
   path_provider: ^2.1.5
   package_info_plus: ^8.2.1
   cupertino_icons: ^1.0.8
-  image_cropper: ^9.0.0
   crop_image: ^1.0.15
   image: any
   confetti: ^0.8.0

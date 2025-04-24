@@ -1,22 +1,21 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:crop_image/crop_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:image/image.dart' as imglib;
 import 'package:meow_app/core/index.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import '../../../widgets/widgets.dart';
-import '../app_store_review/app_store_review.dart';
-import '../image/image_list_page.dart';
-import 'game_page.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../routers/route.dart';
+import '../../image/image_list_page.dart';
 
 class CropImageView extends StatefulWidget {
   const CropImageView({super.key, required this.url});
+
   final String url;
 
   @override
@@ -83,20 +82,9 @@ class _CropImageViewState extends State<CropImageView> {
               onTapAction: () async {
                 try {
                   final croppedImage = (await controller.croppedBitmap());
-                  final byteData = await croppedImage.toByteData(format: ImageByteFormat.png);
-                  final image = imglib.decodePng(byteData!.buffer.asUint8List());
-                  if (croppedImage != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return GamePage(image: image);
-                        },
-                      ),
-                    ).whenComplete(() {
-                      InAppReviewUtil().checkAndShowReviewDialog();
-                    });
-                  }
-                } catch (e) {
+                  goToSortGamePage(croppedImage);
+                } catch (e, st) {
+                  log('Error cropping image: $e', stackTrace: st);
                   Toast.makeText(
                     context: context,
                     message: LKey.haveAnErrorDetail.tr(),
@@ -107,57 +95,6 @@ class _CropImageViewState extends State<CropImageView> {
             ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class _LoadingButton extends StatefulWidget {
-  const _LoadingButton({super.key, this.onPressed});
-
-  final Future Function()? onPressed;
-
-  @override
-  State<_LoadingButton> createState() => _LoadingButtonState();
-}
-
-class _LoadingButtonState extends State<_LoadingButton> {
-  bool _isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        setState(() {
-          _isLoading = true;
-        });
-        await widget.onPressed?.call();
-        setState(() {
-          _isLoading = false;
-        });
-      },
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor2,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: Theme.of(context).highlightColor2,
-            width: 3,
-          ),
-        ),
-        alignment: Alignment.center,
-        child: _isLoading
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(),
-              )
-            : Icon(
-                Icons.crop,
-                color: Theme.of(context).highlightColor2,
-              ),
       ),
     );
   }
