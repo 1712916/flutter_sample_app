@@ -102,13 +102,13 @@ class GameMatrixItem {
 
 enum MoveType { left, right, up, down }
 
-List<MoveType> genMoveList() {
+List<MoveType> genMoveList(int gameSize) {
   List<MoveType> moveTypes = [];
 
   Random random = Random();
   MoveType? preMoveType;
 
-  for (int i = 0; i < _numberOfStep; i++) {
+  for (int i = 0; i < _numberOfStep * gameSize; i++) {
     moveTypes.add(_nextMoveRandom(preMoveType: preMoveType, random: random));
     preMoveType = moveTypes.last;
   }
@@ -198,7 +198,7 @@ class Game {
       }
     }
 
-    var moveTypes = genMoveList();
+    var moveTypes = genMoveList(size);
     moveTypes.forEach(_move);
 
     debugLog('Scramble done');
