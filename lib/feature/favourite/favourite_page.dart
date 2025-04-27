@@ -213,3 +213,59 @@ class _FavouritePageState extends StateTemplate<FavouritePage> {
     );
   }
 }
+
+class SelectionImageWidget extends StatelessWidget {
+  const SelectionImageWidget({
+    super.key,
+    required this.url,
+    required this.isSelected,
+    required this.onSelected,
+  });
+
+  final String url;
+  final bool isSelected;
+  final ValueChanged<bool> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onSelected(!isSelected),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Hero(
+              tag: 'url',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    AppImage(image: url),
+                    ColoredBox(
+                      color: isSelected ? Colors.black12.withOpacity(0.3) : Colors.transparent,
+                      child: Center(),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Radio<bool>(
+                value: isSelected,
+                groupValue: true,
+                onChanged: (_) {},
+                activeColor: Colors.white,
+                focusColor: Colors.white,
+                fillColor: WidgetStateProperty.all(Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
