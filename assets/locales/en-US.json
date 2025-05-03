@@ -76,5 +76,14 @@
   "gameController": "Game Controller",
   "shareGameDescription": "\uD83C\uDF89 I just finished the game in just {countStep} steps!\nTry your luck here \uD83D\uDC49 {url}",
   "reviewApp": "Review App",
-  "playGame": "Play Game"
+  "playGame": "Play Game",
+  "play": "Play",
+  "gameMenu": "Game Menu",
+  "sortGame": "Sort Game",
+  "memoryGame": "Memory Game",
+  "clear": "Clear",
+  "requireSelectImageDescription": "Please select at least {number} images!",
+  "maximumSelectImageDescription": "You can only select up to {number} images!",
+  "selectedTitle": "Selected: ",
+  "startGame": "Start Game"
 }

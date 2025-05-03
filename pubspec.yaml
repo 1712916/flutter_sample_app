@@ -57,6 +57,7 @@ dependencies:
   app_links: ^6.4.0
   in_app_review: ^2.0.10
   flip_card: any
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:

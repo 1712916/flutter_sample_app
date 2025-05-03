@@ -27,7 +27,13 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   String? get currentUrl => currentImage?.url;
 
-  SearchModel? get currentImage => state.images?[_currentIndex];
+  SearchModel? get currentImage {
+    try {
+      return state.images?[_currentIndex];
+    } catch (e) {
+      return null;
+    }
+  }
 
   int _currentIndex = 0;
 
