@@ -4,6 +4,7 @@ import 'package:meow_app/feature/game/game_setting_page.dart';
 import 'package:meow_app/feature/setting_page_new.dart';
 
 import '../feature/favourite/favourite_page.dart';
+import '../feature/game_memory/game_menu_page.dart';
 import '../feature/image/image_list_page.dart';
 import '../routers/route.dart';
 
@@ -13,5 +14,6 @@ class PageDependencies {
     injector.registerFactory<Widget>(() => SettingNewPage(), instanceName: RouteManager.settingPage);
     injector.registerFactory<Widget>(() => FavouritePage(), instanceName: RouteManager.favouritePage);
     injector.registerFactory<Widget>(() => GameSettingPage(), instanceName: RouteManager.gameSettingPage);
+    injector.registerFactory<Widget>(() => GameMenuPage(), instanceName: RouteManager.gameMenuPage);
   }
 }

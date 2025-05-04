@@ -14,6 +14,7 @@ import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
 import '../base_page.dart';
 import '../favourite/count_favourite_widget.dart';
+import '../game_memory/game_menu_page.dart';
 import '../home_widget/home_widget_page.dart';
 import '../showcase/showcase_util.dart';
 import '../showcase/showcase_widget.dart';
@@ -184,6 +185,10 @@ class _ImageListPageState extends State<ImageListPage> {
                     info: ShowcaseUtil.gameBoardKey,
                     child: TakeImageButton(
                       onTapAction: () async {
+                        goToGameMenu(context);
+
+                        return;
+
                         switch (state.viewType) {
                           case ImageViewType.grid:
                             //shows menu select image from gallery or camera

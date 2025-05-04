@@ -79,5 +79,14 @@
   "gameController": "Điều khiển trò chơi",
   "shareGameDescription": "\uD83C\uDF89 Tôi vừa hoàn thành trò chơi chỉ với {countStep} bước!\nThử sức bạn tại đây \uD83D\uDC49 {url}",
   "reviewApp": "Đánh giá ứng dụng",
-  "playGame": "Chơi trò chơi"
+  "playGame": "Chơi trò chơi",
+  "play": "Chơi",
+  "gameMenu":  "Danh sách trò chơi",
+  "sortGame": "Trò chơi sắp xếp",
+  "memoryGame": "Trò chơi ghi nhớ",
+  "clear": "Xóa",
+  "requireSelectImageDescription": "Vui lòng chọn ít nhất {number} ảnh!",
+  "maximumSelectImageDescription": "Bạn chỉ có thể chọn tối đa {number} ảnh!",
+  "selectedTitle": "Đã chọn: ",
+  "startGame": "Bắt đầu trò chơi"
 }

@@ -110,4 +110,13 @@ class LKey {
 
   static const String reviewApp = 'reviewApp';
   static const String playGame = 'playGame';
+  static const String play = 'play';
+  static const String clear = 'clear';
+  static const String gameMenu = 'gameMenu';
+  static const String sortGame = 'sortGame';
+  static const String memoryGame = 'memoryGame';
+  static const String requireSelectImageDescription = 'requireSelectImageDescription';
+  static const String maximumSelectImageDescription = 'maximumSelectImageDescription';
+  static const String selectedTitle = 'selectedTitle';
+  static const String startGame = 'startGame';
 }
