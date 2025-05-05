@@ -131,7 +131,7 @@ class _ImageListPageState extends State<ImageListPage> {
                   transitionDuration: const Duration(milliseconds: 400),
                   reverseTransitionDuration: const Duration(milliseconds: 400),
                   pageBuilder: (context, animation, secondaryAnimation) {
-                    return ImagePageView();
+                    return ImagePageView(key: imagePageViewKey);
                   },
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(
@@ -150,6 +150,39 @@ class _ImageListPageState extends State<ImageListPage> {
   Widget buildMenuView(BuildContext) {
     return BlocBuilder<AppMenuCubit, AppMenuState>(
       builder: (context, state) {
+        // if (true) {
+        if (state.isShowMoveDown) {
+          return Positioned(
+            bottom: 40,
+            left: 40,
+            right: 40,
+            child: BlocBuilder<ImageListCubit, ImageListState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TakeImageButton(
+                      onTapAction: () async {
+                        try {
+                          imagePageViewKey.currentState?.nextPage();
+                        } catch (e) {
+                          // Handle any errors that occur during the page transition
+                        }
+                        return;
+                      },
+                      icon: HugeIcon(
+                        icon: HugeIcons.strokeRoundedArrowDown02,
+                        color: theme.highlightColor2,
+                        size: 40,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        }
+
         if (state.isHideAll) {
           return const SizedBox();
         }

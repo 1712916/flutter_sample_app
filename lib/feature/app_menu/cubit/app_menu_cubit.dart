@@ -54,24 +54,51 @@ class AppMenuCubit extends Cubit<AppMenuState> {
       _previousState = null;
     }
   }
+
+  void showMoveDown() {
+    emit(state.copyWith(
+      isShowGridMenu: false,
+      isShowGameMenu: false,
+      isShowShareMenu: false,
+      isShowMoveDown: true,
+    ));
+  }
+
+  void hideMoveDown() {
+    emit(state.copyWith(
+      isShowGridMenu: true,
+      isShowGameMenu: true,
+      isShowShareMenu: true,
+      isShowMoveDown: false,
+    ));
+  }
 }
 
 class AppMenuState extends Equatable {
   final bool isShowGridMenu;
   final bool isShowGameMenu;
   final bool isShowShareMenu;
+  final bool isShowMoveDown;
 
   AppMenuState({
     required this.isShowGridMenu,
     required this.isShowGameMenu,
     required this.isShowShareMenu,
-  });
+    required this.isShowMoveDown,
+  }) {
+    if (isShowMoveDown) {
+      //other menu must be false
+      assert(!isShowGridMenu && !isShowGameMenu && !isShowShareMenu,
+          'If isShowMoveDown is true, all other menus must be false');
+    }
+  }
 
   factory AppMenuState.initial() {
     return AppMenuState(
       isShowGridMenu: true,
       isShowGameMenu: true,
       isShowShareMenu: true,
+      isShowMoveDown: false,
     );
   }
 
@@ -79,11 +106,13 @@ class AppMenuState extends Equatable {
     bool? isShowGridMenu,
     bool? isShowGameMenu,
     bool? isShowShareMenu,
+    bool? isShowMoveDown,
   }) {
     return AppMenuState(
       isShowGridMenu: isShowGridMenu ?? this.isShowGridMenu,
       isShowGameMenu: isShowGameMenu ?? this.isShowGameMenu,
       isShowShareMenu: isShowShareMenu ?? this.isShowShareMenu,
+      isShowMoveDown: isShowMoveDown ?? this.isShowMoveDown,
     );
   }
 
@@ -92,6 +121,7 @@ class AppMenuState extends Equatable {
         isShowGridMenu,
         isShowGameMenu,
         isShowShareMenu,
+        isShowMoveDown,
       ];
 
   bool get isHideAll => !isShowGridMenu && !isShowGameMenu && !isShowShareMenu;

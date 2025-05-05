@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
 import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
+import 'package:meow_app/main.dart';
 
 import '../../core/base/index.dart';
 import '../../widgets/widgets.dart';
@@ -10,16 +11,28 @@ import '../favourite/favourite_wrapper.dart';
 import 'cubit/image_list_cubit.dart';
 import 'detail_image_page.dart';
 
+final GlobalKey<ImagePageViewState> imagePageViewKey = GlobalKey<ImagePageViewState>();
+
 class ImagePageView extends StatefulWidget {
   const ImagePageView({super.key});
 
   @override
-  State<ImagePageView> createState() => _ImagePageViewState();
+  State<ImagePageView> createState() => ImagePageViewState();
 }
 
-class _ImagePageViewState extends StateTemplate<ImagePageView> {
+class ImagePageViewState extends StateTemplate<ImagePageView> {
   ImageListCubit get cubit => context.read<ImageListCubit>();
   late PageController _pageController;
+  int swipeCount = 0;
+
+  void nextPage() {
+    if (_pageController.hasClients) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -66,10 +79,24 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
                   cubit.loadMore(imageListLimit);
                 }
 
+                if (swipeCount != 0 && swipeCount % 5 == 0) {
+                  swipeCount = 0;
+                  adsCubit.showAds();
+                  return const AdsCard();
+                }
+
+                swipeCount++;
+
+                if (adsCubit.state.isShow) {
+                  adsCubit.hideAds();
+                }
+
                 final image = images[pageIndex].url ?? '';
                 return _buildImageCard(image, pageIndex);
               },
-              onPageChanged: cubit.onPageChanged,
+              onPageChanged: (index) {
+                cubit.onPageChanged(index);
+              },
             );
         }
       },
@@ -105,6 +132,25 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AdsCard extends StatelessWidget {
+  const AdsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: Placeholder(),
           ),
         ),
       ),
