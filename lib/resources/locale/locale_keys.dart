@@ -47,6 +47,8 @@ class LKey {
   static const String errorWhenTryShare = 'errorWhenTryShare';
   static const String waitToShare = 'waitToShare';
   static const String shareTo = 'shareTo';
+  static const String original = 'original';
+  static const String download = 'download';
   static const String share = 'share';
   static const String save = 'save';
   static const String delete = 'delete';
@@ -119,4 +121,8 @@ class LKey {
   static const String maximumSelectImageDescription = 'maximumSelectImageDescription';
   static const String selectedTitle = 'selectedTitle';
   static const String startGame = 'startGame';
+
+  static const String sticker = 'sticker';
+  static const String emptyData = 'emptyData';
+  static const String refreshData = 'refreshData';
 }

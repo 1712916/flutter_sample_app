@@ -25,6 +25,8 @@
   "shareFile": "Chia sẻ tệp",
   "shareTo": "Chia sẻ đến...",
   "share": "Chia sẻ",
+  "download": "Tải xuống",
+  "original": "Gốc",
   "save": "Lưu",
   "delete": "Xóa",
   "message": "Tin nhắn",
@@ -88,5 +90,8 @@
   "requireSelectImageDescription": "Vui lòng chọn ít nhất {number} ảnh!",
   "maximumSelectImageDescription": "Bạn chỉ có thể chọn tối đa {number} ảnh!",
   "selectedTitle": "Đã chọn: ",
-  "startGame": "Bắt đầu trò chơi"
+  "startGame": "Bắt đầu trò chơi",
+  "sticker": "Nhãn dán",
+  "emptyData": "Không có dữ liệu",
+  "refreshData": "Tải lại dữ liệu"
 }

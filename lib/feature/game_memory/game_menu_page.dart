@@ -69,6 +69,15 @@ class _GameMenuPageState extends StateTemplate<GameMenuPage> {
             );
           },
         ),
+        MenuItemWidget(
+          title: LKey.sticker.tr(context: context),
+          backgroundColor: theme.cardColor2,
+          imageUrl: currentSelectedImage,
+          onTap: () {
+            // Handle game menu tap
+            goToStickerPage(path: currentSelectedImage);
+          },
+        ),
       ],
     );
   }

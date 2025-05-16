@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import '../feature/app_store_review/app_store_review.dart';
 import '../feature/game/game_page.dart';
 import '../feature/game/widget/crop_image_view.dart';
+import '../feature/sticker/sticker_page.dart';
 import '../main.dart';
 
 class RouteManager {
@@ -28,6 +29,10 @@ class RouteManager {
   static String get gameSettingPage => '/game/settings';
 
   static String get gameMenuPage => '/game/menu';
+
+  static String get stickerPage => '/sticker';
+
+  static String get stickerListPage => '/sticker/list';
 
   static getRoute(RouteSettings settings) {
     late Widget widget;
@@ -72,4 +77,16 @@ void goToSortGamePage(ui.Image image, {BuildContext? context}) {
   ).whenComplete(() {
     InAppReviewUtil().checkAndShowReviewDialog();
   });
+}
+
+void goToStickerPage({BuildContext? context, String? path}) {
+  Navigator.of(context ?? navKey.currentContext!).push(
+    MaterialPageRoute(
+      builder: (context) => StickerPage(path: path),
+    ),
+  );
+}
+
+void goToStickerListPage({BuildContext? context}) {
+  Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.stickerListPage);
 }

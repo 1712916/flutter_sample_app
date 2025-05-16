@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:meow_app/data/repositories/image_storage_repository.dart';
 import 'package:meow_app/feature/image/data/image_collection.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -14,6 +15,7 @@ class IsarDatabase {
             [
               FavouriteCollectionSchema,
               ImageCollectionSchema,
+              ImageStorageCollectionSchema,
             ],
             directory: dir.path,
           );

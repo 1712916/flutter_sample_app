@@ -3,6 +3,7 @@ import 'dart:async'; // Để sử dụng Timer
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../../widgets/widgets.dart';
@@ -169,37 +170,44 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
           // Lưới ảnh
           BlocBuilder<ImageListCubit, ImageListState>(builder: (context, state) {
             if (state.images == null || state.images!.isEmpty) {
-              return Column(
-                children: [
-                  const SizedBox(height: 16),
-                  Text(
-                    'Empty Data',
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<ImageListCubit>().refreshData();
-                    },
-                    child: Text(
-                      'LKey.refresh',
+              return Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 100),
+                    Icon(
+                      HugeIcons.strokeRoundedFileEmpty02,
+                      size: 64,
+                    ),
+                    const SizedBox(height: 4),
+                    LText(
+                      LKey.emptyData,
                       style: theme.textTheme.titleMedium,
                     ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(theme.highlightColor),
-                      shape: WidgetStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<ImageListCubit>().refreshData();
+                      },
+                      child: LText(
+                        LKey.refreshData,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(theme.highlightColor),
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             }
 
-            final images = state.images!;
-            final itemSize = MediaQuery.of(context).size.width / 3 - 16; // 3 cột, padding 8 mỗi bên
+            final count = state.images?.length ?? 0;
 
             return GridView.builder(
               key: _gridKey,
@@ -211,8 +219,13 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
               ),
-              itemCount: state.images?.length ?? 0,
+              itemCount: count,
               itemBuilder: (context, index) {
+                if (index == count - 1) {
+                  //load more
+                  context.read<ImageListCubit>().loadMore(10);
+                }
+
                 return SelectionImageWidget(
                   url: state.images![index].url!,
                   isSelected: _selectedImages.contains(index),
