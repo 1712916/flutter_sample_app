@@ -21,6 +21,7 @@ class ImageSelectionScreen extends StatefulWidget {
     this.maxImage = 1,
     this.minImage = 1,
     required this.onSubmitImage,
+    this.selectImageTitle = 'Choose Image',
   }) {
     assert(maxImage > 0, 'maxImage must be greater than 0');
     assert(minImage > 0, 'minImage must be greater than 0');
@@ -30,6 +31,7 @@ class ImageSelectionScreen extends StatefulWidget {
   final int minImage;
   final int maxImage;
   final Function(List<String> imagePaths) onSubmitImage;
+  final String selectImageTitle;
 
   @override
   _ImageSelectionScreenState createState() => _ImageSelectionScreenState();
@@ -166,6 +168,36 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
         children: [
           // Lưới ảnh
           BlocBuilder<ImageListCubit, ImageListState>(builder: (context, state) {
+            if (state.images == null || state.images!.isEmpty) {
+              return Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Text(
+                    'Empty Data',
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<ImageListCubit>().refreshData();
+                    },
+                    child: Text(
+                      'LKey.refresh',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(theme.highlightColor),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
             final images = state.images!;
             final itemSize = MediaQuery.of(context).size.width / 3 - 16; // 3 cột, padding 8 mỗi bên
 
@@ -245,8 +277,8 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   ),
                   ElevatedButton(
                     onPressed: _startGame,
-                    child: LText(
-                      LKey.startGame,
+                    child: Text(
+                      widget.selectImageTitle,
                       style: theme.textTheme.titleMedium,
                     ),
                     style: ButtonStyle(
@@ -286,6 +318,7 @@ void gotoSelectImages(
   int maxImage = 1,
   int minImage = 1,
   required Function(List<String> imagePaths) onSubmitImage,
+  String? selectImageTitle,
 }) {
   Navigator.push(
     context,
@@ -294,6 +327,7 @@ void gotoSelectImages(
         maxImage: maxImage,
         minImage: minImage,
         onSubmitImage: onSubmitImage,
+        selectImageTitle: selectImageTitle ?? LKey.startGame.tr(context: context),
       ),
     ),
   );

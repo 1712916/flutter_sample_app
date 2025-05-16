@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:appinio_social_share/appinio_social_share.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:meow_app/resources/locale/locale_keys.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../widgets/widgets.dart';
@@ -78,6 +79,31 @@ class ShareHelper {
       } else if (Platform.isAndroid) {
         await AppinioSocialShare().android.shareToTwitter('', file!.path);
       }
+    } catch (error) {
+      Toast.makeText(message: LKey.errorWhenTryShare.tr());
+    }
+  }
+
+  static Future shareBitmap(Uint8List bitmap) async {
+    try {
+      //get image size from bitmap
+      final codec = await ui.instantiateImageCodec(bitmap);
+      final frameInfo = await codec.getNextFrame();
+      final w = frameInfo.image.width;
+      final minWidth = 120;
+
+      final inSampleSize = (w / minWidth).floor();
+      final file = await FlutterImageCompress.compressWithList(
+        bitmap,
+        quality: 100,
+        format: CompressFormat.png,
+        minWidth: minWidth,
+        inSampleSize: inSampleSize,
+      );
+
+      await Share.shareXFiles([
+        XFile.fromData(file, mimeType: 'image/gif'),
+      ], subject: LKey.shareFile.tr());
     } catch (error) {
       Toast.makeText(message: LKey.errorWhenTryShare.tr());
     }
