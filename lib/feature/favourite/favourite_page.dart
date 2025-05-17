@@ -220,11 +220,15 @@ class SelectionImageWidget extends StatelessWidget {
     required this.url,
     required this.isSelected,
     required this.onSelected,
+    this.memCacheHeight,
+    this.memCacheWidth,
   });
 
   final String url;
   final bool isSelected;
   final ValueChanged<bool> onSelected;
+  final int? memCacheHeight;
+  final int? memCacheWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +244,11 @@ class SelectionImageWidget extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    AppImage(image: url),
+                    AppImage(
+                      image: url,
+                      memCacheWidth: memCacheWidth,
+                      memCacheHeight: memCacheHeight,
+                    ),
                     ColoredBox(
                       color: isSelected ? Colors.black12.withOpacity(0.3) : Colors.transparent,
                       child: Center(),

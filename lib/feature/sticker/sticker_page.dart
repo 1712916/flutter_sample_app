@@ -13,15 +13,14 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/app_bar.dart';
 import 'package:meow_app/widgets/image_view.dart';
 
-import '../../data/repositories/image_storage_repository.dart';
-import '../../routers/route.dart';
+import '../../core/util/image_util.dart';
 import '../../widgets/image_picker_widget.dart';
 import '../../widgets/text.dart';
 import '../game_memory/game_menu_page.dart';
 import '../game_memory/widget/image_selection_widget.dart';
 
 class StickerPage extends StatefulWidget {
-  const StickerPage({super.key, required this.path});
+  const StickerPage({super.key, this.path});
 
   final String? path;
 
@@ -30,43 +29,60 @@ class StickerPage extends StatefulWidget {
 }
 
 class _StickerPageState extends State<StickerPage> {
-  bool showRaw = false;
-  bool inProcess = false;
+  final _showRaw = ValueNotifier<bool>(false);
+  final _inProcess = ValueNotifier<bool>(false);
+  final _path = ValueNotifier<String?>(null);
+  final _subjects = ValueNotifier<List<Subject>?>(null);
+  final _imageSize = ValueNotifier<Size?>(null);
 
-  String? _path;
-
-  List<Subject>? subjects;
-
-  bool get isDisabled => subjects == null || subjects!.isEmpty;
-
-  final SubjectSegmenter _segmenter = SubjectSegmenter(
-    options: SubjectSegmenterOptions(
-      enableForegroundConfidenceMask: false,
-      enableForegroundBitmap: false,
-      enableMultipleSubjects: SubjectResultOptions(
-        enableConfidenceMask: true,
-        enableSubjectBitmap: true,
-      ),
-    ),
-  );
-
-  //bitmap
-  ui.Image? image;
+  bool get isDisabled => _subjects.value == null || _subjects.value!.isEmpty;
 
   @override
   void initState() {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
     super.initState();
-    _path = widget.path;
-    onProcessImage();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    _path.value = widget.path;
+    _processImage();
   }
 
   @override
   void dispose() {
-    _segmenter.close();
+    _showRaw.dispose();
+    _inProcess.dispose();
+    _path.dispose();
+    _subjects.dispose();
+    _imageSize.dispose();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     super.dispose();
+  }
+
+  Future<void> _processImage() async {
+    if (_inProcess.value || _path.value == null) return;
+
+    _inProcess.value = true;
+    _showRaw.value = true;
+    _imageSize.value = null;
+    _subjects.value = null;
+
+    try {
+      _imageSize.value = await ImageUtil.getImageSize(_path.value!);
+      final Data data = Data(isolateToken: null, path: _path.value!);
+      _subjects.value = await processImage(data);
+      // _subjects.value = await compute(processImage, data);
+      _showRaw.value = false;
+    } catch (e) {
+      // Handle error gracefully, e.g., show a snackbar
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error processing image: $e')),
+        );
+      }
+    } finally {
+      _inProcess.value = false;
+    }
   }
 
   @override
@@ -77,258 +93,152 @@ class _StickerPageState extends State<StickerPage> {
       backgroundColor: theme.scaffoldBackgroundColor2,
       appBar: CustomAppBar(
         title: LKey.sticker.tr(context: context),
-        actions: [
-          IconButton(
-            onPressed: () {
-              goToStickerListPage();
-            },
-            icon: Icon(HugeIcons.strokeRoundedBookmark02, color: theme.iconColor),
-          ),
-        ],
       ),
       body: Stack(
         children: [
           Column(
             children: [
-              if (_path == null)
-                Expanded(child: Center(child: const SelectImagePlaceHolder()))
-              else
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // FutureBuilder(
-                      //   future: image!.toByteData(),
-                      //   builder: (context, snapshot) {
-                      //     if (snapshot.connectionState == ConnectionState.done) {
-                      //       final byteData = snapshot.data;
-                      //       if (byteData != null) {
-                      //         return Image.memory(
-                      //           byteData.buffer.asUint8List(),
-                      //         );
-                      //         return Image(
-                      //           image: ResizeImage(
-                      //             MemoryImage(
-                      //               byteData.buffer.asUint8List(),
-                      //             ),
-                      //             width: 50,
-                      //             height: 100,
-                      //           ),
-                      //         );
-                      //       }
-                      //     }
-                      //     return const SizedBox();
-                      //   },
-                      // ),
-                      if (image != null && !inProcess)
-                        Expanded(
-                          child: RatioView(
-                            width: image!.width.toDouble(),
-                            height: image!.height.toDouble(),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                final screenSize = !constraints.isTight ? constraints.maxWidth : constraints.minWidth;
-                                //maxHeight - minHeight
-                                //scale height
-                                // final h = constraints.maxHeight - constraints.minHeight;
-                                final scale = constraints.minHeight / image!.height;
-                                return Center(
-                                  child: Stack(
-                                    fit: StackFit.loose,
-                                    children: [
-                                      RawImage(
-                                        image: image,
-                                        color: showRaw ? null : Colors.transparent,
-                                      ), // Positioned(
-                                      //   left: (screenSize.width * (subjects![0].startX.toDouble() / image!.width)),
-                                      //   top: (screenSize.width * (subjects![0].startY.toDouble() / image!.width)),
-                                      //   child: Builder(builder: (context) {
-                                      //     //print confidenceMask
-                                      //     return Image.memory(
-                                      //       subjects![0].bitmap!,
-                                      //       // fit: BoxFit.fitWidth,
-                                      //       width: (screenSize.width * ((subjects![0].width) / image!.width)),
-                                      //       color: Colors.white,
-                                      //       // height: screenSize.height * (subjects![0].height / image!.height),
-                                      //     );
-                                      //   }),
-                                      // ),
-                                      if (subjects != null && subjects!.isNotEmpty)
-                                        Positioned(
-                                          left: screenSize * (subjects![0].startX.toDouble() / image!.width),
-                                          top: screenSize * (subjects![0].startY.toDouble() / image!.width),
-                                          child: Builder(builder: (context) {
-                                            //print confidenceMask
-                                            return Image.memory(
-                                              subjects![0].bitmap!,
-                                              width: screenSize * (subjects![0].width / image!.width),
-                                              // height: screenSize.height * (subjects![0].height / image!.height),
-                                            );
-                                          }),
-                                        ),
-
-                                      // Positioned(
-                                      //   left: screenSize.width * (subjects![1].startX.toDouble() / image!.width),
-                                      //   top: screenSize.width * (subjects![1].startY.toDouble() / image!.width),
-                                      //   child: Image.memory(
-                                      //     subjects![1].bitmap!,
-                                      //     // fit: BoxFit.scaleDown,
-                                      //     width: screenSize.width * (subjects![1].width / image!.width),
-                                      //     // height: screenSize.height * (subjects![0].height / image!.height),
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                      else
-                        Expanded(
-                          child: Builder(builder: (context) {
-                            if (_path!.isUrl) {
-                              return AppImage(
-                                image: _path!,
-                                fit: BoxFit.scaleDown,
-                              );
-                            }
-                            return Image.file(
-                              File(_path!),
-                              fit: BoxFit.scaleDown,
-                            );
-                          }),
-                        ),
-                    ],
-                  ),
-                ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SelectImageMenu(
-                      onImageSelected: (p0) {
-                        _path = p0;
-                        image = null;
-                        subjects = null;
-                        setState(() {});
-                        onProcessImage();
-                      },
-                    ),
-                    VerticalDivider(width: 0.1),
-                    _ImageOptionButton(
-                      icon: !showRaw ? HugeIcons.strokeRoundedImage01 : HugeIcons.strokeRoundedBackground,
-                      label: !showRaw ? LKey.original.tr(context: context) : LKey.sticker.tr(context: context),
-                      isDisabled: isDisabled,
-                      onTap: () {
-                        showRaw = !showRaw;
-                        setState(() {});
-                      },
-                    ),
-                    VerticalDivider(width: 0.1),
-                    _ImageOptionButton(
-                      icon: HugeIcons.strokeRoundedDownload01,
-                      label: LKey.download.tr(context: context),
-                      isDisabled: isDisabled,
-                      onTap: () {
-                        //download image
-                        // downloadImage(image);
-                        DownloadHelper.downloadFromBitmap(subjects![0].bitmap!);
-                      },
-                    ),
-                    VerticalDivider(width: 0.1),
-                    _ImageOptionButton(
-                      icon: HugeIcons.strokeRoundedShare01,
-                      label: LKey.share.tr(context: context),
-                      isDisabled: isDisabled,
-                      onTap: () {
-                        ShareHelper.shareBitmap(
-                          subjects![0].bitmap!,
-                        );
-                      },
-                    ),
-                    VerticalDivider(width: 0.1),
-                    _ImageOptionButton(
-                      icon: HugeIcons.strokeRoundedBookmark02,
-                      label: LKey.save.tr(context: context),
-                      isDisabled: isDisabled,
-                      onTap: () {
-                        ImageStorageRepository.instance.create(
-                          ImageStorageModel(
-                            id: -1,
-                            bytes: subjects![0].bitmap,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
+              Expanded(child: _buildImageView(theme)),
+              _buildBottomMenu(theme),
             ],
           ),
-          if (inProcess)
-            Positioned.fill(
-              child: Container(
-                // color: Colors.
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _inProcess,
+            builder: (context, inProcess, _) {
+              return inProcess
+                  ? const Center(child: CircularProgressIndicator(strokeWidth: 1))
+                  : const SizedBox.shrink();
+            },
+          ),
         ],
       ),
     );
   }
 
-  void onProcessImage() async {
-    if (inProcess || _path == null) {
-      return;
-    }
+  Widget _buildImageView(theme) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: _path,
+      builder: (context, path, _) {
+        if (path == null) {
+          return const Center(child: SelectImagePlaceHolder());
+        }
+        return ValueListenableBuilder<Size?>(
+          valueListenable: _imageSize,
+          builder: (context, imageSize, _) {
+            return ValueListenableBuilder<List<Subject>?>(
+              valueListenable: _subjects,
+              builder: (context, subjects, _) {
+                return ValueListenableBuilder<bool>(
+                  valueListenable: _showRaw,
+                  builder: (context, showRaw, _) {
+                    return RatioView(
+                      height: imageSize?.height ?? 1,
+                      width: imageSize?.width ?? 1,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final screenSize = constraints.maxWidth;
+                          return Center(
+                            child: Stack(
+                              fit: StackFit.loose,
+                              children: [
+                                AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 300),
+                                  opacity: showRaw ? 1 : 0,
+                                  child: path.isUrl
+                                      ? AppImage(image: path, fit: BoxFit.scaleDown)
+                                      : Image.file(File(path), fit: BoxFit.scaleDown),
+                                ),
+                                if (subjects != null && subjects.isNotEmpty)
+                                  Positioned(
+                                    left: screenSize * (subjects[0].startX / (imageSize?.width ?? 1)),
+                                    top: screenSize * (subjects[0].startY / (imageSize?.width ?? 1)),
+                                    child: Image.memory(
+                                      subjects[0].bitmap!,
+                                      width: screenSize * (subjects[0].width / (imageSize?.width ?? 1)),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
-    inProcess = true;
-    image = null;
-    subjects = null;
-    setState(() {});
-
-    try {
-      final bool isUrl = _path!.isUrl;
-      InputImage inputImage;
-
-      if (isUrl) {
-        final file = await CachedNetworkImageProvider.defaultCacheManager.getSingleFile(_path!);
-
-        inputImage = InputImage.fromFile(file);
-
-        image = await decodeImageFromList(file.readAsBytesSync());
-      } else {
-        final file = File(_path!);
-        inputImage = InputImage.fromFile(file);
-
-        image = await decodeImageFromList(file.readAsBytesSync());
-      }
-      setState(() {});
-      final rs = await _segmenter.processImage(inputImage);
-
-      subjects = rs.subjects;
-      showRaw = false;
-    } catch (e) {}
-
-    inProcess = false;
-    setState(() {});
+  Widget _buildBottomMenu(theme) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          SelectImageMenu(
+            onImageSelected: (newPath) {
+              _path.value = newPath;
+              _processImage();
+            },
+          ),
+          ListenableBuilder(
+            listenable: Listenable.merge([
+              _inProcess,
+              _subjects,
+            ]),
+            builder: (context, child) {
+              return Row(
+                children: [
+                  const VerticalDivider(width: 0.1),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _showRaw,
+                    builder: (context, showRaw, _) {
+                      return _ImageOptionButton(
+                        icon: showRaw ? HugeIcons.strokeRoundedBackground : HugeIcons.strokeRoundedImage01,
+                        label: showRaw ? LKey.sticker.tr(context: context) : LKey.original.tr(context: context),
+                        isDisabled: isDisabled,
+                        onTap: () => _showRaw.value = !showRaw,
+                      );
+                    },
+                  ),
+                  const VerticalDivider(width: 0.1),
+                  _ImageOptionButton(
+                    icon: HugeIcons.strokeRoundedDownload01,
+                    label: LKey.download.tr(context: context),
+                    isDisabled: isDisabled,
+                    onTap: () => DownloadHelper.downloadFromBitmap(_subjects.value![0].bitmap!),
+                  ),
+                  const VerticalDivider(width: 0.1),
+                  _ImageOptionButton(
+                    icon: HugeIcons.strokeRoundedShare01,
+                    label: LKey.share.tr(context: context),
+                    isDisabled: isDisabled,
+                    onTap: () => ShareHelper.shareBitmap(_subjects.value![0].bitmap!),
+                  ),
+                ],
+              );
+            },
+          )
+        ],
+      ),
+    );
   }
 }
 
 class SubjectPainter extends CustomPainter {
   final List<Subject> subjects;
   final ui.Image? image;
+  final Size? imageSize;
 
-  SubjectPainter(this.subjects, this.image);
+  SubjectPainter(this.subjects, this.image, this.imageSize);
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (image == null) return;
+    if (image == null || imageSize == null) return;
 
-    // Scale the image to fit the canvas
     final imageAspect = image!.width / image!.height;
     final canvasAspect = size.width / size.height;
     double scale;
@@ -342,15 +252,6 @@ class SubjectPainter extends CustomPainter {
       dx = (size.width - image!.width * scale) / 2;
     }
 
-    // Draw the image
-    // canvas.drawImageRect(
-    //   image!,
-    //   Rect.fromLTWH(0, 0, image!.width.toDouble(), image!.height.toDouble()),
-    //   Rect.fromLTWH(dx, dy, image!.width * scale, image!.height * scale),
-    //   Paint(),
-    // );
-
-    // Draw subjects
     for (var subject in subjects) {
       final rect = Rect.fromLTWH(
         dx + subject.startX * scale,
@@ -359,7 +260,6 @@ class SubjectPainter extends CustomPainter {
         subject.height * scale,
       );
 
-      // Draw bitmap if available
       if (subject.bitmap != null) {
         ui.decodeImageFromList(subject.bitmap!, (result) {
           canvas.drawImageRect(
@@ -371,7 +271,6 @@ class SubjectPainter extends CustomPainter {
         });
       }
 
-      // Draw bounding box
       canvas.drawRect(
         rect,
         Paint()
@@ -386,7 +285,6 @@ class SubjectPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-//create ratio view
 class RatioView extends StatelessWidget {
   const RatioView({
     super.key,
@@ -409,13 +307,9 @@ class RatioView extends StatelessWidget {
 }
 
 class SelectImageMenu extends StatelessWidget {
-  /// Callback triggered when an image path is selected.
   final void Function(String) onImageSelected;
 
-  const SelectImageMenu({
-    super.key,
-    required this.onImageSelected,
-  });
+  const SelectImageMenu({super.key, required this.onImageSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -426,13 +320,13 @@ class SelectImageMenu extends StatelessWidget {
           label: LKey.camera.tr(context: context),
           onTap: () => _handleCamera(context),
         ),
-        VerticalDivider(width: 0.1),
+        const VerticalDivider(width: 0.1),
         _ImageOptionButton(
           icon: HugeIcons.strokeRoundedImage01,
           label: LKey.gallery.tr(context: context),
           onTap: () => _handleGallery(context),
         ),
-        VerticalDivider(width: 0.1),
+        const VerticalDivider(width: 0.1),
         _ImageOptionButton(
           icon: HugeIcons.strokeRoundedGridTable,
           label: 'Meow',
@@ -442,23 +336,16 @@ class SelectImageMenu extends StatelessWidget {
     );
   }
 
-  /// Opens the camera and handles the selected image path.
   Future<void> _handleCamera(BuildContext context) async {
     final path = await openImage(ImageSource.camera);
-    if (path != null) {
-      onImageSelected(path);
-    }
+    if (path != null) onImageSelected(path);
   }
 
-  /// Opens the gallery and handles the selected image path.
   Future<void> _handleGallery(BuildContext context) async {
     final path = await openImage(ImageSource.gallery);
-    if (path != null) {
-      onImageSelected(path);
-    }
+    if (path != null) onImageSelected(path);
   }
 
-  /// Opens the app's image selection screen and handles the selected image path.
   void _handleAppImages(BuildContext context) {
     gotoSelectImages(
       context,
@@ -467,7 +354,6 @@ class SelectImageMenu extends StatelessWidget {
       onSubmitImage: (imagePaths) {
         if (imagePaths.isNotEmpty) {
           onImageSelected(imagePaths.first);
-          //pop
           Navigator.of(context).pop();
         }
       },
@@ -476,7 +362,6 @@ class SelectImageMenu extends StatelessWidget {
   }
 }
 
-/// A reusable button widget for image selection options.
 class _ImageOptionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -490,7 +375,6 @@ class _ImageOptionButton extends StatelessWidget {
     this.isDisabled = false,
   });
 
-  // Constants for styling
   static const double _padding = 10.0;
   static const double _iconSize = 20.0;
   static const double _spacing = 4.0;
@@ -501,35 +385,62 @@ class _ImageOptionButton extends StatelessWidget {
     final theme = context.appTheme;
 
     return AnimatedOpacity(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       opacity: isDisabled ? 0.5 : 1,
       child: InkWell(
         onTap: isDisabled ? null : onTap,
         child: Container(
           padding: const EdgeInsets.all(_padding),
-          constraints: BoxConstraints(
-            minWidth: 60,
-          ),
+          constraints: const BoxConstraints(minWidth: 60),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(_borderRadius),
-            color: theme.actionBackground, // Assuming theme is globally accessible
+            color: theme.actionBackground,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: _iconSize,
-              ),
+              Icon(icon, size: _iconSize),
               const SizedBox(height: _spacing),
-              Text(
-                label,
-                style: theme.textTheme.labelSmall,
-              ),
+              Text(label, style: theme.textTheme.labelSmall),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+Future<List<Subject>?> processImage(Data data) async {
+  // BackgroundIsolateBinaryMessenger.ensureInitialized(data.isolateToken);
+
+  final segmenter = SubjectSegmenter(
+    options: SubjectSegmenterOptions(
+      enableForegroundConfidenceMask: false,
+      enableForegroundBitmap: false,
+      enableMultipleSubjects: SubjectResultOptions(
+        enableConfidenceMask: true,
+        enableSubjectBitmap: true,
+      ),
+    ),
+  );
+  final path = data.path;
+  try {
+    final inputImage = path.isUrl
+        ? InputImage.fromFile(await CachedNetworkImageProvider.defaultCacheManager.getSingleFile(path))
+        : InputImage.fromFile(File(path));
+    final result = await segmenter.processImage(inputImage);
+    return result.subjects;
+  } catch (e) {
+    return null;
+  } finally {
+    segmenter.close();
+  }
+}
+
+class Data {
+  //token
+  final RootIsolateToken? isolateToken;
+  final String path;
+
+  Data({required this.isolateToken, required this.path});
 }

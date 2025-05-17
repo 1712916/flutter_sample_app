@@ -153,14 +153,6 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
               LKey.clear,
               style: theme.textTheme.titleMedium,
             ),
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(theme.highlightColor),
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
           ),
           SizedBox(width: 8),
         ],
@@ -170,9 +162,9 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
           // Lưới ảnh
           BlocBuilder<ImageListCubit, ImageListState>(builder: (context, state) {
             if (state.images == null || state.images!.isEmpty) {
-              return Align(
-                alignment: Alignment.center,
-                child: Column(
+              return RefreshIndicator(
+                onRefresh: context.read<ImageListCubit>().refreshData,
+                child: ListView(
                   children: [
                     const SizedBox(height: 100),
                     Icon(
@@ -180,25 +172,21 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                       size: 64,
                     ),
                     const SizedBox(height: 4),
-                    LText(
-                      LKey.emptyData,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<ImageListCubit>().refreshData();
-                      },
+                    Center(
                       child: LText(
-                        LKey.refreshData,
+                        LKey.emptyData,
                         style: theme.textTheme.titleMedium,
                       ),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(theme.highlightColor),
-                        shape: WidgetStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.read<ImageListCubit>().refreshData();
+                        },
+                        child: LText(
+                          LKey.refreshData,
+                          style: theme.textTheme.titleMedium,
                         ),
                       ),
                     ),
@@ -208,13 +196,15 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
             }
 
             final count = state.images?.length ?? 0;
+            final w = MediaQuery.of(context).size.width;
+            const crossAxisCount = 3;
 
             return GridView.builder(
               key: _gridKey,
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: crossAxisCount,
                 childAspectRatio: 1,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
@@ -225,9 +215,13 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   //load more
                   context.read<ImageListCubit>().loadMore(10);
                 }
-
+                final item = state.images![index];
+                final memCacheHeight = ((item.height ?? w) / crossAxisCount).toInt();
+                final memCacheWidth = ((item.width ?? w) / crossAxisCount).toInt();
                 return SelectionImageWidget(
-                  url: state.images![index].url!,
+                  url: item.url!,
+                  memCacheHeight: memCacheHeight,
+                  memCacheWidth: memCacheWidth,
                   isSelected: _selectedImages.contains(index),
                   onSelected: (value) {
                     switch (value) {
@@ -294,18 +288,18 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                       widget.selectImageTitle,
                       style: theme.textTheme.titleMedium,
                     ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(theme.highlightColor),
-                      shape: WidgetStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                            color: theme.highlightColor2,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // style: ButtonStyle(
+                    //   backgroundColor: WidgetStateProperty.all(theme.highlightColor),
+                    //   shape: WidgetStateProperty.all(
+                    //     RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(20),
+                    //       side: BorderSide(
+                    //         color: theme.highlightColor2,
+                    //         width: 2,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ),
                 ],
               ),
