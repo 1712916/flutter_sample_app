@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:cr_file_saver/file_saver.dart';
@@ -10,7 +11,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../resources/resources.dart';
 import '../../widgets/widgets.dart';
 import 'index.dart';
 
@@ -19,7 +19,14 @@ class DownloadHelper {
 
   static Future<String> storagePath() async {
     final directory = await getTemporaryDirectory();
-    return '${directory.path}/meow_app';
+    final path = '${directory.path}/meow_app';
+
+    //create path if not exist
+    final dir = Directory(path);
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    return path;
   }
 
   static Future downloadImage({required String url}) async {
@@ -111,5 +118,19 @@ class DownloadHelper {
     }
 
     return null;
+  }
+
+  static Future<void> downloadFromBitmap(Uint8List bitmap) async {
+    final fileName = 'meow_app_${DateTime.now().millisecondsSinceEpoch}.png';
+    final path = '${await storagePath()}/$fileName';
+
+    try {
+      final file = File(path);
+      await file.writeAsBytes(bitmap);
+      await CRFileSaver.saveFile(path, destinationFileName: fileName);
+      Toast.makeText(message: LKey.saveToPhone.tr());
+    } catch (e) {
+      log("download error", error: e);
+    }
   }
 }

@@ -13,7 +13,7 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
 
   PreferredSizeWidget? buildAppbar(BuildContext context) => null;
 
-  Widget buildContent(BuildContext context) => const SizedBox.shrink();
+  Widget buildBody(BuildContext context) => const SizedBox.shrink();
 
   bool isFirstLoad = true;
 
@@ -35,11 +35,11 @@ abstract class CustomState<T extends StatefulWidget, C extends Cubit> extends St
     return BlocProvider(
       create: (context) => cubit,
       child: isBody
-          ? buildContent(context)
+          ? buildBody(context)
           : Scaffold(
               backgroundColor: theme.scaffoldBackgroundColor2,
               appBar: buildAppbar(context),
-              body: buildContent(context),
+              body: buildBody(context),
               floatingActionButton: buildFloatingActionButton(context),
             ),
     );

@@ -58,7 +58,9 @@ dependencies:
   in_app_review: ^2.0.10
   flip_card: any
   dotted_border: ^2.1.0
-
+  google_mlkit_subject_segmentation: ^0.0.2
+  google_mlkit_commons: any
+  flutter_image_compress: ^2.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -25,6 +25,8 @@
   "shareFile": "Share file",
   "shareTo": "Share to...",
   "share": "Share",
+  "download": "Download",
+  "original": "Original",
   "save": "Save",
   "delete": "Delete",
   "message": "Message",
@@ -85,5 +87,8 @@
   "requireSelectImageDescription": "Please select at least {number} images!",
   "maximumSelectImageDescription": "You can only select up to {number} images!",
   "selectedTitle": "Selected: ",
-  "startGame": "Start Game"
+  "startGame": "Start Game",
+  "sticker": "Sticker",
+  "emptyData": "Empty Data",
+  "refreshData": "Refresh Data"
 }
