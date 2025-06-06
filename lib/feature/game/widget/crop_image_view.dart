@@ -13,6 +13,8 @@ import '../../../../widgets/widgets.dart';
 import '../../../routers/route.dart';
 import '../../image/image_list_page.dart';
 
+final GlobalKey goToGameKey = GlobalKey();
+
 class CropImageView extends StatefulWidget {
   const CropImageView({super.key, required this.url});
 
@@ -74,6 +76,7 @@ class _CropImageViewState extends State<CropImageView> {
             left: 40,
             right: 40,
             child: TakeImageButton(
+              key: goToGameKey,
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedImageCrop,
                 color: theme.iconColor,

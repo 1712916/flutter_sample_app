@@ -17,6 +17,12 @@ void printMatrix(List<List<dynamic>> matrix) {
 }
 
 const int _numberOfStep = 100;
+const Map<int, int> _numberOfSteps = {
+  3: 100,
+  4: 200,
+  5: 400,
+  6: 600,
+};
 
 class GameManager {
   static double cellSize = 50;
@@ -108,12 +114,31 @@ List<MoveType> genMoveList(int gameSize) {
   Random random = Random();
   MoveType? preMoveType;
 
-  for (int i = 0; i < _numberOfStep * gameSize; i++) {
+  for (int i = 0; i < _numberOfSteps[gameSize]!; i++) {
     moveTypes.add(_nextMoveRandom(preMoveType: preMoveType, random: random));
     preMoveType = moveTypes.last;
   }
 
   return moveTypes;
+}
+
+List<MoveType> getReverseMoves(List<MoveType> scrambleMoves) {
+  // Hàm ánh xạ để lấy hướng đối lập
+  MoveType getOppositeMove(MoveType move) {
+    switch (move) {
+      case MoveType.left:
+        return MoveType.right;
+      case MoveType.right:
+        return MoveType.left;
+      case MoveType.up:
+        return MoveType.down;
+      case MoveType.down:
+        return MoveType.up;
+    }
+  }
+
+  // Đảo ngược danh sách và thay thế mỗi move bằng hướng đối lập
+  return scrambleMoves.reversed.map(getOppositeMove).toList();
 }
 
 MoveType _nextMoveRandom({MoveType? preMoveType, Random? random}) {
@@ -179,6 +204,8 @@ class Game {
   Map<String, GameMatrixItem> moveTracking = {};
   final int size;
 
+  List<MoveType> scrambleMoves = [];
+
   Game({required this.size});
 
   void initializeGame() {
@@ -214,6 +241,7 @@ class Game {
           r.sx--;
           moveTracking[emptyBox.getKey()] = r;
           emptyBox.moveRight();
+          scrambleMoves.add(MoveType.left);
         }
         break;
       case MoveType.right:
@@ -222,6 +250,7 @@ class Game {
           r.sx++;
           moveTracking[emptyBox.getKey()] = r;
           emptyBox.moveLeft();
+          scrambleMoves.add(MoveType.right);
         }
         break;
       case MoveType.up:
@@ -230,6 +259,7 @@ class Game {
           r.sy--;
           moveTracking[emptyBox.getKey()] = r;
           emptyBox.moveDown();
+          scrambleMoves.add(MoveType.up);
         }
         break;
       case MoveType.down:
@@ -238,6 +268,7 @@ class Game {
           r.sy++;
           moveTracking[emptyBox.getKey()] = r;
           emptyBox.moveUp();
+          scrambleMoves.add(MoveType.down);
         }
         break;
     }

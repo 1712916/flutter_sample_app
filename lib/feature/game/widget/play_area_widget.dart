@@ -7,6 +7,7 @@ import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../game_manager.dart';
+import 'blinking_marker.dart';
 import 'cell_widget.dart';
 import 'directional_control_widget.dart';
 import 'image_widget.dart';
@@ -28,12 +29,16 @@ class PlayArea extends StatefulWidget {
 }
 
 class PlayAreaState extends State<PlayArea> {
+  // Khởi tạo ValueNotifier
+  final ValueNotifier<int> blinkingRefreshNotifier = ValueNotifier<int>(0);
+
   final ValueNotifier<double> scaleNotifier = ValueNotifier(0.7);
   final Map<int, List<List<imglib.Image>>> _imageCache = {};
   final Map<String, GlobalKey<CellWidgetState>> moveTracking = {};
 
-  late GameEmptyBox emptyBox;
-  late GameMatrix gameMatrix;
+  late Game game;
+  GameEmptyBox get emptyBox => game.emptyBox;
+  GameMatrix get gameMatrix => game.gameMatrix;
   late List<List<GlobalKey<CellWidgetState>>> cellMatrix;
 
   bool isScrambling = false;
@@ -91,9 +96,7 @@ class PlayAreaState extends State<PlayArea> {
   }
 
   void _setupGame() async {
-    final game = Game(size: gameSize)..initializeGame();
-    gameMatrix = game.gameMatrix;
-    emptyBox = game.emptyBox;
+    game = Game(size: gameSize)..initializeGame();
     resetStep();
   }
 
@@ -120,7 +123,7 @@ class PlayAreaState extends State<PlayArea> {
     setState(() {});
   }
 
-  void _move(Direction direction) {
+  void move(Direction direction) {
     String? key;
     VoidCallback? moveCell;
 
@@ -168,6 +171,7 @@ class PlayAreaState extends State<PlayArea> {
 
     moveTracking[emptyBox.getKey()] = cellKey!;
     moveCell();
+    blinkingRefreshNotifier.value++;
     incrementStep();
 
     debugLog('Move #$countMoveStep | New EmptyBox Position: ${emptyBox.getKey()}');
@@ -178,9 +182,7 @@ class PlayAreaState extends State<PlayArea> {
     }
   }
 
-  List<Widget> _buildCells(double s) {
-    final cellSize = (s / gameSize).floor();
-
+  List<Widget> _buildCells(int cellSize) {
     final List<Widget> widgets = [];
     for (int i = 0; i < gameMatrix.length; i++) {
       for (int j = 0; j < gameMatrix[i].length; j++) {
@@ -211,16 +213,16 @@ class PlayAreaState extends State<PlayArea> {
   Widget build(BuildContext context) {
     return ControlBarWrapper(
       onDirectionTap: (value) {
-        _move(value);
+        move(value);
       },
       child: ValueListenableBuilder<double>(
         valueListenable: scaleNotifier,
         builder: (context, scale, _) {
           return DirectionalControlWidget(
-            moveLeft: () => _move(Direction.left),
-            moveRight: () => _move(Direction.right),
-            moveUp: () => _move(Direction.up),
-            moveDown: () => _move(Direction.down),
+            moveLeft: () => move(Direction.left),
+            moveRight: () => move(Direction.right),
+            moveUp: () => move(Direction.up),
+            moveDown: () => move(Direction.down),
             child: Center(
               child: Transform.scale(
                 scale: scale,
@@ -231,11 +233,27 @@ class PlayAreaState extends State<PlayArea> {
                     color: Theme.of(context).highlightColor2,
                   ),
                   child: LayoutBuilder(builder: (context, constraints) {
+                    final cellSize = (constraints.maxWidth / gameSize).floor();
                     return AspectRatio(
                       aspectRatio: 1,
                       child: Stack(
                         clipBehavior: Clip.none,
-                        children: _buildCells(constraints.maxWidth),
+                        children: [
+                          ..._buildCells(cellSize),
+                          ValueListenableBuilder(
+                              valueListenable: blinkingRefreshNotifier,
+                              builder: (context, _, __) {
+                                return CellWidget(
+                                  size: cellSize.toDouble(),
+                                  jumpSize: cellSize.toDouble(),
+                                  destination: GameMatrixItem(
+                                    x: emptyBox.x,
+                                    y: emptyBox.y,
+                                  ),
+                                  child: const BlinkingMarker(),
+                                );
+                              }),
+                        ],
                       ),
                     );
                   }),

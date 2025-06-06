@@ -27,7 +27,19 @@ import 'routers/route.dart';
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 final AppMenuCubit appMenuCubit = GetIt.I.get();
 
-void main() async {
+Future main() async {
+  await initApp();
+
+  runApp(
+    EasyLocalization(
+      child: const MyApp(),
+      supportedLocales: LocaleUtils.locales,
+      path: LocaleUtils.path,
+    ),
+  );
+}
+
+Future initApp() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await configFirebase();
@@ -49,14 +61,6 @@ void main() async {
   Bloc.observer = AppBlocObserver();
 
   FlutterNativeSplash.remove();
-
-  runApp(
-    EasyLocalization(
-      child: const MyApp(),
-      supportedLocales: LocaleUtils.locales,
-      path: LocaleUtils.path,
-    ),
-  );
 }
 
 class AppBlocObserver extends BlocObserver {
