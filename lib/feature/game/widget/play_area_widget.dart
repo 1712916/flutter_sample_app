@@ -2,10 +2,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
 import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../cubit/game_setting_cubit.dart';
 import '../game_manager.dart';
 import 'blinking_marker.dart';
 import 'cell_widget.dart';
@@ -240,19 +242,28 @@ class PlayAreaState extends State<PlayArea> {
                         clipBehavior: Clip.none,
                         children: [
                           ..._buildCells(cellSize),
-                          ValueListenableBuilder(
-                              valueListenable: blinkingRefreshNotifier,
-                              builder: (context, _, __) {
-                                return CellWidget(
-                                  size: cellSize.toDouble(),
-                                  jumpSize: cellSize.toDouble(),
-                                  destination: GameMatrixItem(
-                                    x: emptyBox.x,
-                                    y: emptyBox.y,
-                                  ),
-                                  child: const BlinkingMarker(),
-                                );
-                              }),
+                          BlocSelector<GameSettingCubit, GameSettingState, bool>(
+                            selector: (state) => state.blinkingMarker,
+                            builder: (context, isShow) {
+                              if (!isShow) {
+                                return const SizedBox.shrink();
+                              }
+
+                              return ValueListenableBuilder(
+                                  valueListenable: blinkingRefreshNotifier,
+                                  builder: (context, _, __) {
+                                    return CellWidget(
+                                      size: cellSize.toDouble(),
+                                      jumpSize: cellSize.toDouble(),
+                                      destination: GameMatrixItem(
+                                        x: emptyBox.x,
+                                        y: emptyBox.y,
+                                      ),
+                                      child: const BlinkingMarker(),
+                                    );
+                                  });
+                            },
+                          ),
                         ],
                       ),
                     );

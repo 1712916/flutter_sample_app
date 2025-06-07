@@ -108,6 +108,7 @@ class LKey {
   static const String exit = 'exit';
 
   static const String gameController = 'gameController';
+  static const String emptyBoxFocus = 'emptyBoxFocus';
   static const String shareGameDescription = 'shareGameDescription';
 
   static const String reviewApp = 'reviewApp';
