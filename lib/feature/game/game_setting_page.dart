@@ -54,6 +54,31 @@ class _GameSettingPageState extends StateTemplate<GameSettingPage> {
             },
           ),
         ),
+        ListTile(
+          title: LText(
+            LKey.emptyBoxFocus,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: textColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          leading: Icon(
+            HugeIcons.strokeRoundedCenterFocus,
+            color: theme.iconColor,
+          ),
+          trailing: BlocSelector<GameSettingCubit, GameSettingState, bool>(
+            selector: (state) => state.blinkingMarker,
+            builder: (context, isShow) {
+              return Switch(
+                value: isShow,
+                inactiveTrackColor: theme.canvasColor,
+                onChanged: (bool value) {
+                  context.read<GameSettingCubit>().toggleBlinkingMarker(value);
+                },
+              );
+            },
+          ),
+        ),
       ],
     );
   }

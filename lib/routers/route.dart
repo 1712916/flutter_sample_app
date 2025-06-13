@@ -71,7 +71,7 @@ void goToSortGamePage(ui.Image image, {BuildContext? context}) {
   Navigator.of(context ?? navKey.currentContext!).pushReplacement(
     MaterialPageRoute(
       builder: (context) {
-        return GamePage(image: image);
+        return SortGamePage(image: image);
       },
     ),
   ).whenComplete(() {

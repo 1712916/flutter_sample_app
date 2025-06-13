@@ -25,6 +25,17 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: cubit.currentIndex);
+
+    //todo: open later to config start
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Future.delayed(const Duration(milliseconds: 500), () {
+    //     //show home widget
+    //     autoPlaySortGame
+    //       ..context = navKey.currentContext!
+    //       ..pageController = _pageController
+    //       ..runAutoPlayGame();
+    //   });
+    // });
   }
 
   @override

@@ -76,6 +76,7 @@
   "playAgain": "Play Again",
   "exit": "Exit",
   "gameController": "Game Controller",
+  "emptyBoxFocus": "Focus Point",
   "shareGameDescription": "\uD83C\uDF89 I just finished the game in just {countStep} steps!\nTry your luck here \uD83D\uDC49 {url}",
   "reviewApp": "Review App",
   "playGame": "Play Game",

@@ -18,8 +18,8 @@ import 'game_manager.dart';
 import 'widget/game_complete_widget.dart';
 import 'widget/play_area_widget.dart';
 
-class GamePage extends StatefulWidget {
-  const GamePage({
+class SortGamePage extends StatefulWidget {
+  const SortGamePage({
     Key? key,
     this.image,
   }) : super(key: key);
@@ -27,15 +27,17 @@ class GamePage extends StatefulWidget {
   final ui.Image? image;
 
   @override
-  _GamePageState createState() => _GamePageState();
+  _SortGamePageState createState() => _SortGamePageState();
+
+  static final GlobalKey<PlayAreaState> playAreaBoardKey = GlobalKey();
 }
 
-class _GamePageState extends StateTemplate<GamePage> {
+class _SortGamePageState extends StateTemplate<SortGamePage> {
   ui.Image? _image;
 
   LoadStatus _loadStatus = LoadStatus.init;
 
-  final GlobalKey<PlayAreaState> _gameBoardKey = GlobalKey();
+  GlobalKey<PlayAreaState> get sortGameBoardKey => SortGamePage.playAreaBoardKey;
 
   int gameSize = 3;
 
@@ -113,12 +115,12 @@ class _GamePageState extends StateTemplate<GamePage> {
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: PlayArea(
-                        key: _gameBoardKey,
+                        key: sortGameBoardKey,
                         image: _image!,
                         onComplete: () {
                           confettiController.play();
                           GameCompleteWidget(
-                            countStep: _gameBoardKey.currentState!.countMoveStep,
+                            countStep: sortGameBoardKey.currentState!.countMoveStep,
                             onExit: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
@@ -149,9 +151,9 @@ class _GamePageState extends StateTemplate<GamePage> {
                             },
                           ),
                           ZoomViewRange(
-                            initialZoomLevel: () => _gameBoardKey.currentState?.zoomLevel ?? 0.7,
+                            initialZoomLevel: () => sortGameBoardKey.currentState?.zoomLevel ?? 0.7,
                             onZoom: (value) {
-                              _gameBoardKey.currentState?.setZoom(value);
+                              sortGameBoardKey.currentState?.setZoom(value);
                             },
                           ),
                           IconButton(
@@ -212,9 +214,9 @@ class _GamePageState extends StateTemplate<GamePage> {
                         },
                       ),
                       ZoomViewRange(
-                        initialZoomLevel: () => _gameBoardKey.currentState?.zoomLevel ?? 0.7,
+                        initialZoomLevel: () => sortGameBoardKey.currentState?.zoomLevel ?? 0.7,
                         onZoom: (value) {
-                          _gameBoardKey.currentState?.setZoom(value);
+                          sortGameBoardKey.currentState?.setZoom(value);
                         },
                       ),
                       IconButton(
@@ -234,12 +236,12 @@ class _GamePageState extends StateTemplate<GamePage> {
               const Divider(color: Colors.black),
               Expanded(
                 child: PlayArea(
-                  key: _gameBoardKey,
+                  key: sortGameBoardKey,
                   image: _image!,
                   onComplete: () {
                     confettiController.play();
                     GameCompleteWidget(
-                      countStep: _gameBoardKey.currentState!.countMoveStep,
+                      countStep: sortGameBoardKey.currentState!.countMoveStep,
                       onExit: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
@@ -295,7 +297,7 @@ class _GamePageState extends StateTemplate<GamePage> {
   }
 
   void reloadScramble() {
-    _gameBoardKey.currentState?.reScramble();
+    sortGameBoardKey.currentState?.reScramble();
   }
 }
 
