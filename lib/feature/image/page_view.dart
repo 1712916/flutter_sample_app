@@ -4,9 +4,7 @@ import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
 import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
 
 import '../../core/base/index.dart';
-import '../../main.dart';
 import '../../widgets/widgets.dart';
-import '../auto_play/auto_play.dart';
 import '../base_page.dart';
 import '../favourite/favourite_wrapper.dart';
 import 'cubit/image_list_cubit.dart';
@@ -28,16 +26,16 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
     super.initState();
     _pageController = PageController(initialPage: cubit.currentIndex);
 
-    //frame call back
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        //show home widget
-        autoPlaySortGame
-          ..context = navKey.currentContext!
-          ..pageController = _pageController
-          ..runAutoPlayGame();
-      });
-    });
+    //todo: open later to config start
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Future.delayed(const Duration(milliseconds: 500), () {
+    //     //show home widget
+    //     autoPlaySortGame
+    //       ..context = navKey.currentContext!
+    //       ..pageController = _pageController
+    //       ..runAutoPlayGame();
+    //   });
+    // });
   }
 
   @override
