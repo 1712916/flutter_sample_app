@@ -94,5 +94,9 @@
   "startGame": "Bắt đầu trò chơi",
   "sticker": "Nhãn dán",
   "emptyData": "Không có dữ liệu",
-  "refreshData": "Tải lại dữ liệu"
+  "refreshData": "Tải lại dữ liệu",
+  "guide": "Hướng dẫn",
+  "autoPlay": "Tự động chơi",
+  "autoPlayDescription": "Tự động chơi sẽ tự động chơi trò chơi mà không cần tương tác của người dùng.",
+  "autoPlayMode": "Chế độ tự động chơi"
 }

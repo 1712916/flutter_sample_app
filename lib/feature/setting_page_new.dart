@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../core/index.dart';
 import '../widgets/widgets.dart';
 import 'app_store_review/app_store_review.dart';
+import 'auto_play/auto_play_sort_game.dart';
 import 'base_page.dart';
 
 class SettingNewPage extends StatefulWidget {
@@ -221,7 +222,45 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
               ),
             ),
           ),
-          SizedBox(height: 16), // IconTitleWidget(
+          SizedBox(height: 16), // IconTitleWidget
+          IconTitleWidget(
+            icon: Icon(
+              Icons.live_help,
+              color: theme.iconColor,
+              size: 20,
+            ),
+            title: LKey.guide.tr(),
+          ),
+          SizedBox(height: 4),
+          Card(
+            color: theme.cardColor2,
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: LText(
+                      LKey.autoPlay,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    leading: Icon(
+                      Icons.play_circle_outlined,
+                      color: theme.iconColor,
+                    ),
+                    onTap: () {
+                      //show dialog to confirm auto play
+                      AutoPlayGameConfirmWidget().show(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 16), // Ic// (
           //   icon: Icon(
           //     Icons.mail,
           //     color: theme.iconColor,

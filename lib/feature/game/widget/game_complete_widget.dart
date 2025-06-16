@@ -33,7 +33,7 @@ class GameCompleteWidget extends StatelessWidget with ShowDialog {
   }
 
   @override
-  void show(BuildContext context) async {
+  Future show(BuildContext context) async {
     await Future.delayed(
       const Duration(milliseconds: 600),
     );
