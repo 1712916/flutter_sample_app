@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/widgets/text.dart';
 
 import 'core/persistence/isar_storage.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/app_menu/cubit/app_menu_cubit.dart';
+import 'feature/auto_play/auto_play_sort_game.dart';
 import 'feature/background_worker/background_worker.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
 import 'feature/firebase/firebase.dart';
@@ -20,7 +23,6 @@ import 'feature/game/cubit/game_setting_cubit.dart';
 import 'feature/home_widget/home_widget_page.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
-import 'resources/resources.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 
@@ -160,6 +162,47 @@ class _MaterialAppState extends State<_MaterialApp> {
             locale: context.locale,
             initialRoute: RouteManager.mainPage,
             onGenerateRoute: (settings) => RouteManager.getRoute(settings),
+            builder: (context, child) {
+              return ValueListenableBuilder(
+                valueListenable: autoPlayGameNotifier,
+                builder: (context, autoMode, _) {
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Column(
+                        children: [
+                          Expanded(child: child ?? const SizedBox.shrink()),
+                          if (autoMode)
+                            Material(
+                              color: context.appTheme.scaffoldBackgroundColor2,
+                              child: SafeArea(
+                                top: false,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Icon(
+                                        HugeIcons.strokeRoundedRobotic,
+                                        color: context.appTheme.iconColor,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      LText(LKey.autoPlayMode),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (autoMode) Material(color: Colors.white10),
+                    ],
+                  );
+                },
+              );
+            },
           ),
         );
       },

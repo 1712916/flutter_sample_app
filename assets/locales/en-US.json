@@ -91,5 +91,9 @@
   "startGame": "Start Game",
   "sticker": "Sticker",
   "emptyData": "Empty Data",
-  "refreshData": "Refresh Data"
+  "refreshData": "Refresh Data",
+  "guide": "Guide",
+  "autoPlay": "Auto Play",
+  "autoPlayDescription": "Auto play will automatically play the game without user interaction.",
+  "autoPlayMode": "Auto Play Mode"
 }

@@ -21,7 +21,7 @@ class ImageListCubit extends Cubit<ImageListState> {
   int _page = 0;
   int _cacheOffset = 0;
 
-  final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
   final ScrollController gridController = ScrollController();
 
@@ -41,6 +41,13 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   void setCurrentIndex(int index) {
     _currentIndex = index;
+  }
+
+  void reset() {
+    emit(ImageListState.init());
+    _page = 0;
+    setCurrentIndex(0);
+    navKey = GlobalKey<NavigatorState>();
   }
 
   Future init() {
@@ -140,7 +147,7 @@ class ImageListCubit extends Cubit<ImageListState> {
   void showPageView(int index) {
     setCurrentIndex(index);
     emit(state.copyWith(viewType: ImageViewType.page));
-    navKey.currentState!.pushNamed(state.viewType.path).whenComplete(() {
+    navKey.currentState?.pushNamed(state.viewType.path).whenComplete(() {
       if (state.viewType == ImageViewType.page) {
         enableMenuGrid();
       }

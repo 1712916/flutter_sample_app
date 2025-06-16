@@ -126,4 +126,9 @@ class LKey {
   static const String sticker = 'sticker';
   static const String emptyData = 'emptyData';
   static const String refreshData = 'refreshData';
+
+  static const String guide = 'guide';
+  static const String autoPlay = 'autoPlay';
+  static const String autoPlayDescription = 'autoPlayDescription';
+  static const String autoPlayMode = 'autoPlayMode';
 }

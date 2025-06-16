@@ -22,7 +22,7 @@ class ThemeUtils {
     String? themeMode = await simpleStorage.getString('theme_mode');
 
     if (themeMode == null) {
-      themeModeNotifier.value = ThemeMode.system;
+      themeModeNotifier.value = ThemeMode.dark;
     } else {
       themeModeNotifier.value = themeMode == 'ThemeMode.light' ? ThemeMode.light : ThemeMode.dark;
     }

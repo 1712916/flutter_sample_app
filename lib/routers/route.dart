@@ -57,6 +57,13 @@ class RouteManager {
   }
 }
 
+void goToHome({BuildContext? context}) {
+  Navigator.of(navKey.currentContext!).pushNamedAndRemoveUntil(
+    RouteManager.mainPage,
+    (route) => false,
+  );
+}
+
 void goToCropImageView(String url, {BuildContext? context}) {
   Navigator.of(context ?? navKey.currentContext!).push(
     MaterialPageRoute(
