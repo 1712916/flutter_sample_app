@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/core/sound/music_manager.dart';
+import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
 import 'package:meow_app/widgets/text.dart';
 
 import 'core/persistence/isar_storage.dart';
@@ -59,6 +61,14 @@ Future initApp() async {
       },
     ),
   ]);
+
+  // Initialize the music manager to check and download music files
+  final musicManager = MusicManager();
+  await musicManager.initialize();
+
+  // Initialize game sound manager without starting music playback
+  final gameSoundManager = GameSoundManager();
+  await gameSoundManager.initialize();
 
   Bloc.observer = AppBlocObserver();
 

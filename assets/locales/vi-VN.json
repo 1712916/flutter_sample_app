@@ -99,5 +99,9 @@
   "autoPlay": "Tự động chơi",
   "autoPlayDescription": "Tự động chơi sẽ tự động sử dụng ứng dụng và chặn tương tác của người dùng.",
   "autoPlayMode": "Chế độ tự động chơi",
-  "soundEffects": "Hiệu ứng âm thanh"
+  "soundEffects": "Hiệu ứng âm thanh",
+  "backgroundMusic": "Nhạc nền",
+  "chooseMusicTrack": "Chọn bài nhạc",
+  "gameControls": "Điều khiển trò chơi",
+  "soundSettings": "Cài đặt âm thanh"
 }

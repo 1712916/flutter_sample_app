@@ -96,5 +96,9 @@
   "autoPlay": "Auto Play",
   "autoPlayDescription": "Auto play will automatically play the game without user interaction.",
   "autoPlayMode": "Auto Play Mode",
-  "soundEffects": "Sound Effects"
+  "soundEffects": "Sound Effects",
+  "backgroundMusic": "Background Music",
+  "chooseMusicTrack": "Choose Music Track",
+  "gameControls": "Game Controls",
+  "soundSettings": "Sound Settings"
 }
