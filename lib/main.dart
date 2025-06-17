@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/core/provider/music_provider.dart';
 import 'package:meow_app/core/sound/music_manager.dart';
 import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
 import 'package:meow_app/widgets/text.dart';
@@ -161,58 +162,61 @@ class _MaterialAppState extends State<_MaterialApp> {
             BlocProvider(create: (_) => gameSettingCubit),
             BlocProvider(create: (_) => appMenuCubit),
           ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            navigatorKey: navKey,
-            theme: ThemeUtils.lightTheme,
-            darkTheme: ThemeUtils.darkTheme,
-            themeMode: themeMode,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            initialRoute: RouteManager.mainPage,
-            onGenerateRoute: (settings) => RouteManager.getRoute(settings),
-            builder: (context, child) {
-              return ValueListenableBuilder(
-                valueListenable: autoPlayGameNotifier,
-                builder: (context, autoMode, _) {
-                  return Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Column(
-                        children: [
-                          Expanded(child: child ?? const SizedBox.shrink()),
-                          if (autoMode)
-                            Material(
-                              color: context.appTheme.scaffoldBackgroundColor2,
-                              child: SafeArea(
-                                top: false,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Icon(
-                                        HugeIcons.strokeRoundedRobotic,
-                                        color: context.appTheme.iconColor,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      LText(LKey.autoPlayMode),
-                                    ],
+          child: MusicProvider(
+            defaultMusicFile: MusicManager.defaultMusic,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              navigatorKey: navKey,
+              theme: ThemeUtils.lightTheme,
+              darkTheme: ThemeUtils.darkTheme,
+              themeMode: themeMode,
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              initialRoute: RouteManager.mainPage,
+              onGenerateRoute: (settings) => RouteManager.getRoute(settings),
+              builder: (context, child) {
+                return ValueListenableBuilder(
+                  valueListenable: autoPlayGameNotifier,
+                  builder: (context, autoMode, _) {
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Column(
+                          children: [
+                            Expanded(child: child ?? const SizedBox.shrink()),
+                            if (autoMode)
+                              Material(
+                                color: context.appTheme.scaffoldBackgroundColor2,
+                                child: SafeArea(
+                                  top: false,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Icon(
+                                          HugeIcons.strokeRoundedRobotic,
+                                          color: context.appTheme.iconColor,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        LText(LKey.autoPlayMode),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                      if (autoMode) Material(color: Colors.white10),
-                    ],
-                  );
-                },
-              );
-            },
+                          ],
+                        ),
+                        if (autoMode) Material(color: Colors.white10),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         );
       },

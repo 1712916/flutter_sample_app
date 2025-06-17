@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
-import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
 import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../cubit/game_setting_cubit.dart';
+import '../cubit/game_sound_cubit.dart';
 import '../game_manager.dart';
 import 'blinking_marker.dart';
 import 'cell_widget.dart';
@@ -31,19 +31,13 @@ class PlayArea extends StatefulWidget {
   State<PlayArea> createState() => PlayAreaState();
 }
 
-class PlayAreaState extends State<PlayArea> with WidgetsBindingObserver {
+class PlayAreaState extends State<PlayArea> {
   // Khởi tạo ValueNotifier
   final ValueNotifier<int> blinkingRefreshNotifier = ValueNotifier<int>(0);
 
   final ValueNotifier<double> scaleNotifier = ValueNotifier(0.7);
   final Map<int, List<List<imglib.Image>>> _imageCache = {};
   final Map<String, GlobalKey<CellWidgetState>> moveTracking = {};
-
-  // Track whether app is in foreground
-  bool _isAppInForeground = true;
-
-  // Track if music was playing before going to background
-  bool _wasMusicPlayingBeforeBackground = false;
 
   late Game game;
   GameEmptyBox get emptyBox => game.emptyBox;
@@ -67,95 +61,17 @@ class PlayAreaState extends State<PlayArea> with WidgetsBindingObserver {
     _countMoveStep = 0;
   }
 
-  final gameSoundManager = GameSoundManager();
-
   @override
   void initState() {
     super.initState();
-    // Register observer for app lifecycle changes
-    WidgetsBinding.instance.addObserver(this);
-
     _initializeGame();
-
-    // Start background music for the sort game if sound is enabled
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startMusicIfEnabled();
-    });
-  }
-
-  // Helper method to start music if enabled
-  void _startMusicIfEnabled() {
-    final gameSettingState = context.read<GameSettingCubit>().state;
-
-    if (gameSettingState.musicEnabled) {
-      // Only start music if it's not already playing
-      if (!gameSoundManager.isMusicPlaying()) {
-        if (kDebugMode) {
-          print('🎵 Starting background music for Sort Game: ${gameSettingState.currentMusic}');
-        }
-        gameSoundManager.playBackgroundMusic(gameSettingState.currentMusic);
-        _wasMusicPlayingBeforeBackground = true;
-      }
-    }
   }
 
   @override
   void dispose() {
-    // Unregister observer
-    WidgetsBinding.instance.removeObserver(this);
-
     _imageCache.clear();
     scaleNotifier.dispose();
-
-    // Stop background music when the game is closed
-    if (kDebugMode) {
-      print('🎵 Stopping background music as Sort Game is closing');
-    }
-    gameSoundManager.stopBackgroundMusic();
-
     super.dispose();
-  }
-
-  // Handle app lifecycle state changes
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    if (kDebugMode) {
-      print('🎵 App lifecycle state changed to: $state');
-    }
-
-    switch (state) {
-      case AppLifecycleState.resumed:
-        // App is visible and in foreground
-        _isAppInForeground = true;
-        // Resume music only if it was playing before going to background
-        if (_wasMusicPlayingBeforeBackground) {
-          final gameSettingState = context.read<GameSettingCubit>().state;
-          if (gameSettingState.musicEnabled) {
-            if (kDebugMode) {
-              print('🎵 Resuming background music: ${gameSettingState.currentMusic}');
-            }
-
-            // Add a small delay to ensure the app is fully resumed before starting music
-            // This helps on Android where audio focus might not be immediately available
-            Future.delayed(Duration(milliseconds: 300), () {
-              if (mounted && _isAppInForeground) {
-                gameSoundManager.playBackgroundMusic(gameSettingState.currentMusic);
-              }
-            });
-          }
-        }
-        break;
-
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.hidden:
-        gameSoundManager.stopBackgroundMusic();
-        break;
-    }
   }
 
   @override
@@ -194,9 +110,7 @@ class PlayAreaState extends State<PlayArea> with WidgetsBindingObserver {
       }
     }
 
-    // Play completion sound
-    // Using unawaited call since we don't want to block UI
-    gameSoundManager.playGameCompleteSound();
+    context.read<GameSoundCubit>().playGameCompleteSound();
 
     widget.onComplete?.call();
   }
@@ -245,10 +159,6 @@ class PlayAreaState extends State<PlayArea> with WidgetsBindingObserver {
     }
 
     debugLog('Moving $direction | EmptyBox: ${emptyBox.getKey()} → $key');
-
-    // Play move sound
-    // Using unawaited call since we don't want to block the animation
-    gameSoundManager.playMoveSound();
 
     switch (direction) {
       case Direction.left:

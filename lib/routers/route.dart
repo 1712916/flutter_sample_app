@@ -6,8 +6,10 @@ import 'package:get_it/get_it.dart';
 import '../feature/app_store_review/app_store_review.dart';
 import '../feature/game/game_page.dart';
 import '../feature/game/widget/crop_image_view.dart';
+import '../feature/game_memory/memory_game_page.dart';
 import '../feature/sticker/sticker_page.dart';
 import '../main.dart';
+import '../widgets/background_music_player.dart';
 
 class RouteManager {
   static String get mainPage => '/';
@@ -78,12 +80,25 @@ void goToSortGamePage(ui.Image image, {BuildContext? context}) {
   Navigator.of(context ?? navKey.currentContext!).pushReplacement(
     MaterialPageRoute(
       builder: (context) {
-        return SortGamePage(image: image);
+        return BackgroundMusicPlayer(child: SortGamePage(image: image));
       },
     ),
   ).whenComplete(() {
     InAppReviewUtil().checkAndShowReviewDialog();
   });
+}
+
+void goToMemoryGamePage(BuildContext context, {required List<String> imagePaths}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => BackgroundMusicPlayer(
+        child: MemoryGamePage(
+          imagePaths: imagePaths,
+        ),
+      ),
+    ),
+  );
 }
 
 void goToStickerPage({BuildContext? context, String? path}) {

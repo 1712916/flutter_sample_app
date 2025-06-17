@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/feature/game/cubit/background_music_cubit.dart';
 import 'package:meow_app/feature/game/cubit/game_setting_cubit.dart';
 import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
@@ -109,13 +110,17 @@ class _MusicSelectionWidgetState extends State<MusicSelectionWidget> {
                     }
 
                     // Luôn thay đổi nhạc khi người dùng chọn bài hát, bất kể đang bật hay tắt
-                    final cubit = context.read<GameSettingCubit>();
+                    final settingCubit = context.read<GameSettingCubit>();
+                    final musicCubit = context.read<BackgroundMusicCubit>();
 
-                    // Gọi changeMusic sẽ cập nhật lưu trữ và chuyển nhạc nếu đang bật
-                    cubit.changeMusic(track);
+                    // Gọi changeMusic sẽ cập nhật lưu trữ
+                    settingCubit.changeMusic(track);
 
-                    // Hiển thị thông báo nếu nhạc đang tắt
-                    if (!state.musicEnabled) {
+                    // Nếu nhạc đang bật, sử dụng BackgroundMusicCubit để chuyển nhạc
+                    if (state.musicEnabled) {
+                      musicCubit.switchMusic(track);
+                    } else {
+                      // Hiển thị thông báo nếu nhạc đang tắt
                       if (kDebugMode) {
                         print('🎵 Music is disabled, track selected but not playing');
                       }

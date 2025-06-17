@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meow_app/feature/game/cubit/background_music_cubit.dart';
 
 import '../../../core/index.dart';
 import '../sound/game_sound_manager.dart';
@@ -10,6 +11,14 @@ class GameSettingCubit extends Cubit<GameSettingState> {
 
   final SimpleStorage simpleStorage = SimpleStorage();
   final GameSoundManager _gameSoundManager = GameSoundManager();
+  
+  // Tham chiếu đến BackgroundMusicCubit, sẽ được thiết lập sau
+  BackgroundMusicCubit? _musicCubit;
+
+  // Phương thức để thiết lập tham chiếu tới BackgroundMusicCubit
+  void setMusicCubit(BackgroundMusicCubit musicCubit) {
+    _musicCubit = musicCubit;
+  }
 
   static final String gameControllerKey = 'game_controller_key';
   static final String blinkingMarkerKey = 'blinking_marker_key';
@@ -17,7 +26,12 @@ class GameSettingCubit extends Cubit<GameSettingState> {
   static final String musicEnabledKey = 'music_enabled_key';
   static final String currentMusicKey = 'current_music_key';
 
-  void init() async {
+  void init({BackgroundMusicCubit? musicCubit}) async {
+    // Set reference to BackgroundMusicCubit if provided
+    if (musicCubit != null) {
+      _musicCubit = musicCubit;
+    }
+    
     // Initialize music manager
     await _gameSoundManager.initialize();
 
@@ -66,19 +80,30 @@ class GameSettingCubit extends Cubit<GameSettingState> {
     emit(state.copyWith(soundEnabled: value));
     simpleStorage.saveBool(soundEnabledKey, value);
 
-    // Update sound manager mute state
+    // Update sound manager mute state using GameSoundManager
     await _gameSoundManager.setSoundMute(!value);
+    
+    // Note: GameSoundCubit will also listen to this change in the UI
   }
 
   void toggleMusicEnabled(bool value) async {
     emit(state.copyWith(musicEnabled: value));
     simpleStorage.saveBool(musicEnabledKey, value);
 
-    // Start or stop background music
-    if (value) {
-      await _gameSoundManager.playBackgroundMusic(state.currentMusic);
+    // Start or stop background music using the BackgroundMusicCubit if available
+    if (_musicCubit != null) {
+      if (value) {
+        await _musicCubit!.playMusic(state.currentMusic);
+      } else {
+        await _musicCubit!.stopMusic();
+      }
     } else {
-      await _gameSoundManager.stopBackgroundMusic();
+      // Fall back to GameSoundManager if BackgroundMusicCubit is not available
+      if (value) {
+        await _gameSoundManager.playBackgroundMusic(state.currentMusic);
+      } else {
+        await _gameSoundManager.stopBackgroundMusic();
+      }
     }
   }
 
@@ -96,9 +121,16 @@ class GameSettingCubit extends Cubit<GameSettingState> {
     // Luôn chuyển nhạc nếu đang bật nhạc, không phụ thuộc vào trạng thái phát
     if (state.musicEnabled) {
       if (kDebugMode) {
-        print('🎵 Music is enabled, switching to new track via GameSoundManager');
+        print('🎵 Music is enabled, switching to new track');
       }
-      await _gameSoundManager.switchBackgroundMusic(musicFile);
+      
+      // Sử dụng BackgroundMusicCubit nếu có
+      if (_musicCubit != null) {
+        await _musicCubit!.switchMusic(musicFile);
+      } else {
+        // Fall back to GameSoundManager
+        await _gameSoundManager.switchBackgroundMusic(musicFile);
+      }
     }
   }
 

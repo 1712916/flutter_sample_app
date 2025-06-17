@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../cubit/game_sound_cubit.dart';
 import '../game_manager.dart';
 
 class CellWidget extends StatefulWidget {
@@ -51,21 +53,26 @@ class CellWidgetState extends State<CellWidget> {
 
   void moveForward() {
     widget.destination.sx += 1;
-    setState(() {});
+    _move();
   }
 
   void moveBack() {
     widget.destination.sx -= 1;
-    setState(() {});
+    _move();
   }
 
   void moveUp() {
     widget.destination.sy -= 1;
-    setState(() {});
+    _move();
   }
 
   void moveDown() {
     widget.destination.sy += 1;
+    _move();
+  }
+
+  void _move() {
+    context.read<GameSoundCubit>().playMoveSound();
     setState(() {});
   }
 }
