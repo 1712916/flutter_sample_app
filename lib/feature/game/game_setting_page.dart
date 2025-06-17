@@ -79,6 +79,31 @@ class _GameSettingPageState extends StateTemplate<GameSettingPage> {
             },
           ),
         ),
+        ListTile(
+          title: LText(
+            LKey.soundEffects,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: textColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          leading: Icon(
+            HugeIcons.strokeRoundedVolumeHigh,
+            color: theme.iconColor,
+          ),
+          trailing: BlocSelector<GameSettingCubit, GameSettingState, bool>(
+            selector: (state) => state.soundEnabled,
+            builder: (context, isEnabled) {
+              return Switch(
+                value: isEnabled,
+                inactiveTrackColor: theme.canvasColor,
+                onChanged: (bool value) {
+                  context.read<GameSettingCubit>().toggleSoundEnabled(value);
+                },
+              );
+            },
+          ),
+        ),
       ],
     );
   }

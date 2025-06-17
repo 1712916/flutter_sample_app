@@ -95,5 +95,6 @@
   "guide": "Guide",
   "autoPlay": "Auto Play",
   "autoPlayDescription": "Auto play will automatically play the game without user interaction.",
-  "autoPlayMode": "Auto Play Mode"
+  "autoPlayMode": "Auto Play Mode",
+  "soundEffects": "Sound Effects"
 }

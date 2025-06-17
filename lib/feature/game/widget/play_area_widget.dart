@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
 import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
@@ -108,6 +109,10 @@ class PlayAreaState extends State<PlayArea> {
         if (!cell.validate()) return;
       }
     }
+
+    // Play completion sound
+    GameSoundManager().playGameCompleteSound();
+
     widget.onComplete?.call();
   }
 
@@ -156,6 +161,9 @@ class PlayAreaState extends State<PlayArea> {
 
     debugLog('Moving $direction | EmptyBox: ${emptyBox.getKey()} → $key');
 
+    // Play move sound
+    GameSoundManager().playMoveSound();
+
     switch (direction) {
       case Direction.left:
         cellKey!.currentState!.moveBack();
@@ -171,7 +179,7 @@ class PlayAreaState extends State<PlayArea> {
         break;
     }
 
-    moveTracking[emptyBox.getKey()] = cellKey!;
+    moveTracking[emptyBox.getKey()] = cellKey;
     moveCell();
     blinkingRefreshNotifier.value++;
     incrementStep();

@@ -131,4 +131,5 @@ class LKey {
   static const String autoPlay = 'autoPlay';
   static const String autoPlayDescription = 'autoPlayDescription';
   static const String autoPlayMode = 'autoPlayMode';
+  static const String soundEffects = 'soundEffects';
 }
