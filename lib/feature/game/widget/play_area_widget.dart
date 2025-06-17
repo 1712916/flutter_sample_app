@@ -8,6 +8,7 @@ import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../cubit/game_setting_cubit.dart';
+import '../cubit/game_sound_cubit.dart';
 import '../game_manager.dart';
 import 'blinking_marker.dart';
 import 'cell_widget.dart';
@@ -108,6 +109,9 @@ class PlayAreaState extends State<PlayArea> {
         if (!cell.validate()) return;
       }
     }
+
+    context.read<GameSoundCubit>().playGameCompleteSound();
+
     widget.onComplete?.call();
   }
 
@@ -171,7 +175,7 @@ class PlayAreaState extends State<PlayArea> {
         break;
     }
 
-    moveTracking[emptyBox.getKey()] = cellKey!;
+    moveTracking[emptyBox.getKey()] = cellKey;
     moveCell();
     blinkingRefreshNotifier.value++;
     incrementStep();

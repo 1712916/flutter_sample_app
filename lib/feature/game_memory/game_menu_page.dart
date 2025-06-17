@@ -11,7 +11,6 @@ import 'package:meow_app/widgets/image_view.dart';
 
 import '../../routers/route.dart';
 import '../../widgets/text.dart';
-import 'memory_game_page.dart';
 import 'widget/image_selection_widget.dart';
 
 void goToGameMenu(BuildContext context) {
@@ -57,13 +56,10 @@ class _GameMenuPageState extends StateTemplate<GameMenuPage> {
               minImage: 8,
               maxImage: 8,
               onSubmitImage: (imagePaths) {
-                Navigator.pushReplacement(
+                Navigator.pop(context);
+                goToMemoryGamePage(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => MemoryGamePage(
-                      imagePaths: imagePaths,
-                    ),
-                  ),
+                  imagePaths: imagePaths,
                 );
               },
             );

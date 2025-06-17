@@ -72,7 +72,7 @@
   "enjoyAppDescription": "Hãy thưởng thức ứng dụng meow nhé <3",
   "favourite": "Yêu thích",
   "choose": "Chọn",
-  "noFavourite":  "Không có yêu thích",
+  "noFavourite": "Không có yêu thích",
   "selected": "đã chọn",
   "gameCompleteTitle": "\uD83C\uDF89 Hoàn thành trò chơi!",
   "gameCompleteDescription": "Bạn đã hoàn thành trò chơi trong {countStep} bước!",
@@ -84,7 +84,7 @@
   "reviewApp": "Đánh giá ứng dụng",
   "playGame": "Chơi trò chơi",
   "play": "Chơi",
-  "gameMenu":  "Danh sách trò chơi",
+  "gameMenu": "Danh sách trò chơi",
   "sortGame": "Trò chơi sắp xếp",
   "memoryGame": "Trò chơi ghi nhớ",
   "clear": "Xóa",
@@ -98,5 +98,10 @@
   "guide": "Hướng dẫn",
   "autoPlay": "Tự động chơi",
   "autoPlayDescription": "Tự động chơi sẽ tự động sử dụng ứng dụng và chặn tương tác của người dùng.",
-  "autoPlayMode": "Chế độ tự động chơi"
+  "autoPlayMode": "Chế độ tự động chơi",
+  "soundEffects": "Hiệu ứng âm thanh",
+  "backgroundMusic": "Nhạc nền",
+  "chooseMusicTrack": "Chọn bài nhạc",
+  "gameControls": "Điều khiển trò chơi",
+  "soundSettings": "Cài đặt âm thanh"
 }
