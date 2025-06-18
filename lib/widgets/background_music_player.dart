@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/feature/game/cubit/game_setting_cubit.dart';
-import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
+
+import '../feature/game/cubit/background_music_cubit.dart';
 
 /// Widget quản lý phát nhạc nền và xử lý vòng đời ứng dụng
 ///
@@ -46,9 +47,10 @@ class BackgroundMusicPlayer extends StatefulWidget {
 }
 
 class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with WidgetsBindingObserver {
-  final GameSoundManager _gameSoundManager = GameSoundManager();
   bool _isAppInForeground = true;
   bool _wasMusicPlayingBeforeBackground = false;
+
+  BackgroundMusicCubit get _backgroundMusicCubit => context.read<BackgroundMusicCubit>();
 
   @override
   void initState() {
@@ -70,7 +72,7 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
     WidgetsBinding.instance.removeObserver(this);
 
     // Dừng nhạc nền khi widget bị hủy
-    _gameSoundManager.stopBackgroundMusic();
+    stopMusic();
 
     super.dispose();
   }
@@ -98,29 +100,7 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-        _gameSoundManager.stopBackgroundMusic();
-
-        // // Ứng dụng đang ở nền hoặc không hiển thị
-        // _isAppInForeground = false;
-        // // Lưu trạng thái phát nhạc trước khi dừng
-        // _wasMusicPlayingBeforeBackground = _gameSoundManager.isMusicPlaying();
-        //
-        // if (_wasMusicPlayingBeforeBackground) {
-        //   if (kDebugMode) {
-        //     print('🎵 BackgroundMusicPlayer: App going to background - Stopping music');
-        //   }
-        //   // Dừng nhạc khi ứng dụng xuống nền
-        //
-        //   // Kiểm tra lại sau một khoảng thời gian để đảm bảo đã dừng
-        //   Future.delayed(Duration(milliseconds: 500), () {
-        //     if (_gameSoundManager.isMusicPlaying()) {
-        //       if (kDebugMode) {
-        //         print('🎵 BackgroundMusicPlayer: Music still playing after background, forcing stop again');
-        //       }
-        //       _gameSoundManager.stopBackgroundMusic();
-        //     }
-        //   });
-        // }
+        stopMusic();
         break;
     }
   }
@@ -128,17 +108,8 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
   // Bắt đầu phát nhạc nếu nhạc được bật trong cài đặt
   void _startMusicIfEnabled() {
     try {
-      final gameSettingState = context.read<GameSettingCubit>().state;
-
-      if (gameSettingState.musicEnabled && !_gameSoundManager.isMusicPlaying()) {
-        // Lấy bài hát từ tham số hoặc từ cài đặt
-        final musicFile = widget.defaultMusicFile ?? gameSettingState.currentMusic;
-
-        if (kDebugMode) {
-          print('🎵 BackgroundMusicPlayer: Starting background music: $musicFile');
-        }
-
-        _gameSoundManager.playBackgroundMusic(musicFile);
+      if (musicEnabled && !_backgroundMusicCubit.isMusicPlaying()) {
+        playMusic();
       }
     } catch (e) {
       if (kDebugMode) {
@@ -152,7 +123,7 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
     try {
       final gameSettingState = context.read<GameSettingCubit>().state;
 
-      if (gameSettingState.musicEnabled && !_gameSoundManager.isMuted()) {
+      if (gameSettingState.musicEnabled && !_backgroundMusicCubit.isMuted()) {
         if (kDebugMode) {
           print('🎵 BackgroundMusicPlayer: Resuming background music: ${gameSettingState.currentMusic}');
         }
@@ -161,7 +132,7 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
         // Điều này giúp trên Android, nơi focus âm thanh có thể không khả dụng ngay lập tức
         Future.delayed(Duration(milliseconds: 300), () {
           if (mounted && _isAppInForeground) {
-            _gameSoundManager.playBackgroundMusic(gameSettingState.currentMusic);
+            _backgroundMusicCubit.playMusic(gameSettingState.currentMusic);
           }
         });
       }
@@ -172,45 +143,25 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
     }
   }
 
-  // Start background music if enabled (can be called when entering the game screen)
-  void startBackgroundMusic([String? musicFile]) async {
-    try {
-      if (mounted) {
-        final gameSettingState = context.read<GameSettingCubit>().state;
-
-        if (gameSettingState.musicEnabled) {
-          final trackToPlay = musicFile ?? widget.defaultMusicFile ?? gameSettingState.currentMusic;
-
-          if (kDebugMode) {
-            print('🎵 BackgroundMusicPlayer: Starting background music when entering screen: $trackToPlay');
-          }
-
-          _gameSoundManager.playBackgroundMusic(trackToPlay);
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('🎵 BackgroundMusicPlayer: Error starting music when entering screen: $e');
-      }
-    }
+  bool get musicEnabled {
+    return context.read<GameSettingCubit>().state.musicEnabled;
   }
 
   // Phát nhạc (có thể gọi từ bên ngoài thông qua GlobalKey)
   void playMusic([String? musicFile]) {
-    if (mounted) {
-      final gameSettingState = context.read<GameSettingCubit>().state;
-
-      if (gameSettingState.musicEnabled) {
-        final trackToPlay = musicFile ?? widget.defaultMusicFile ?? gameSettingState.currentMusic;
-
-        _gameSoundManager.playBackgroundMusic(trackToPlay);
-      }
+    if (mounted && musicEnabled) {
+      _backgroundMusicCubit.playMusic(getTrackToPlay(musicFile));
     }
+  }
+
+  String getTrackToPlay([String? musicFile]) {
+    final gameSettingState = context.read<GameSettingCubit>().state;
+    return musicFile ?? widget.defaultMusicFile ?? gameSettingState.currentMusic;
   }
 
   // Dừng nhạc (có thể gọi từ bên ngoài thông qua GlobalKey)
   void stopMusic() {
-    _gameSoundManager.stopBackgroundMusic();
+    _backgroundMusicCubit.stopMusic();
   }
 
   // Chuyển bài hát (có thể gọi từ bên ngoài thông qua GlobalKey)
@@ -219,7 +170,7 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
       final gameSettingState = context.read<GameSettingCubit>().state;
 
       if (gameSettingState.musicEnabled) {
-        _gameSoundManager.switchBackgroundMusic(musicFile);
+        _backgroundMusicCubit.switchMusic(musicFile);
       }
     }
   }
@@ -230,33 +181,3 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
     return widget.child;
   }
 }
-
-/// Cách sử dụng BackgroundMusicPlayer trong ứng dụng:
-///
-/// 1. Sử dụng với BuildContext (được khuyến nghị trong widget):
-///    ```dart
-///    // Phát nhạc nền
-///    context.playBackgroundMusic();
-///    // Hoặc chỉ định một bài hát cụ thể
-///    context.playBackgroundMusic('night-happiness.mp3');
-///
-///    // Dừng nhạc nền
-///    context.stopBackgroundMusic();
-///
-///    // Bắt đầu phát nhạc khi vào màn hình
-///    context.startBackgroundMusicOnScreen();
-///    ```
-///
-/// 2. Sử dụng với GlobalKey (sử dụng khi không có BuildContext):
-///    ```dart
-///    // Phát nhạc nền
-///    BackgroundMusicPlayer.getInstance()?.playMusic();
-///
-///    // Dừng nhạc nền
-///    BackgroundMusicPlayer.getInstance()?.stopMusic();
-///
-///    // Chuyển bài hát
-///    BackgroundMusicPlayer.getInstance()?.switchMusic('my-music.mp3');
-///    ```
-///
-/// Widget quản lý phát nhạc nền và xử lý vòng đời ứng dụng

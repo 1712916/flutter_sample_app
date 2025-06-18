@@ -112,3 +112,7 @@ void goToStickerPage({BuildContext? context, String? path}) {
 void goToStickerListPage({BuildContext? context}) {
   Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.stickerListPage);
 }
+
+void goToGameSetting([BuildContext? context]) {
+  Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.gameSettingPage);
+}

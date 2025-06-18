@@ -70,7 +70,7 @@ class _SortGamePageState extends StateTemplate<SortGamePage> {
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.of(context).pushNamed(RouteManager.gameSettingPage);
+            goToGameSetting(context);
           },
           icon: Icon(
             HugeIcons.strokeRoundedSettings01,
