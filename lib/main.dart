@@ -63,13 +63,8 @@ Future initApp() async {
     ),
   ]);
 
-  // Initialize the music manager to check and download music files
-  final musicManager = MusicManager();
-  await musicManager.initialize();
-
   // Initialize game sound manager without starting music playback
-  final gameSoundManager = GameSoundManager();
-  await gameSoundManager.initialize();
+  GameSoundManager().initialize();
 
   Bloc.observer = AppBlocObserver();
 

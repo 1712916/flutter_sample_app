@@ -53,12 +53,58 @@ class MusicManager {
     }
   }
 
-  /// Download all music files to local storage
+
+
+  /// Download all music files to local storage using isolate
   Future<void> downloadAllMusic() async {
     try {
-      for (final entry in _musicFiles.entries) {
-        await _downloadMusic(entry.key, entry.value);
-      }
+      final dir = await _getMusicDirectory();
+      final musicDirPath = dir.path;
+      
+      // Use compute to run the function in a separate isolate
+      await compute(
+        (Map<String, dynamic> params) async {
+          final musicFiles = params['musicFiles'] as Map<String, String>;
+          final musicDir = params['musicDir'] as String;
+          final dio = Dio();
+          
+          for (final entry in musicFiles.entries) {
+            final filename = entry.key;
+            final url = entry.value;
+            final filePath = '$musicDir/$filename';
+
+            // Skip if file already exists
+            if (await File(filePath).exists()) {
+              continue;
+            }
+
+            // Download file
+            try {
+              await dio.download(
+                url,
+                filePath,
+                onReceiveProgress: (received, total) {
+                  if (kDebugMode && total != -1) {
+                    print('Download $filename: ${(received / total * 100).toStringAsFixed(0)}%');
+                  }
+                },
+              );
+
+              if (kDebugMode) {
+                print('Downloaded $filename to $filePath');
+              }
+            } catch (e) {
+              if (kDebugMode) {
+                print('Error downloading $filename: $e');
+              }
+            }
+          }
+        },
+        {
+          'musicFiles': _musicFiles,
+          'musicDir': musicDirPath,
+        },
+      );
     } catch (e) {
       if (kDebugMode) {
         print('Error downloading all music: $e');

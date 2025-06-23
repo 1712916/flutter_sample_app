@@ -22,14 +22,14 @@ class MusicProvider extends StatefulWidget {
   State<MusicProvider> createState() => _MusicProviderState();
 }
 
+late BackgroundMusicCubit musicCubit = BackgroundMusicCubit();
+
 class _MusicProviderState extends State<MusicProvider> {
-  late BackgroundMusicCubit _musicCubit;
   late GameSoundCubit _gameSoundCubit;
 
   @override
   void initState() {
     super.initState();
-    _musicCubit = BackgroundMusicCubit();
     _gameSoundCubit = GameSoundCubit();
 
     // Khởi tạo cubit
@@ -37,7 +37,7 @@ class _MusicProviderState extends State<MusicProvider> {
   }
 
   Future<void> _initializeMusicCubit() async {
-    await _musicCubit.initialize(defaultTrack: widget.defaultMusicFile);
+    await musicCubit.initialize(defaultTrack: widget.defaultMusicFile);
 
     if (kDebugMode) {
       print('🎵 MusicProvider: BackgroundMusicCubit initialized');
@@ -62,7 +62,7 @@ class _MusicProviderState extends State<MusicProvider> {
       }
 
       // Thiết lập tham chiếu hai chiều
-      gameSettingCubit.setMusicCubit(_musicCubit);
+      gameSettingCubit.setMusicCubit(musicCubit);
 
       // Không tự động phát nhạc khi khởi tạo nữa
       // Thay vào đó, chúng ta sẽ để các màn hình cụ thể gọi playMusic khi cần
@@ -89,7 +89,7 @@ class _MusicProviderState extends State<MusicProvider> {
       gameSoundManager.stopBackgroundMusic();
 
       // Sau đó dừng qua Cubit để cập nhật trạng thái
-      _musicCubit.stopMusic();
+      musicCubit.stopMusic();
     } catch (e) {
       if (kDebugMode) {
         print('🎵 MusicProvider: Error stopping music during dispose: $e');
@@ -105,7 +105,7 @@ class _MusicProviderState extends State<MusicProvider> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<BackgroundMusicCubit>.value(value: _musicCubit),
+        BlocProvider<BackgroundMusicCubit>.value(value: musicCubit),
         BlocProvider<GameSoundCubit>.value(value: _gameSoundCubit),
       ],
       child: widget.child,

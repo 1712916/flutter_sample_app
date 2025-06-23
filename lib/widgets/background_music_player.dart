@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/feature/game/cubit/game_setting_cubit.dart';
 
+import '../core/provider/music_provider.dart';
 import '../feature/game/cubit/background_music_cubit.dart';
 
 /// Widget quản lý phát nhạc nền và xử lý vòng đời ứng dụng
@@ -21,9 +22,6 @@ class BackgroundMusicPlayer extends StatefulWidget {
   /// Bài hát mặc định để phát (nếu không có thì sẽ lấy từ setting)
   final String? defaultMusicFile;
 
-  /// Global key để truy cập từ bên ngoài
-  static final GlobalKey<BackgroundMusicPlayerState> globalKey = GlobalKey<BackgroundMusicPlayerState>();
-
   const BackgroundMusicPlayer({
     Key? key,
     required this.child,
@@ -32,25 +30,14 @@ class BackgroundMusicPlayer extends StatefulWidget {
     this.defaultMusicFile,
   }) : super(key: key);
 
-  /// Helper method để dễ dàng truy cập từ bất kỳ đâu
-  static BackgroundMusicPlayerState? of(BuildContext context) {
-    return context.findAncestorStateOfType<BackgroundMusicPlayerState>();
-  }
-
-  /// Get the BackgroundMusicPlayerState instance directly using the global key
-  static BackgroundMusicPlayerState? getInstance() {
-    return globalKey.currentState;
-  }
-
   @override
   State<BackgroundMusicPlayer> createState() => BackgroundMusicPlayerState();
 }
 
 class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with WidgetsBindingObserver {
   bool _isAppInForeground = true;
-  bool _wasMusicPlayingBeforeBackground = false;
 
-  BackgroundMusicCubit get _backgroundMusicCubit => context.read<BackgroundMusicCubit>();
+  BackgroundMusicCubit get _backgroundMusicCubit => musicCubit;
 
   @override
   void initState() {
@@ -71,7 +58,6 @@ class BackgroundMusicPlayerState extends State<BackgroundMusicPlayer> with Widge
     // Hủy đăng ký observer
     WidgetsBinding.instance.removeObserver(this);
 
-    // Dừng nhạc nền khi widget bị hủy
     stopMusic();
 
     super.dispose();

@@ -85,7 +85,7 @@ class _CropImageViewState extends State<CropImageView> {
               onTapAction: () async {
                 try {
                   final croppedImage = (await controller.croppedBitmap());
-                  goToSortGamePage(croppedImage);
+                  goToSortGamePage(croppedImage, context: context);
                 } catch (e, st) {
                   log('Error cropping image: $e', stackTrace: st);
                   Toast.makeText(
