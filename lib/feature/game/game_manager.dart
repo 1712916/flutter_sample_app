@@ -205,10 +205,12 @@ class Game {
   final int size;
 
   List<MoveType> scrambleMoves = [];
+  bool isCompleted = false;
 
   Game({required this.size});
 
   void initializeGame() {
+    isCompleted = false;
     gameMatrix = List.generate(size, (y) {
       return List.generate(size, (x) {
         return GameMatrixItem(x: x, y: y);
@@ -285,5 +287,11 @@ class Game {
       debugLog(row);
     }
     debugLog('=============================');
+  }
+
+  void completeGame() {
+    debugLog('Game completed!');
+    isCompleted = true;
+    // Here you can add any additional logic when the game is completed
   }
 }

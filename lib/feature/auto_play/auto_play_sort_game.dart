@@ -39,6 +39,7 @@ class AutoPlaySortGame extends AutoPlay {
 
   @override
   Future<void> init() async {
+    await Future.delayed(const Duration(seconds: 3));
     if (_recordGame) {
       try {
         await dio.get('/start');
@@ -56,7 +57,7 @@ class AutoPlaySortGame extends AutoPlay {
 
     for (int i = 1; i <= randomStep; i++) {
       await pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.linear);
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 800));
     }
 
     //get current image
@@ -69,7 +70,7 @@ class AutoPlaySortGame extends AutoPlay {
     while (i < 3) {
       if (currentImage.endsWith('.gif')) {
         await pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.linear);
-        await Future.delayed(const Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 800));
         i++;
       } else {
         break;
@@ -87,7 +88,7 @@ class AutoPlaySortGame extends AutoPlay {
 
     goToCropImageView(currentSelectedImage, context: context);
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
     final gestureDetector = goToGameKey.currentWidget as TakeImageButton;
     gestureDetector.onTapAction.call();
@@ -104,7 +105,10 @@ class AutoPlaySortGame extends AutoPlay {
 
     for (final move in revertScramble) {
       gameArea!.move(move);
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (gameArea.game.isCompleted) {
+        break;
+      }
     }
 
     gameArea.move(Direction.down);
@@ -115,7 +119,7 @@ class AutoPlaySortGame extends AutoPlay {
 
   @override
   Future<void> stopAutoPlay() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 3));
     autoPlayGameNotifier.disable();
 
     if (_recordGame) {

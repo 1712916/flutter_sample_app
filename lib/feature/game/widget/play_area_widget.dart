@@ -110,6 +110,8 @@ class PlayAreaState extends State<PlayArea> {
       }
     }
 
+    game.completeGame();
+
     context.read<GameSoundCubit>().playGameCompleteSound();
 
     widget.onComplete?.call();
