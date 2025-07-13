@@ -1,5 +1,6 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -10,6 +11,7 @@ import '../widgets/widgets.dart';
 import 'app_store_review/app_store_review.dart';
 import 'auto_play/auto_play_sort_game.dart';
 import 'base_page.dart';
+import 'onboarding/onboarding_util.dart';
 
 class SettingNewPage extends StatefulWidget {
   const SettingNewPage({Key? key}) : super(key: key);
@@ -260,55 +262,63 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
               ),
             ),
           ),
-          SizedBox(height: 16), // Ic// (
-          //   icon: Icon(
-          //     Icons.mail,
-          //     color: theme.iconColor,
-          //     size: 20,
-          //   ),
-          //   title: LKey.contact.tr(),
-          // ),
-          // SizedBox(height: 4),
-          // Card(
-          //   color: theme.cardColor2,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16),
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //         Row(
-          //           children: [
-          //             Expanded(
-          //               child: Text(
-          //                 email,
-          //                 style: theme.textTheme.bodyMedium?.copyWith(
-          //                   color: textColor,
-          //                   fontWeight: FontWeight.w600,
-          //                 ),
-          //               ),
-          //             ),
-          //             IconButton(
-          //               onPressed: () {
-          //                 //copy to clipboard
-          //                 Clipboard.setData(ClipboardData(text: email)).then(
-          //                   (value) {
-          //                     Toast.makeText(message: LKey.saveToPhone.tr());
-          //                   },
-          //                 );
-          //               },
-          //               icon: Icon(
-          //                 Icons.copy,
-          //                 color: textColor,
-          //               ),
-          //             )
-          //           ],
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+          SizedBox(height: 16),
 
-          const SizedBox(height: 16),
+          // Debug section (only visible in debug mode)
+          if (kDebugMode) ...[
+            IconTitleWidget(
+              icon: Icon(
+                Icons.bug_report,
+                color: iconColor,
+                size: 20,
+              ),
+              title: 'Debug Options',
+            ),
+            SizedBox(height: 4),
+            Card(
+              color: theme.cardColor2,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      title: LText(
+                        'Reset Onboarding',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: LText(
+                        'Show onboarding screen on next app launch',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: textColor.withOpacity(0.7),
+                        ),
+                      ),
+                      leading: Icon(
+                        Icons.refresh,
+                        color: theme.iconColor,
+                      ),
+                      onTap: () async {
+                        await OnboardingUtil.resetOnboarding();
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Onboarding reset. Restart the app to see onboarding.'),
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+          ],
+
+          SizedBox(height: 16), // Ic
         ],
       ),
     );

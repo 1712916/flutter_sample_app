@@ -136,4 +136,18 @@ class LKey {
   static const String chooseMusicTrack = 'chooseMusicTrack';
   static const String gameControls = 'gameControls';
   static const String soundSettings = 'soundSettings';
+
+  // Onboarding
+  static const String onboardingWelcome = 'onboardingWelcome';
+  static const String onboardingWelcomeDescription = 'onboardingWelcomeDescription';
+  static const String onboardingFeatures = 'onboardingFeatures';
+  static const String onboardingFeaturesDescription = 'onboardingFeaturesDescription';
+  static const String onboardingGames = 'onboardingGames';
+  static const String onboardingGamesDescription = 'onboardingGamesDescription';
+  static const String onboardingGetStarted = 'onboardingGetStarted';
+  static const String onboardingGetStartedDescription = 'onboardingGetStartedDescription';
+  static const String skip = 'skip';
+  static const String next = 'next';
+  static const String getStarted = 'getStarted';
+  static const String back = 'back';
 }

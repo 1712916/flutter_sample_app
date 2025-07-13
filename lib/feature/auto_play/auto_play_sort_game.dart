@@ -170,7 +170,7 @@ class AutoPlayGameConfirmWidget extends StatelessWidget with ShowDialog {
                       Navigator.of(context).pop(true);
                       autoPlayGameNotifier.enable();
                       context.read<ImageListCubit>().reset();
-                      goToHome(context: null);
+                      goToHome();
                     },
                     icon: Icon(Icons.play_circle_outlined, color: theme.iconColor),
                     label: LText(

@@ -7,11 +7,14 @@ import '../feature/app_store_review/app_store_review.dart';
 import '../feature/game/game_page.dart';
 import '../feature/game/widget/crop_image_view.dart';
 import '../feature/game_memory/memory_game_page.dart';
+import '../feature/onboarding/onboarding_util.dart';
 import '../feature/sticker/sticker_page.dart';
 import '../main.dart';
 import '../widgets/background_music_player.dart';
 
 class RouteManager {
+  static String get onboardingPage => '/onboarding';
+
   static String get mainPage => '/';
 
   static String get home => '/home';
@@ -57,9 +60,28 @@ class RouteManager {
     // return PageTransition(child: widget, type: PageTransitionType.leftToRight, settings: settings);
     return MaterialPageRoute(builder: (_) => widget, settings: settings);
   }
+
+  /// Initial route for the app based on onboarding status.
+  static String _initialRoute = RouteManager.mainPage;
+
+  static String get initialRoute => _initialRoute;
+
+  static Future<String> getInitialRoute() async {
+    await _checkOnboardingStatus();
+    return _initialRoute;
+  }
+
+  static Future<void> _checkOnboardingStatus() async {
+    final onboardingCompleted = await OnboardingUtil.isOnboardingCompleted();
+    _initialRoute = onboardingCompleted ? RouteManager.mainPage : RouteManager.onboardingPage;
+  }
+
+  static resetInitialRoute() {
+    _initialRoute = RouteManager.mainPage;
+  }
 }
 
-void goToHome({BuildContext? context}) {
+void goToHome() {
   Navigator.of(navKey.currentContext!).pushNamedAndRemoveUntil(
     RouteManager.mainPage,
     (route) => false,

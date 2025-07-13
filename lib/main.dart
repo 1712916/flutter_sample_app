@@ -53,7 +53,15 @@ Future initApp() async {
     EasyLocalization.ensureInitialized(),
     SettingManager.loadSetting(),
     AppDependencies.init(),
-    SimpleStorage().init().whenComplete(() => Future.wait([ThemeUtils.initThemeMode(), ShowcaseUtil.init()])),
+    SimpleStorage().init().whenComplete(
+          () => Future.wait(
+            [
+              ThemeUtils.initThemeMode(),
+              ShowcaseUtil.init(),
+              RouteManager.getInitialRoute(),
+            ],
+          ),
+        ),
     IsarDatabase().initialize(),
     AppHomeWidget.init(),
     BackgroundWorker.init().whenComplete(
@@ -112,7 +120,6 @@ class _MaterialAppState extends State<_MaterialApp> {
   @override
   void initState() {
     super.initState();
-
     initDeepLinks();
   }
 

@@ -103,5 +103,17 @@
   "backgroundMusic": "Nhạc nền",
   "chooseMusicTrack": "Chọn bài nhạc",
   "gameControls": "Điều khiển trò chơi",
-  "soundSettings": "Cài đặt âm thanh"
+  "soundSettings": "Cài đặt âm thanh",
+  "onboardingWelcome": "Chào mừng đến với Meow App!",
+  "onboardingWelcomeDescription": "Khám phá thế giới của những chú mèo và chó dễ thương với bộ sưu tập hình ảnh tuyệt vời của chúng tôi.",
+  "onboardingFeatures": "Tính năng tuyệt vời",
+  "onboardingFeaturesDescription": "Duyệt hàng nghìn hình ảnh dễ thương, lưu những hình yêu thích và chia sẻ với bạn bè.",
+  "onboardingGames": "Trò chơi xếp hình thú vị",
+  "onboardingGamesDescription": "Thử thách bản thân với trò chơi xếp hình trượt sử dụng những hình ảnh yêu thích của bạn.",
+  "onboardingGetStarted": "Sẵn sàng khám phá?",
+  "onboardingGetStartedDescription": "Bắt đầu hành trình với những chú mèo và chó dễ thương. Hãy cùng vui vẻ nhé!",
+  "skip": "Bỏ qua",
+  "next": "Tiếp theo",
+  "getStarted": "Bắt đầu",
+  "back": "Quay lại"
 }

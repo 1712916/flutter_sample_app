@@ -100,5 +100,17 @@
   "backgroundMusic": "Background Music",
   "chooseMusicTrack": "Choose Music Track",
   "gameControls": "Game Controls",
-  "soundSettings": "Sound Settings"
+  "soundSettings": "Sound Settings",
+  "onboardingWelcome": "Welcome to Meow App!",
+  "onboardingWelcomeDescription": "Discover a world of adorable cats and dogs with our amazing collection of images.",
+  "onboardingFeatures": "Amazing Features",
+  "onboardingFeaturesDescription": "Browse thousands of cute images, save your favorites, and share them with friends.",
+  "onboardingGames": "Fun Puzzle Games",
+  "onboardingGamesDescription": "Challenge yourself with sliding puzzle games using your favorite images.",
+  "onboardingGetStarted": "Ready to Explore?",
+  "onboardingGetStartedDescription": "Start your journey with cute cats and dogs. Let's have some fun!",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started",
+  "back": "Back"
 }
