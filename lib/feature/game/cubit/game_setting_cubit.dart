@@ -80,10 +80,10 @@ class GameSettingCubit extends Cubit<GameSettingState> {
     emit(state.copyWith(soundEnabled: value));
     simpleStorage.saveBool(soundEnabledKey, value);
 
-    // Update sound manager mute state using GameSoundManager
+    // Update sound manager mute state using GameSoundManager (now independent of music)
     await _gameSoundManager.setSoundMute(!value);
     
-    // Note: GameSoundCubit will also listen to this change in the UI
+    // Note: This no longer affects music playback
   }
 
   void toggleMusicEnabled(bool value) async {

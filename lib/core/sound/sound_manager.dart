@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -28,20 +27,18 @@ class SoundManager {
 
   factory SoundManager() => _instance;
 
-  SoundManager._internal() {
-    _init();
-  }
+  SoundManager._internal();
 
-  // Audio players
-  late AudioPlayer _effectPlayer;
-  late AudioPlayer _musicPlayer;
+  // Audio players - DISABLED to prevent conflicts with independent managers
+  // late AudioPlayer _effectPlayer;
+  // late AudioPlayer _musicPlayer;
 
   // Sound effect cache to prevent reloading
   final Map<String, AudioSource> _sourceCache = {};
 
-  // Volume settings
-  double _effectVolume = 1.0;
-  double _musicVolume = 0.8;
+  // Volume settings - DISABLED but kept for compatibility
+  // double _effectVolume = 1.0;
+  // double _musicVolume = 0.8;
 
   // Mute setting
   bool _isMuted = false;
@@ -50,115 +47,31 @@ class SoundManager {
   final ValueNotifier<SoundState> effectStateNotifier = ValueNotifier<SoundState>(SoundState.idle);
   final ValueNotifier<SoundState> musicStateNotifier = ValueNotifier<SoundState>(SoundState.idle);
 
-  // Initialize the sound system
-  Future<void> _init() async {
+  bool _isInitialized = false;
+
+  // Initialize the sound system - DISABLED to prevent conflicts with new independent managers
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+
     try {
-      // Configure audio session for better Android audio handling
-      final session = await AudioSession.instance;
-      await session.configure(const AudioSessionConfiguration(
-        androidAudioAttributes: AndroidAudioAttributes(
-          contentType: AndroidAudioContentType.music,
-          usage: AndroidAudioUsage.game,
-        ),
-        androidAudioFocusGainType: AndroidAudioFocusGainType.gainTransientMayDuck,
-        androidWillPauseWhenDucked: true,
-      ));
-
-      _effectPlayer = AudioPlayer();
-      _musicPlayer = AudioPlayer();
-
-      // Configure audio players
-      _setupAudioPlayerListeners();
-
-      // Preload common sounds
-      await preloadSounds(['sounds/pop.mp3']);
+      if (kDebugMode) {
+        print('SoundManager: DISABLED - Using new independent music and sound managers instead');
+      }
+      
+      // Don't create AudioPlayer instances to prevent conflicts
+      _isInitialized = true;
     } catch (e) {
       if (kDebugMode) {
-        print('Error initializing sound manager: $e');
+        print('Error in SoundManager initialization: $e');
       }
     }
   }
 
   void _setupAudioPlayerListeners() {
-    // Set up listeners for effect player
-    _effectPlayer.playerStateStream.listen((state) {
-      if (kDebugMode) {
-        print('Effect player state changed: ${state.processingState}');
-      }
-
-      switch (state.processingState) {
-        case ProcessingState.idle:
-          effectStateNotifier.value = SoundState.idle;
-          break;
-        case ProcessingState.loading:
-          effectStateNotifier.value = SoundState.loading;
-          break;
-        case ProcessingState.ready:
-          if (state.playing) {
-            effectStateNotifier.value = SoundState.playing;
-          } else {
-            effectStateNotifier.value = SoundState.paused;
-          }
-          break;
-        case ProcessingState.completed:
-          effectStateNotifier.value = SoundState.completed;
-          break;
-        case ProcessingState.buffering:
-          // This is a transient state, we can ignore it
-          break;
-      }
-    });
-
-    // Set up listeners for music player
-    _musicPlayer.playerStateStream.listen((state) {
-      if (kDebugMode) {
-        print('Music player state changed: ${state.processingState}');
-      }
-
-      switch (state.processingState) {
-        case ProcessingState.idle:
-          musicStateNotifier.value = SoundState.idle;
-          break;
-        case ProcessingState.loading:
-          musicStateNotifier.value = SoundState.loading;
-          break;
-        case ProcessingState.ready:
-          if (state.playing) {
-            musicStateNotifier.value = SoundState.playing;
-          } else {
-            musicStateNotifier.value = SoundState.paused;
-          }
-          break;
-        case ProcessingState.completed:
-          musicStateNotifier.value = SoundState.completed;
-          break;
-        case ProcessingState.buffering:
-          // This is a transient state, we can ignore it
-          break;
-      }
-    });
-
-    // Listen for playback completion
-    _effectPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
-        if (kDebugMode) {
-          print('Effect playback completed');
-        }
-        effectStateNotifier.value = SoundState.completed;
-        Timer(const Duration(milliseconds: 50), () {
-          effectStateNotifier.value = SoundState.idle;
-        });
-      }
-    });
-
-    _musicPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
-        if (kDebugMode) {
-          print('Music playback completed');
-        }
-        musicStateNotifier.value = SoundState.completed;
-      }
-    });
+    // DISABLED - No AudioPlayer instances created
+    if (kDebugMode) {
+      print('SoundManager._setupAudioPlayerListeners: DISABLED');
+    }
   }
 
   // Get the correct source based on path and source type
@@ -233,13 +146,7 @@ class SoundManager {
     }
   }
 
-  /// Play a sound effect
-  ///
-  /// [path] is the path to the sound file (e.g., 'sounds/pop.mp3')
-  /// [source] is the type of source (asset, file, url)
-  /// [volume] is optional volume override (0.0 to 1.0)
-  /// [loop] whether to loop the sound
-  /// [rate] playback rate
+  /// Play a sound effect - DISABLED
   Future<void> playEffect(
     String path, {
     SoundSource source = SoundSource.asset,
@@ -247,62 +154,10 @@ class SoundManager {
     bool loop = false,
     double rate = 1.0,
   }) async {
-    if (_isMuted) return;
-
-    try {
-      if (kDebugMode) {
-        print('🔊 Playing sound effect: $path (source: $source)');
-      }
-
-      effectStateNotifier.value = SoundState.loading;
-
-      final effectSource = _getSource(path, source);
-
-      if (kDebugMode) {
-        print('🔊 Created audio source: ${effectSource.toString()}');
-      }
-
-      // Only stop previous effect, don't interfere with music
-      await _effectPlayer.stop();
-
-      if (kDebugMode) {
-        print('🔊 Setting audio source...');
-      }
-
-      await _effectPlayer.setAudioSource(effectSource);
-
-      if (kDebugMode) {
-        print('🔊 Setting volume: ${volume ?? _effectVolume}');
-      }
-
-      await _effectPlayer.setVolume(volume ?? _effectVolume);
-      await _effectPlayer.setSpeed(rate);
-
-      if (loop) {
-        await _effectPlayer.setLoopMode(LoopMode.one);
-      } else {
-        await _effectPlayer.setLoopMode(LoopMode.off);
-      }
-
-      // Make sure this doesn't interfere with the music player
-      if (kDebugMode) {
-        print('🔊 Starting playback...');
-      }
-
-      await _effectPlayer.play();
-
-      if (kDebugMode) {
-        print('🔊 Playback started successfully');
-      }
-    } catch (e) {
-      effectStateNotifier.value = SoundState.error;
-      if (kDebugMode) {
-        print('❌ Error playing effect: $e');
-      }
-
-      // Fallback to basic implementation if audioplayers fails
-      _playFallbackSound();
+    if (kDebugMode) {
+      print('SoundManager.playEffect: DISABLED - Use IndependentSoundManager instead');
     }
+    return;
   }
 
   // Fallback sound implementation when AudioPlayers fails
@@ -321,7 +176,7 @@ class SoundManager {
     });
   }
 
-  /// Play background music
+  /// Play background music - DISABLED
   Future<void> playMusic(
     String path, {
     SoundSource source = SoundSource.asset,
@@ -329,133 +184,48 @@ class SoundManager {
     bool loop = true,
     double rate = 1.0,
   }) async {
-    if (_isMuted) return;
-
-    try {
-      if (kDebugMode) {
-        print('🎵 Playing background music: $path (source: $source)');
-      }
-
-      musicStateNotifier.value = SoundState.loading;
-      final musicSource = _getSource(path, source);
-
-      if (kDebugMode) {
-        print('🎵 Created music source: ${musicSource.toString()}');
-      }
-
-      await _musicPlayer.stop();
-
-      if (kDebugMode) {
-        print('🎵 Setting music audio source...');
-      }
-
-      await _musicPlayer.setAudioSource(musicSource);
-
-      if (kDebugMode) {
-        print('🎵 Setting music volume: ${volume ?? _musicVolume}');
-      }
-
-      await _musicPlayer.setVolume(volume ?? _musicVolume);
-      await _musicPlayer.setSpeed(rate);
-
-      if (loop) {
-        await _musicPlayer.setLoopMode(LoopMode.one);
-      } else {
-        await _musicPlayer.setLoopMode(LoopMode.off);
-      }
-
-      if (kDebugMode) {
-        print('🎵 Starting music playback...');
-      }
-
-      await _musicPlayer.play();
-
-      if (kDebugMode) {
-        print('🎵 Music playback started successfully');
-      }
-    } catch (e) {
-      musicStateNotifier.value = SoundState.error;
-      if (kDebugMode) {
-        print('❌ Error playing music: $e');
-      }
+    if (kDebugMode) {
+      print('SoundManager.playMusic: DISABLED - Use IndependentMusicManager instead');
     }
+    return;
   }
 
-  /// Stop playing effect
+  /// Stop playing effect - DISABLED
   Future<void> stopEffect() async {
-    try {
-      await _effectPlayer.stop();
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error stopping effect: $e');
-      }
+    if (kDebugMode) {
+      print('SoundManager.stopEffect: DISABLED');
     }
   }
 
-  /// Stop playing music
+  /// Stop playing music - DISABLED
   Future<void> stopMusic() async {
-    try {
-      if (kDebugMode) {
-        print('🎵 Forcefully stopping all music');
-      }
-
-      // Dừng phát nhạc
-      await _musicPlayer.pause();
-
-      // Đảm bảo bài hát dừng hoàn toàn
-      await _musicPlayer.stop();
-
-      // Reset trạng thái
-      musicStateNotifier.value = SoundState.idle;
-
-      if (kDebugMode) {
-        print('🎵 Music stopped successfully');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('❌ Error stopping music: $e');
-      }
+    if (kDebugMode) {
+      print('SoundManager.stopMusic: DISABLED - Use IndependentMusicManager instead');
     }
+    return;
   }
 
-  /// Set the volume for sound effects
+  /// Set the volume for sound effects - DISABLED
   Future<void> setEffectVolume(double volume) async {
-    _effectVolume = volume.clamp(0.0, 1.0);
-    try {
-      await _effectPlayer.setVolume(_effectVolume);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error setting effect volume: $e');
-      }
+    // _effectVolume = volume.clamp(0.0, 1.0);
+    if (kDebugMode) {
+      print('SoundManager.setEffectVolume: DISABLED');
     }
   }
 
-  /// Set the volume for background music
+  /// Set the volume for background music - DISABLED
   Future<void> setMusicVolume(double volume) async {
-    _musicVolume = volume.clamp(0.0, 1.0);
-    try {
-      await _musicPlayer.setVolume(_musicVolume);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error setting music volume: $e');
-      }
+    // _musicVolume = volume.clamp(0.0, 1.0);
+    if (kDebugMode) {
+      print('SoundManager.setMusicVolume: DISABLED');
     }
   }
 
-  /// Mute or unmute all sounds
+  /// Mute or unmute all sounds - DISABLED
   Future<void> setSoundMute(bool mute) async {
     _isMuted = mute;
-
-    try {
-      if (mute) {
-        await _effectPlayer.setVolume(0);
-      } else {
-        await _effectPlayer.setVolume(_effectVolume);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error setting mute: $e');
-      }
+    if (kDebugMode) {
+      print('SoundManager.setSoundMute: DISABLED');
     }
   }
 
@@ -479,17 +249,11 @@ class SoundManager {
     return musicStateNotifier.value;
   }
 
-  /// Dispose of resources
+  /// Dispose of resources - DISABLED
   void dispose() {
-    try {
-      _effectPlayer.dispose();
-      _musicPlayer.dispose();
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error disposing sound players: $e');
-      }
+    if (kDebugMode) {
+      print('SoundManager.dispose: DISABLED');
     }
-
     effectStateNotifier.dispose();
     musicStateNotifier.dispose();
     _sourceCache.clear();

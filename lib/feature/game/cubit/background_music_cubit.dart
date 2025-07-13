@@ -32,7 +32,7 @@ class BackgroundMusicState extends Equatable {
   List<Object?> get props => [isPlaying, currentTrack, isMuted];
 }
 
-// Cubit quản lý phát nhạc nền
+// Cubit quản lý phát nhạc nền với hệ thống âm thanh độc lập
 class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
   final GameSoundManager _gameSoundManager = GameSoundManager();
 
@@ -45,6 +45,7 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
 
     emit(state.copyWith(
       currentTrack: defaultTrack,
+      isMuted: _gameSoundManager.isMusicMuted(),
     ));
   }
 
@@ -67,7 +68,7 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
       await _gameSoundManager.playBackgroundMusic(trackToPlay);
 
       emit(state.copyWith(
-        isPlaying: true,
+        isPlaying: _gameSoundManager.isMusicPlaying(),
         currentTrack: trackToPlay,
       ));
     } catch (e) {
@@ -103,10 +104,11 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
         print('🎵 BackgroundMusicCubit: Switching to track: $track');
       }
 
+      // Use the new switchMusic method that doesn't stop current playback
       await _gameSoundManager.switchBackgroundMusic(track);
 
       emit(state.copyWith(
-        isPlaying: true,
+        isPlaying: _gameSoundManager.isMusicPlaying(),
         currentTrack: track,
       ));
     } catch (e) {
@@ -126,7 +128,7 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
   // Xử lý khi ứng dụng vào nền
   Future<void> handleAppBackground() async {
     // Lưu trạng thái hiện tại
-    final wasPlaying = state.isPlaying;
+    final wasPlaying = _gameSoundManager.isMusicPlaying();
 
     if (kDebugMode) {
       print('🎵 BackgroundMusicCubit: App went to background, music state: ${wasPlaying ? "playing" : "not playing"}');
@@ -140,20 +142,10 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
       // Dừng nhạc dù thế nào đi nữa
       await _gameSoundManager.stopBackgroundMusic();
 
-      // Lưu lại rằng nhạc đang phát khi vào nền và cập nhật trạng thái
+      // Cập nhật trạng thái
       emit(state.copyWith(
         isPlaying: false,
       ));
-
-      // Kiểm tra lại sau một khoảng thời gian để đảm bảo đã dừng
-      Future.delayed(Duration(milliseconds: 500), () async {
-        if (_gameSoundManager.isMusicPlaying()) {
-          if (kDebugMode) {
-            print('🎵 BackgroundMusicCubit: Music still playing after background, forcing stop again');
-          }
-          await _gameSoundManager.stopBackgroundMusic();
-        }
-      });
     }
   }
 
@@ -171,7 +163,7 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
 
   // Kiểm tra xem nhạc có đang phát không
   bool isMusicPlaying() {
-    return state.isPlaying;
+    return _gameSoundManager.isMusicPlaying();
   }
 
   // Lấy danh sách các bài hát có sẵn
@@ -180,6 +172,6 @@ class BackgroundMusicCubit extends Cubit<BackgroundMusicState> {
   }
 
   bool isMuted() {
-    return state.isMuted;
+    return _gameSoundManager.isMusicMuted();
   }
 }

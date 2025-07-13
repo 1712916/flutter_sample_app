@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:meow_app/core/sound/music_manager.dart';
-import 'package:meow_app/core/sound/sound_manager.dart';
+import 'package:meow_app/core/sound/independent_music_manager.dart';
+import 'package:meow_app/core/sound/independent_sound_manager.dart';
 
 /// Game sound manager for handling game-specific sounds
+/// Now uses independent music and sound managers that are decoupled
 class GameSoundManager {
   // Singleton instance
   static final GameSoundManager _instance = GameSoundManager._internal();
@@ -11,23 +13,32 @@ class GameSoundManager {
 
   GameSoundManager._internal();
 
-  // Sound manager reference
-  final SoundManager _soundManager = SoundManager();
-  final MusicManager _musicManager = MusicManager();
+  // Independent manager references - music and sound are now decoupled
+  final IndependentMusicManager _musicManager = IndependentMusicManager();
+  final IndependentSoundManager _soundManager = IndependentSoundManager();
+  final MusicManager _musicFileManager = MusicManager();
 
   // Current background music file
   String _currentMusicFile = MusicManager.defaultMusic;
-  bool _isMusicPlaying = false;
+
+  bool _isInitialized = false;
 
   /// Initialize the game sound manager
   Future<void> initialize() async {
+    if (_isInitialized) {
+      return;
+    }
     try {
       if (kDebugMode) {
         print('🎵 Initializing GameSoundManager');
       }
 
-      // Initialize music manager to check and download music files
-      await _musicManager.initialize();
+      // Initialize both independent managers and music file manager
+      await Future.wait([
+        _soundManager.initialize(),
+        _musicManager.initialize(),
+        _musicFileManager.initialize(),
+      ]);
 
       if (kDebugMode) {
         print('🎵 GameSoundManager initialization complete');
@@ -36,6 +47,8 @@ class GameSoundManager {
       if (kDebugMode) {
         print('Error initializing game sound manager: $e');
       }
+    } finally {
+      _isInitialized = true;
     }
   }
 
@@ -62,7 +75,7 @@ class GameSoundManager {
   Future<void> playGameCompleteSound() async {
     try {
       if (kDebugMode) {
-        print('� Playing game completion sound');
+        print('🎉 Playing game completion sound');
       }
 
       // Play the success sound
@@ -86,44 +99,24 @@ class GameSoundManager {
       _currentMusicFile = fileName;
 
       // Get the path to the music file
-      final filePath = await _musicManager.getMusicFilePath(fileName);
+      final filePath = await _musicFileManager.getMusicFilePath(fileName);
 
       if (filePath != null) {
         if (kDebugMode) {
           print('🎵 Starting background music: $fileName');
         }
 
-        // First stop any existing music to release audio resources
-        await _soundManager.stopMusic();
-
-        // Small delay to ensure audio resources are properly released
-        await Future.delayed(Duration(milliseconds: 200));
-
-        // Now play the music
-        await _soundManager.playMusic(
+        // Play the music using the independent music manager
+        await _musicManager.playMusic(
           filePath,
-          source: SoundSource.file,
+          source: MusicSource.file,
           loop: true,
           volume: 0.5, // Lower volume for background music
         );
 
-        _isMusicPlaying = true;
-
-        // For Android, make a check to ensure music is actually playing
-        Future.delayed(Duration(milliseconds: 500), () async {
-          if (_soundManager.getMusicState() != SoundState.playing && _isMusicPlaying) {
-            if (kDebugMode) {
-              print('🎵 Music not playing after attempt, retrying...');
-            }
-            // Try one more time after a delay
-            await _soundManager.playMusic(
-              filePath,
-              source: SoundSource.file,
-              loop: true,
-              volume: 0.5,
-            );
-          }
-        });
+        if (kDebugMode) {
+          print('🎵 Background music started successfully');
+        }
       } else {
         if (kDebugMode) {
           print('Music file not found: $fileName');
@@ -140,24 +133,13 @@ class GameSoundManager {
   Future<void> stopBackgroundMusic() async {
     try {
       if (kDebugMode) {
-        print('🎵 Stopping background music forcefully');
+        print('🎵 Stopping background music');
       }
 
-      // Force stop the music player completely
-      await _soundManager.stopMusic();
+      await _musicManager.stopMusic();
 
-      // Đảm bảo cập nhật trạng thái
-      _isMusicPlaying = false;
-
-      // Thêm delay nhỏ và kiểm tra lại để đảm bảo đã dừng
-      await Future.delayed(Duration(milliseconds: 100));
-
-      // Kiểm tra nếu vẫn còn phát thì dừng lại một lần nữa
-      if (_soundManager.getMusicState() != SoundState.idle) {
-        if (kDebugMode) {
-          print('🎵 Music still playing after stop, forcing stop again');
-        }
-        await _soundManager.stopMusic();
+      if (kDebugMode) {
+        print('🎵 Background music stopped successfully');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -168,7 +150,7 @@ class GameSoundManager {
 
   /// Toggle background music playback
   Future<void> toggleBackgroundMusic() async {
-    if (_isMusicPlaying) {
+    if (_musicManager.isMusicPlaying()) {
       if (kDebugMode) {
         print('🎵 Toggling background music: stopping');
       }
@@ -184,33 +166,41 @@ class GameSoundManager {
   /// Switch to a different background music
   Future<void> switchBackgroundMusic(String musicFile) async {
     if (kDebugMode) {
-      print('🎵 Switching background music to: $musicFile - Current playing state: ${_isMusicPlaying}');
+      print('🎵 Switching background music to: $musicFile');
     }
 
-    // Luôn cập nhật tên tệp nhạc hiện tại
+    // Update current music file
     _currentMusicFile = musicFile;
 
-    // Bất kể trạng thái hiện tại, dừng nhạc và phát lại với tệp mới
-    if (kDebugMode) {
-      print('🎵 Forcefully stopping current music before switching');
+    // Get the path to the new music file
+    final filePath = await _musicFileManager.getMusicFilePath(musicFile);
+
+    if (filePath != null) {
+      if (kDebugMode) {
+        print('🎵 Switching to new music track: $musicFile');
+      }
+
+      // Use switchMusic method which doesn't stop current playback first
+      await _musicManager.switchMusic(
+        filePath,
+        source: MusicSource.file,
+        loop: true,
+        volume: 0.5,
+      );
+
+      if (kDebugMode) {
+        print('🎵 Music switch completed successfully');
+      }
+    } else {
+      if (kDebugMode) {
+        print('New music file not found: $musicFile');
+      }
     }
-
-    // Dừng nhạc hiện tại
-    await stopBackgroundMusic();
-
-    // Thêm delay dài hơn để đảm bảo tài nguyên được giải phóng
-    await Future.delayed(Duration(milliseconds: 500));
-
-    // Phát nhạc mới với tệp đã chọn
-    if (kDebugMode) {
-      print('🎵 Starting new music track: $musicFile');
-    }
-    await playBackgroundMusic(musicFile);
   }
 
   /// Get list of available music files
   Future<List<String>> getAvailableMusicFiles() async {
-    return _musicManager.getAvailableMusicFiles();
+    return _musicFileManager.getAvailableMusicFiles();
   }
 
   /// Get the current music file name
@@ -220,21 +210,36 @@ class GameSoundManager {
 
   /// Check if background music is playing
   bool isMusicPlaying() {
-    return _isMusicPlaying;
+    return _musicManager.isMusicPlaying();
   }
 
-  /// Set whether game sounds are muted
+  /// Set whether game sounds are muted (independent of music)
   Future<void> setSoundMute(bool mute) async {
     await _soundManager.setSoundMute(mute);
   }
 
-  /// Toggle mute state
-  Future<void> toggleMute() async {
-    await _soundManager.toggleMute();
+  /// Set whether background music is muted (independent of sound effects)
+  Future<void> setMusicMute(bool mute) async {
+    await _musicManager.setMusicMute(mute);
   }
 
-  /// Check if sounds are muted
-  bool isMuted() {
-    return _soundManager.isMuted();
+  /// Toggle sound effects mute state
+  Future<void> toggleSoundMute() async {
+    await _soundManager.toggleSoundMute();
+  }
+
+  /// Toggle music mute state
+  Future<void> toggleMusicMute() async {
+    await _musicManager.toggleMusicMute();
+  }
+
+  /// Check if sound effects are muted
+  bool isSoundMuted() {
+    return _soundManager.isSoundMuted();
+  }
+
+  /// Check if music is muted
+  bool isMusicMuted() {
+    return _musicManager.isMusicMuted();
   }
 }
