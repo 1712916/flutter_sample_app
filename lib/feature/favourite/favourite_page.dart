@@ -7,6 +7,7 @@ import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/image_view.dart';
 
+import '../../core/util/image_util.dart';
 import '../../widgets/text.dart';
 import '../image/detail_image_page.dart';
 
@@ -135,6 +136,7 @@ class _FavouritePageState extends StateTemplate<FavouritePage> {
             final group = items[index];
             final formattedDate = group.date.formatByLocale(context.locale.languageCode);
             final urls = group.urls;
+            final w = MediaQuery.of(context).size.width;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +160,6 @@ class _FavouritePageState extends StateTemplate<FavouritePage> {
                   ),
                   itemBuilder: (context, i) {
                     final url = urls[i];
-                    final isSelected = selectedUrls.contains(url);
 
                     return GestureDetector(
                       onTap: () {
@@ -181,7 +182,13 @@ class _FavouritePageState extends StateTemplate<FavouritePage> {
                               tag: '$index$url',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: AppImage(image: url),
+                                child: AppImage(
+                                  image: url,
+                                  memCacheWidth: ImageUtil.getCachedImageSizeFrom(
+                                    w,
+                                    type: ImageViewSizeType.small,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -247,7 +254,6 @@ class SelectionImageWidget extends StatelessWidget {
                     AppImage(
                       image: url,
                       memCacheWidth: memCacheWidth,
-                      memCacheHeight: memCacheHeight,
                     ),
                     ColoredBox(
                       color: isSelected ? Colors.black12.withOpacity(0.3) : Colors.transparent,

@@ -13,3 +13,4 @@ export 'snack_bar.dart';
 export 'text.dart';
 export 'title_content.dart';
 export 'toast.dart';
+export 'zoom_widget.dart';

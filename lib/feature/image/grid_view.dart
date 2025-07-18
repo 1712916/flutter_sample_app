@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/base/base_state.dart';
+import '../../core/util/image_util.dart';
 import '../../widgets/widgets.dart';
 import 'cubit/image_list_cubit.dart';
 
@@ -98,8 +99,9 @@ class _ImageGridViewState extends State<ImageGridView> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: AppImage(
-                          memCacheHeight: memCacheHeight,
-                          memCacheWidth: memCacheWidth,
+                          // memCacheHeight: memCacheHeight,
+                          memCacheWidth:
+                              ImageUtil.getCachedImageSizeFrom(item.width ?? w, type: ImageViewSizeType.small),
                           image: image,
                         ),
                       ),

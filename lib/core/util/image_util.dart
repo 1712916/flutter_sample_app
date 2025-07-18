@@ -35,6 +35,17 @@ class ImageUtil {
 
     return Size(decodedImage.width.toDouble(), decodedImage.height.toDouble());
   }
+
+  static int? getCachedImageSizeFrom(double w, {double? h, ImageViewSizeType type = ImageViewSizeType.medium}) {
+    switch (type) {
+      case ImageViewSizeType.small:
+        return (w / 2.4).toInt().clamp(160, 300);
+      case ImageViewSizeType.medium:
+        return (w / 1.2).toInt().clamp(800, 2500);
+      case ImageViewSizeType.full:
+        return null;
+    }
+  }
 }
 
 class ImageParam {
@@ -42,4 +53,10 @@ class ImageParam {
   final int heightRatio;
 
   ImageParam(this.croppedFile, this.heightRatio);
+}
+
+enum ImageViewSizeType {
+  small,
+  medium,
+  full;
 }

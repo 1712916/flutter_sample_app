@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:meow_app/feature/image/image_list_page.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
-import 'package:meow_app/widgets/image_view.dart';
+import 'package:meow_app/widgets/widgets.dart';
 
 import '../../routers/route.dart';
-import '../../widgets/text.dart';
 
 class DetailImagePage extends StatefulWidget {
   final String url;
@@ -104,6 +103,7 @@ class _DetailImagePageState extends State<DetailImagePage> with SingleTickerProv
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onPanUpdate: _handleDrag,
         onPanEnd: _handleDragEnd,
         onTap: () => Navigator.of(context).pop(),
@@ -117,7 +117,9 @@ class _DetailImagePageState extends State<DetailImagePage> with SingleTickerProv
                 child: Center(
                   child: Hero(
                     tag: widget.heroTag,
-                    child: AppImage(image: widget.url),
+                    child: AppImage(
+                      image: widget.url,
+                    ),
                   ),
                 ),
               ),

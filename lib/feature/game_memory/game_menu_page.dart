@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/core/util/image_util.dart';
 import 'package:meow_app/feature/base_page.dart';
 import 'package:meow_app/feature/image/cubit/image_list_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
@@ -96,6 +97,7 @@ class MenuItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final w = MediaQuery.of(context).size.width;
     return Material(
       color: backgroundColor,
       child: InkWell(
@@ -121,8 +123,7 @@ class MenuItemWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           child: AppImage(
                             image: imageUrl ?? '',
-                            memCacheWidth: 100,
-                            memCacheHeight: 100,
+                            memCacheWidth: ImageUtil.getCachedImageSizeFrom(w),
                           ),
                         ),
                       )

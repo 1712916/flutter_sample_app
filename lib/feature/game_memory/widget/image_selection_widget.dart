@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../../../core/util/image_util.dart';
 import '../../../widgets/widgets.dart';
 import '../../favourite/favourite_page.dart';
 import '../../image/cubit/image_list_cubit.dart';
@@ -216,11 +217,9 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   context.read<ImageListCubit>().loadMore(10);
                 }
                 final item = state.images![index];
-                final memCacheHeight = ((item.height ?? w) / crossAxisCount).toInt();
-                final memCacheWidth = ((item.width ?? w) / crossAxisCount).toInt();
+                final memCacheWidth = ImageUtil.getCachedImageSizeFrom((item.width ?? w));
                 return SelectionImageWidget(
                   url: item.url!,
-                  memCacheHeight: memCacheHeight,
                   memCacheWidth: memCacheWidth,
                   isSelected: _selectedImages.contains(index),
                   onSelected: (value) {

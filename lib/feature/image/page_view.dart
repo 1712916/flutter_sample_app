@@ -4,6 +4,8 @@ import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
 import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
 
 import '../../core/base/index.dart';
+import '../../core/util/image_util.dart';
+import '../../data/data.dart';
 import '../../main.dart';
 import '../../widgets/widgets.dart';
 import '../auto_play/auto_play.dart';
@@ -80,8 +82,7 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
                   cubit.loadMore(imageListLimit);
                 }
 
-                final image = images[pageIndex].url ?? '';
-                return _buildImageCard(image, pageIndex);
+                return _buildImageCard(images[pageIndex], pageIndex);
               },
               onPageChanged: cubit.onPageChanged,
             );
@@ -90,32 +91,40 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
     );
   }
 
-  Widget _buildImageCard(String? image, int index) {
+  Widget _buildImageCard(SearchModel model, int index) {
+    final image = model.url;
     if (image == null) return SizedBox.shrink();
 
-    return Center(
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Hero(
-          tag: index,
-          createRectTween: (begin, end) => MaterialRectCenterArcTween(begin: begin, end: end),
-          child: Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: FavouriteWrapper(
-                onFavourite: () {
-                  context.read<FavouriteCubit>().addFavouriteItem(image);
-                },
-                child: GestureDetector(
-                  onTap: () {
-                    final AppMenuCubit appMenuCubit = context.read<AppMenuCubit>();
-                    appMenuCubit.hideAll();
-                    final ImageListCubit imageListCubit = context.read<ImageListCubit>();
-                    DetailImagePage(url: image, heroTag: '$index')
-                        .show(imageListCubit.navKey.currentContext!, rootNavigator: false)
-                        .whenComplete(appMenuCubit.previousMenu);
+    return ZoomWidget(
+      child: Center(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Hero(
+            tag: index,
+            createRectTween: (begin, end) => MaterialRectCenterArcTween(begin: begin, end: end),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: FavouriteWrapper(
+                  onFavourite: () {
+                    context.read<FavouriteCubit>().addFavouriteItem(image);
                   },
-                  child: AppImage(image: image),
+                  child: GestureDetector(
+                    onTap: () {
+                      final AppMenuCubit appMenuCubit = context.read<AppMenuCubit>();
+                      appMenuCubit.hideAll();
+                      final ImageListCubit imageListCubit = context.read<ImageListCubit>();
+                      DetailImagePage(url: image, heroTag: '$index')
+                          .show(imageListCubit.navKey.currentContext!, rootNavigator: false)
+                          .whenComplete(appMenuCubit.previousMenu);
+                    },
+                    child: AppImage(
+                        memCacheWidth: ImageUtil.getCachedImageSizeFrom(
+                          model.width ?? 1500,
+                          type: ImageViewSizeType.medium,
+                        ),
+                        image: image),
+                  ),
                 ),
               ),
             ),
