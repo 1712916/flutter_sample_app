@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
@@ -26,6 +27,8 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
   ImageListCubit get cubit => context.read<ImageListCubit>();
   late PageController _pageController;
 
+  final ValueNotifier<int> _pointerCountNotifier = ValueNotifier(0);
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,7 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
   @override
   void dispose() {
     _pageController.dispose();
+    _pointerCountNotifier.dispose();
     super.dispose();
   }
 
@@ -73,18 +77,34 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
 
             final itemCount = images.length;
 
-            return PageView.builder(
-              controller: _pageController,
-              scrollDirection: isPortrait ? Axis.vertical : Axis.horizontal,
-              itemCount: itemCount,
-              itemBuilder: (context, pageIndex) {
-                if (pageIndex >= itemCount - 1) {
-                  cubit.loadMore(imageListLimit);
-                }
-
-                return _buildImageCard(images[pageIndex], pageIndex);
+            return Listener(
+              onPointerDown: (_) {
+                if (_pointerCountNotifier.value < 2) _pointerCountNotifier.value++;
               },
-              onPageChanged: cubit.onPageChanged,
+              onPointerUp: (_) {
+                if (_pointerCountNotifier.value > 0) _pointerCountNotifier.value--;
+              },
+              child: ValueListenableBuilder<int>(
+                valueListenable: _pointerCountNotifier,
+                builder: (context, _, __) {
+                  bool isHaveMoreOnePointer = _pointerCountNotifier.value > 1;
+                  return PageView.builder(
+                    dragStartBehavior: DragStartBehavior.down,
+                    controller: _pageController,
+                    scrollDirection: isPortrait ? Axis.vertical : Axis.horizontal,
+                    physics: isHaveMoreOnePointer ? const NeverScrollableScrollPhysics() : null,
+                    itemCount: itemCount,
+                    itemBuilder: (context, pageIndex) {
+                      if (pageIndex >= itemCount - 1) {
+                        cubit.loadMore(imageListLimit);
+                      }
+
+                      return _buildImageCard(images[pageIndex], pageIndex);
+                    },
+                    onPageChanged: cubit.onPageChanged,
+                  );
+                },
+              ),
             );
         }
       },
