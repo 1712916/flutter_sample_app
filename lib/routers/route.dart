@@ -39,6 +39,8 @@ class RouteManager {
 
   static String get stickerListPage => '/sticker/list';
 
+  static String get pikachuGamePage => '/game/pikachu';
+
   static getRoute(RouteSettings settings) {
     late Widget widget;
     try {
@@ -138,4 +140,8 @@ void goToStickerListPage({BuildContext? context}) {
 
 void goToGameSetting([BuildContext? context]) {
   Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.gameSettingPage);
+}
+
+void goToPikachuGame([BuildContext? context]) {
+  Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.pikachuGamePage);
 }

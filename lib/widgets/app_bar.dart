@@ -62,3 +62,26 @@ class AppBackButton extends StatelessWidget {
     );
   }
 }
+
+class CircleAppBackButton extends StatelessWidget {
+  const CircleAppBackButton({super.key, this.onBack});
+
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    return CircleAvatar(
+      backgroundColor: theme.actionBackground,
+      radius: 18,
+      child: IconButton(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+          size: 18,
+        ),
+      ),
+    );
+  }
+}

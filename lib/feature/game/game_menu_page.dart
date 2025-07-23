@@ -75,6 +75,14 @@ class _GameMenuPageState extends StateTemplate<GameMenuPage> {
             goToStickerPage(path: currentSelectedImage);
           },
         ),
+        MenuItemWidget(
+          title: 'Pikachu Game',
+          backgroundColor: theme.cardColor2,
+          imageUrl: null,
+          onTap: () {
+            goToPikachuGame(context);
+          },
+        ),
       ],
     );
   }
