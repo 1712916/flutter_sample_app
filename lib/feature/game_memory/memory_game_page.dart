@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:meow_app/feature/game/widget/game_complete_widget.dart';
+import 'package:meow_app/feature/game_sort/widget/game_complete_widget.dart';
 
 import '../../widgets/widgets.dart';
 

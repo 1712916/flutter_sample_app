@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meow_app/feature/game/cubit/background_music_cubit.dart';
-import 'package:meow_app/feature/game/cubit/game_setting_cubit.dart';
+import 'package:meow_app/feature/game_sort/cubit/game_setting_cubit.dart';
+import 'package:meow_app/feature/sound/cubit/background_music_cubit.dart';
 
 /// Widget quản lý nhạc nền tự động theo vòng đời ứng dụng
 /// Wrap bất kỳ widget/màn hình nào cần phát nhạc nền với widget này
@@ -36,7 +36,7 @@ class _BackgroundMusicWidgetState extends State<BackgroundMusicWidget> with Widg
     super.didChangeDependencies();
     _musicCubit = context.read<BackgroundMusicCubit>();
     _gameSettingCubit = context.read<GameSettingCubit>();
-    
+
     // Bắt đầu phát nhạc khi widget được tạo (nếu được phép trong cài đặt)
     _playMusicIfEnabled();
   }
@@ -108,7 +108,7 @@ class _BackgroundMusicWidgetState extends State<BackgroundMusicWidget> with Widg
       }
       _musicCubit.stopMusic();
     }
-    
+
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -117,9 +117,8 @@ class _BackgroundMusicWidgetState extends State<BackgroundMusicWidget> with Widg
   Widget build(BuildContext context) {
     // Lắng nghe thay đổi cài đặt âm nhạc
     return BlocListener<GameSettingCubit, GameSettingState>(
-      listenWhen: (previous, current) => 
-        previous.musicEnabled != current.musicEnabled || 
-        previous.currentMusic != current.currentMusic,
+      listenWhen: (previous, current) =>
+          previous.musicEnabled != current.musicEnabled || previous.currentMusic != current.currentMusic,
       listener: (context, state) {
         if (kDebugMode) {
           print('🎵 BackgroundMusicWidget: Game settings changed - Music enabled: ${state.musicEnabled}');

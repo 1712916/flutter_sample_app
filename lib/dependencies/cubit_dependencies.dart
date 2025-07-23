@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import '../feature/app_menu/cubit/app_menu_cubit.dart';
 import '../feature/favourite/cubit/favourite_cubit.dart';
-import '../feature/game/cubit/game_setting_cubit.dart';
+import '../feature/game_sort/cubit/game_setting_cubit.dart';
 import '../feature/image/cubit/image_list_cubit.dart';
 
 class CubitDependencies {

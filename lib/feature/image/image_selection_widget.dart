@@ -6,10 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import '../../../core/util/image_util.dart';
-import '../../../widgets/widgets.dart';
-import '../../favourite/favourite_page.dart';
-import '../../image/cubit/image_list_cubit.dart';
+import '../../core/util/image_util.dart';
+import '../../widgets/widgets.dart';
+import '../favourite/favourite_page.dart';
+import 'cubit/image_list_cubit.dart';
 
 /// Span ngang thì theo từng ảnh
 /// Span dọc là theo nguyên hàng

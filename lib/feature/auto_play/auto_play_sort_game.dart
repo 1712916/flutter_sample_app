@@ -4,15 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meow_app/feature/game/widget/crop_image_view.dart';
+import 'package:meow_app/feature/game_sort/widget/crop_image_view.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../routers/route.dart';
 import '../../widgets/widgets.dart';
-import '../game/game_manager.dart';
-import '../game/game_page.dart';
-import '../game/widget/play_area_widget.dart';
-import '../game_memory/game_menu_page.dart';
+import '../game/game_menu_page.dart';
+import '../game_sort/game_manager.dart';
+import '../game_sort/game_page.dart';
+import '../game_sort/widget/play_area_widget.dart';
 import '../image/cubit/image_list_cubit.dart';
 import '../image/image_list_page.dart';
 import 'auto_play.dart';
@@ -26,7 +26,7 @@ class AutoPlaySortGame extends AutoPlay {
 
   AutoPlaySortGame();
 
-  static const String _recordServer = 'http://192.168.250.113:5001'; // Replace with your actual server URL
+  static const String _recordServer = 'http://192.168.120.233:5001'; // Replace with your actual server URL
 
   final Dio dio = Dio(
     BaseOptions(
@@ -125,6 +125,11 @@ class AutoPlaySortGame extends AutoPlay {
     if (_recordGame) {
       try {
         await dio.get('/stop');
+        await Future.delayed(const Duration(seconds: 3));
+
+        autoPlayGameNotifier.enable();
+        context.read<ImageListCubit>().reset();
+        goToHome();
       } catch (e) {}
     }
   }

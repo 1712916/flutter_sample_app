@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meow_app/feature/game/game_setting_page.dart';
+import 'package:meow_app/feature/game_sort/game_setting_page.dart';
+import 'package:meow_app/feature/game_sticker/sticker_list_page.dart';
+import 'package:meow_app/feature/game_sticker/sticker_page.dart';
 import 'package:meow_app/feature/onboarding/onboarding_page.dart';
 import 'package:meow_app/feature/setting_page_new.dart';
-import 'package:meow_app/feature/sticker/sticker_list_page.dart';
-import 'package:meow_app/feature/sticker/sticker_page.dart';
 
 import '../feature/favourite/favourite_page.dart';
-import '../feature/game_memory/game_menu_page.dart';
+import '../feature/game/game_menu_page.dart';
 import '../feature/image/image_list_page.dart';
 import '../routers/route.dart';
 

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/feature/base_page.dart';
-import 'package:meow_app/feature/game/cubit/game_setting_cubit.dart';
-import 'package:meow_app/feature/game/widget/music_selection_widget.dart';
+import 'package:meow_app/feature/game_sort/cubit/game_setting_cubit.dart';
+import 'package:meow_app/feature/game_sort/widget/music_selection_widget.dart';
 import 'package:meow_app/widgets/app_bar.dart';
 
 import '../../resources/theme/theme_data.dart';

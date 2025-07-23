@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/feature/base_page.dart';
-import 'package:meow_app/feature/sticker/cubit/sticker_list_cubit.dart';
+import 'package:meow_app/feature/game_sticker/cubit/sticker_list_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/image_view.dart';
 

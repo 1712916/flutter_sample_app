@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubit/game_sound_cubit.dart';
+import '../../sound/cubit/game_sound_cubit.dart';
 import '../game_manager.dart';
 
 class CellWidget extends StatefulWidget {

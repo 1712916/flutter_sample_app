@@ -12,7 +12,7 @@ import 'package:meow_app/widgets/image_view.dart';
 
 import '../../routers/route.dart';
 import '../../widgets/text.dart';
-import 'widget/image_selection_widget.dart';
+import '../image/image_selection_widget.dart';
 
 void goToGameMenu(BuildContext context) {
   Navigator.of(context).pushNamed(RouteManager.gameMenuPage);

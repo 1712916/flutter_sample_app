@@ -9,23 +9,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:meow_app/core/provider/music_provider.dart';
 import 'package:meow_app/core/sound/music_manager.dart';
-import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
+import 'package:meow_app/feature/sound/music_provider.dart';
 import 'package:meow_app/widgets/text.dart';
 
 import 'core/persistence/isar_storage.dart';
+import 'core/util/background_worker.dart';
+import 'core/util/firebase.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/app_menu/cubit/app_menu_cubit.dart';
 import 'feature/auto_play/auto_play_sort_game.dart';
-import 'feature/background_worker/background_worker.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
-import 'feature/firebase/firebase.dart';
-import 'feature/game/cubit/game_setting_cubit.dart';
+import 'feature/game_sort/cubit/game_setting_cubit.dart';
 import 'feature/home_widget/home_widget_page.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
+import 'feature/sound/game_sound_manager.dart';
 import 'resources/theme/theme_data.dart';
 import 'routers/route.dart';
 

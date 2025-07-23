@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meow_app/feature/game/cubit/game_setting_cubit.dart';
+import 'package:meow_app/feature/game_sort/cubit/game_setting_cubit.dart';
 
-import '../core/provider/music_provider.dart';
-import '../feature/game/cubit/background_music_cubit.dart';
+import 'cubit/background_music_cubit.dart';
+import 'music_provider.dart';
 
 /// Widget quản lý phát nhạc nền và xử lý vòng đời ứng dụng
 ///

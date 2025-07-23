@@ -1,17 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meow_app/feature/game/cubit/background_music_cubit.dart';
+import 'package:meow_app/feature/sound/cubit/background_music_cubit.dart';
 
 import '../../../core/index.dart';
-import '../sound/game_sound_manager.dart';
+import '../../sound/game_sound_manager.dart';
 
 class GameSettingCubit extends Cubit<GameSettingState> {
   GameSettingCubit() : super(GameSettingState.initial());
 
   final SimpleStorage simpleStorage = SimpleStorage();
   final GameSoundManager _gameSoundManager = GameSoundManager();
-  
+
   // Tham chiếu đến BackgroundMusicCubit, sẽ được thiết lập sau
   BackgroundMusicCubit? _musicCubit;
 
@@ -31,7 +31,7 @@ class GameSettingCubit extends Cubit<GameSettingState> {
     if (musicCubit != null) {
       _musicCubit = musicCubit;
     }
-    
+
     // Initialize music manager
     await _gameSoundManager.initialize();
 
@@ -82,7 +82,7 @@ class GameSettingCubit extends Cubit<GameSettingState> {
 
     // Update sound manager mute state using GameSoundManager (now independent of music)
     await _gameSoundManager.setSoundMute(!value);
-    
+
     // Note: This no longer affects music playback
   }
 
@@ -123,7 +123,7 @@ class GameSettingCubit extends Cubit<GameSettingState> {
       if (kDebugMode) {
         print('🎵 Music is enabled, switching to new track');
       }
-      
+
       // Sử dụng BackgroundMusicCubit nếu có
       if (_musicCubit != null) {
         await _musicCubit!.switchMusic(musicFile);

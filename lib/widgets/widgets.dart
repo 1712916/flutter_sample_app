@@ -6,7 +6,6 @@ export 'download_button.dart';
 export 'image_view.dart';
 export 'loading_dialog.dart';
 export 'multi_selection_widget.dart';
-export 'render_image.dart';
 export 'shimmer.dart';
 export 'single_selection_widget.dart';
 export 'snack_bar.dart';

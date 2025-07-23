@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
+import 'package:meow_app/feature/sound/game_sound_manager.dart';
 
 /// Trạng thái của GameSoundCubit
 class GameSoundState extends Equatable {
@@ -27,18 +27,18 @@ class GameSoundState extends Equatable {
 /// Cubit quản lý hiệu ứng âm thanh trong game
 class GameSoundCubit extends Cubit<GameSoundState> {
   final GameSoundManager _gameSoundManager = GameSoundManager();
-  
+
   /// Khởi tạo Cubit với trạng thái ban đầu
   GameSoundCubit() : super(const GameSoundState());
 
   /// Khởi tạo Cubit
   Future<void> initialize({bool soundEnabled = true}) async {
     await _gameSoundManager.initialize();
-    
+
     emit(state.copyWith(
       soundEnabled: soundEnabled,
     ));
-    
+
     // Cập nhật trạng thái mute của sound manager
     await _gameSoundManager.setSoundMute(!soundEnabled);
   }
@@ -46,7 +46,7 @@ class GameSoundCubit extends Cubit<GameSoundState> {
   /// Phát âm thanh khi di chuyển trong game
   Future<void> playMoveSound() async {
     if (!state.soundEnabled) return;
-    
+
     try {
       if (kDebugMode) {
         print('🎮 GameSoundCubit: Playing move sound');
@@ -62,7 +62,7 @@ class GameSoundCubit extends Cubit<GameSoundState> {
   /// Phát âm thanh khi hoàn thành game
   Future<void> playGameCompleteSound() async {
     if (!state.soundEnabled) return;
-    
+
     try {
       if (kDebugMode) {
         print('🎮 GameSoundCubit: Playing game complete sound');
@@ -80,7 +80,7 @@ class GameSoundCubit extends Cubit<GameSoundState> {
     try {
       emit(state.copyWith(soundEnabled: enabled));
       await _gameSoundManager.setSoundMute(!enabled);
-      
+
       if (kDebugMode) {
         print('🎮 GameSoundCubit: Sound ${enabled ? 'enabled' : 'disabled'}');
       }

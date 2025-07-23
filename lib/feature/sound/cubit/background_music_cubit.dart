@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:meow_app/feature/game/sound/game_sound_manager.dart';
+import 'package:meow_app/feature/sound/game_sound_manager.dart';
 
 // Trạng thái của MusicCubit
 class BackgroundMusicState extends Equatable {

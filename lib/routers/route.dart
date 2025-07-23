@@ -3,14 +3,14 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../feature/app_store_review/app_store_review.dart';
-import '../feature/game/game_page.dart';
-import '../feature/game/widget/crop_image_view.dart';
+import '../core/util/app_store_review.dart';
 import '../feature/game_memory/memory_game_page.dart';
+import '../feature/game_sort/game_page.dart';
+import '../feature/game_sort/widget/crop_image_view.dart';
+import '../feature/game_sticker/sticker_page.dart';
 import '../feature/onboarding/onboarding_util.dart';
-import '../feature/sticker/sticker_page.dart';
+import '../feature/sound/background_music_player.dart';
 import '../main.dart';
-import '../widgets/background_music_player.dart';
 
 class RouteManager {
   static String get onboardingPage => '/onboarding';

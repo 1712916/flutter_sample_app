@@ -7,8 +7,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../core/index.dart';
+import '../core/util/app_store_review.dart';
 import '../widgets/widgets.dart';
-import 'app_store_review/app_store_review.dart';
 import 'auto_play/auto_play_sort_game.dart';
 import 'base_page.dart';
 import 'onboarding/onboarding_util.dart';

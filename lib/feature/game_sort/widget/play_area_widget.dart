@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as imglib;
-import 'package:meow_app/feature/game/widget/control_bar_widget.dart';
+import 'package:meow_app/feature/game_sort/widget/control_bar_widget.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../../sound/cubit/game_sound_cubit.dart';
 import '../cubit/game_setting_cubit.dart';
-import '../cubit/game_sound_cubit.dart';
 import '../game_manager.dart';
 import 'blinking_marker.dart';
 import 'cell_widget.dart';

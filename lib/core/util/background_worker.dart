@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '../../core/index.dart';
 import '../../data/data_provider/remote/search_service.dart';
 import '../../data/response/status_code.dart';
-import '../home_widget/home_widget_page.dart';
+import '../../feature/home_widget/home_widget_page.dart';
+import '../index.dart';
 
 abstract class BackgroundWorker {
   static Future<void> init() {

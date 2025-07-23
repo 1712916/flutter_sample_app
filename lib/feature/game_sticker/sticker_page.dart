@@ -16,8 +16,8 @@ import 'package:meow_app/widgets/image_view.dart';
 import '../../core/util/image_util.dart';
 import '../../widgets/image_picker_widget.dart';
 import '../../widgets/text.dart';
-import '../game_memory/game_menu_page.dart';
-import '../game_memory/widget/image_selection_widget.dart';
+import '../game/game_menu_page.dart';
+import '../image/image_selection_widget.dart';
 
 class StickerPage extends StatefulWidget {
   const StickerPage({super.key, this.path});
