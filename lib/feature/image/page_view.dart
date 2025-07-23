@@ -28,6 +28,7 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
   late PageController _pageController;
 
   final ValueNotifier<int> _pointerCountNotifier = ValueNotifier(0);
+  final ValueNotifier<bool> _scaleEnableNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -44,12 +45,25 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
         });
       }
     });
+
+    _pointerCountNotifier.addListener(_onPointerCountChanged);
+  }
+
+  void _onPointerCountChanged() {
+    final pointerCount = _pointerCountNotifier.value;
+    if (pointerCount < 2) {
+      _scaleEnableNotifier.value = false;
+    } else {
+      _scaleEnableNotifier.value = true;
+    }
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _pointerCountNotifier.removeListener(_onPointerCountChanged);
     _pointerCountNotifier.dispose();
+    _scaleEnableNotifier.dispose();
     super.dispose();
   }
 
@@ -84,15 +98,14 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
               onPointerUp: (_) {
                 if (_pointerCountNotifier.value > 0) _pointerCountNotifier.value--;
               },
-              child: ValueListenableBuilder<int>(
-                valueListenable: _pointerCountNotifier,
-                builder: (context, _, __) {
-                  bool isHaveMoreOnePointer = _pointerCountNotifier.value > 1;
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _scaleEnableNotifier,
+                builder: (context, disableScroll, __) {
                   return PageView.builder(
                     dragStartBehavior: DragStartBehavior.down,
                     controller: _pageController,
                     scrollDirection: isPortrait ? Axis.vertical : Axis.horizontal,
-                    physics: isHaveMoreOnePointer ? const NeverScrollableScrollPhysics() : null,
+                    physics: disableScroll ? const NeverScrollableScrollPhysics() : null,
                     itemCount: itemCount,
                     itemBuilder: (context, pageIndex) {
                       if (pageIndex >= itemCount - 1) {
