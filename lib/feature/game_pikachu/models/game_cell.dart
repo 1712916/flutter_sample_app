@@ -1,5 +1,8 @@
+import 'cell_content.dart';
+
 class GameCell {
-  int number;
+  int number;              // Keep for backward compatibility and game logic
+  CellContent? content;    // New flexible content system
   bool isSelected;
   bool isMatched;
   bool isEmpty;
@@ -7,6 +10,7 @@ class GameCell {
 
   GameCell({
     this.number = 0,
+    this.content,
     this.isSelected = false,
     this.isMatched = false,
     this.isEmpty = true,
@@ -19,10 +23,17 @@ class GameCell {
     isEmpty = true;
     isHinted = false;
     number = 0;
+    content = null;
   }
 
   void setNumber(int value) {
     number = value;
+    isEmpty = false;
+  }
+  
+  void setContent(CellContent cellContent) {
+    content = cellContent;
+    number = cellContent.id;  // Keep number in sync for game logic
     isEmpty = false;
   }
 
@@ -31,6 +42,7 @@ class GameCell {
     isSelected = false;
     isEmpty = true;  // Make cell invisible
     number = 0;      // Reset number
+    content = null;  // Clear content
   }
 
   void select() {
@@ -54,6 +66,7 @@ class GameCell {
   GameCell copy() {
     return GameCell(
       number: number,
+      content: content?.copy(),
       isSelected: isSelected,
       isMatched: isMatched,
       isEmpty: isEmpty,
@@ -63,6 +76,6 @@ class GameCell {
 
   @override
   String toString() {
-    return 'GameCell(number: $number, isEmpty: $isEmpty, isSelected: $isSelected, isMatched: $isMatched)';
+    return 'GameCell(number: $number, content: ${content?.type}, isEmpty: $isEmpty, isSelected: $isSelected, isMatched: $isMatched)';
   }
 }

@@ -7,8 +7,14 @@ A matching game where players need to connect pairs of identical numbers on a 16
 ### Grid Layout
 
 - **Size**: 16 columns × 9 rows (144 total cells)
-- **Content**: Each cell contains a number from 1-9
-- **Pairs**: Numbers are distributed in pairs across the grid
+- **Content**: Flexible cell content system with multiple themes:
+  - **Numbers** (1-9) - Classic numerical mode
+  - **Animals** - Cute animal emoji collection  
+  - **Pokemon Elements** - Elemental symbols and icons
+  - **Material Icons** - Clean, modern icon set
+  - **Geometric Shapes** - Colorful custom widget shapes
+- **Pairs**: Content is distributed in pairs across the grid
+- **Easy Switching**: Change themes anytime via the Theme button
 
 ### Gameplay
 
@@ -91,6 +97,48 @@ game_pikachu/
 - Maintains game history for undo functionality
 - Timer management for elapsed time tracking
 - Automatic game completion detection
+
+## Content Customization
+
+### Adding New Content Types
+
+The game supports easy content customization through the `CellContent` system:
+
+```dart
+// Create custom emoji content
+List<CellContent> customEmojis = List.generate(9, (index) => 
+  EmojiCellContent(
+    id: index + 1,
+    emoji: ['🎮', '🕹️', '🎯', '🎲', '🃏', '🎪', '🎨', '🎭', '🎪'][index],
+  )
+);
+
+// Create custom widget content
+List<CellContent> customWidgets = List.generate(9, (index) => 
+  CustomCellContent(
+    id: index + 1,
+    widgetBuilder: ({required bool isSelected, required bool isMatched, required bool isHinted, double? size, Color? color}) {
+      return YourCustomWidget(
+        isSelected: isSelected,
+        isMatched: isMatched,
+        size: size ?? 20,
+      );
+    },
+  )
+);
+```
+
+### Built-in Content Types
+
+- **NumberCellContent**: Display numbers 1-9
+- **EmojiCellContent**: Display emoji symbols  
+- **IconCellContent**: Display Material Design icons
+- **ImageCellContent**: Display custom images from assets or network
+- **CustomCellContent**: Display completely custom widgets
+
+### Content Factory
+
+Use `CellContentFactory` to create predefined content sets or extend it for your own themes.
 
 ## Integration
 

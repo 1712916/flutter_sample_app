@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'models/game_cell.dart';
+import 'models/cell_content.dart';
+import 'models/cell_content_factory.dart';
 
 class PikachuGameController {
   static const int rows = 9;
@@ -14,6 +16,10 @@ class PikachuGameController {
   late ValueNotifier<int> timeNotifier;
   late ValueNotifier<List<Offset>?> connectionLineNotifier;
   late ValueNotifier<int> animationDurationNotifier; // Dynamic animation duration in milliseconds
+
+  // Content configuration
+  CellContentConfig _contentConfig = CellContentConfig.presets[0]; // Default to numbers
+  List<CellContent> _availableContent = [];
 
   List<List<GameCell>> _grid = [];
   GameCell? _firstSelected;
@@ -42,7 +48,7 @@ class PikachuGameController {
   void initializeGame() {
     _stopTimer();
     _grid = List.generate(rows, (i) => List.generate(cols, (j) => GameCell()));
-    _generateNumbers();
+    _generateContent();
     _shuffleGrid();
 
     gridNotifier.value = _grid.map((row) => row.map((cell) => cell.copy()).toList()).toList();
@@ -59,30 +65,68 @@ class PikachuGameController {
     _clearAllSelections();
   }
 
-  void _generateNumbers() {
-    List<int> numbers = [];
+  /// Change the content type for the game
+  void changeContentType(CellContentConfig newConfig) {
+    _contentConfig = newConfig;
+    _availableContent = newConfig.contentFactory();
+    initializeGame(); // Reinitialize with new content
+  }
 
-    // Generate pairs of numbers (1-9, repeated to fill the grid)
+  /// Get current content configuration
+  CellContentConfig get currentContentConfig => _contentConfig;
+
+  /// Get available content presets
+  List<CellContentConfig> get availableContentTypes => CellContentConfig.presets;
+
+  void _generateContent() {
+    // Initialize content types if not already done
+    if (_availableContent.isEmpty) {
+      _availableContent = _contentConfig.contentFactory();
+    }
+    
+    List<CellContent> contentPairs = [];
+
+    // Generate pairs of content (each content type gets exactly 2 instances)
     int totalCells = rows * cols;
-    int pairsNeeded = totalCells ~/ 2;
-
-    for (int i = 0; i < pairsNeeded; i++) {
-      int number = (i % 9) + 1; // Numbers 1-9, repeating
-      numbers.add(number);
-      numbers.add(number);
+    int contentTypesAvailable = _availableContent.length; // Should be 9
+    
+    // Calculate how many complete sets of content types we need
+    int completeSets = totalCells ~/ (contentTypesAvailable * 2);
+    int remainingCells = totalCells % (contentTypesAvailable * 2);
+    
+    // Add complete sets
+    for (int set = 0; set < completeSets; set++) {
+      for (int i = 0; i < contentTypesAvailable; i++) {
+        CellContent content = _availableContent[i];
+        contentPairs.add(content.copy());
+        contentPairs.add(content.copy());
+      }
+    }
+    
+    // Add remaining cells if needed (should be pairs)
+    if (remainingCells > 0) {
+      int remainingPairs = remainingCells ~/ 2;
+      for (int i = 0; i < remainingPairs; i++) {
+        CellContent content = _availableContent[i % contentTypesAvailable];
+        contentPairs.add(content.copy());
+        contentPairs.add(content.copy());
+      }
+      
+      // If there's one odd cell left, add it (this shouldn't happen with even grid)
+      if (remainingCells % 2 == 1) {
+        contentPairs.add(_availableContent[0].copy());
+      }
     }
 
-    // If odd number of cells, add one more random number
-    if (totalCells % 2 == 1) {
-      numbers.add(math.Random().nextInt(9) + 1);
-    }
+    // Shuffle the content pairs to randomize positions
+    contentPairs.shuffle(math.Random());
 
     // Fill the grid
     int index = 0;
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
-        if (index < numbers.length) {
-          _grid[i][j].setNumber(numbers[index]);
+        if (index < contentPairs.length) {
+          _grid[i][j].setContent(contentPairs[index]);
           index++;
         }
       }
@@ -184,8 +228,16 @@ class PikachuGameController {
 
     movesNotifier.value++;
 
-    // Check if numbers match
-    if (_firstSelected!.number == _secondSelected!.number) {
+    // Check if content matches (proper content-based matching)
+    bool contentsMatch = false;
+    if (_firstSelected!.content != null && _secondSelected!.content != null) {
+      contentsMatch = _firstSelected!.content!.matches(_secondSelected!.content!);
+    } else {
+      // Fallback to number matching for backward compatibility
+      contentsMatch = _firstSelected!.number == _secondSelected!.number;
+    }
+    
+    if (contentsMatch) {
       // Check if there's a valid path between the cells
       List<Offset>? pathPoints = _getConnectionPath(_firstSelectedRow, _firstSelectedCol, _secondSelectedRow, _secondSelectedCol);
       if (pathPoints != null) {
@@ -238,25 +290,25 @@ class PikachuGameController {
     // Calculate path complexity (number of turns)
     int pathTurns = pathPoints.length - 2; // Start and end don't count as turns
     
-    // Base duration calculation
-    // Near cells (distance 1-3): 300-500ms
-    // Medium cells (distance 4-8): 500-700ms  
-    // Far cells (distance 9+): 700-1000ms
+    // Base duration calculation - reduced for faster animations
+    // Near cells (distance 1-3): 150-250ms
+    // Medium cells (distance 4-8): 250-350ms  
+    // Far cells (distance 9+): 350-500ms
     int baseDuration;
     if (manhattanDistance <= 3) {
-      baseDuration = 300 + manhattanDistance * 50; // 350-450ms
+      baseDuration = 150 + manhattanDistance * 25; // 175-225ms
     } else if (manhattanDistance <= 8) {
-      baseDuration = 500 + (manhattanDistance - 3) * 40; // 540-700ms
+      baseDuration = 250 + (manhattanDistance - 3) * 20; // 270-350ms
     } else {
-      baseDuration = 700 + math.min((manhattanDistance - 8) * 30, 300); // 730-1000ms
+      baseDuration = 350 + math.min((manhattanDistance - 8) * 15, 150); // 365-500ms
     }
     
-    // Add time for path complexity (each turn adds time)
-    int complexityBonus = pathTurns * 100; // 100ms per turn
+    // Add time for path complexity (each turn adds less time)
+    int complexityBonus = pathTurns * 50; // 50ms per turn (reduced from 100ms)
     
-    // Final duration with bounds
+    // Final duration with bounds - much faster overall
     int finalDuration = baseDuration + complexityBonus;
-    return math.max(250, math.min(finalDuration, 1200)); // Clamp between 250ms and 1200ms
+    return math.max(150, math.min(finalDuration, 600)); // Clamp between 150ms and 600ms
   }
 
   List<Offset>? _getConnectionPath(int row1, int col1, int row2, int col2) {
@@ -546,7 +598,14 @@ class PikachuGameController {
             if (i == i2 && j == j2) continue;
             if (_grid[i2][j2].isEmpty || _grid[i2][j2].isMatched) continue;
 
-            if (_grid[i][j].number == _grid[i2][j2].number && _hasValidPath(i, j, i2, j2)) {
+            bool contentsMatch = false;
+            if (_grid[i][j].content != null && _grid[i2][j2].content != null) {
+              contentsMatch = _grid[i][j].content!.matches(_grid[i2][j2].content!);
+            } else {
+              contentsMatch = _grid[i][j].number == _grid[i2][j2].number;
+            }
+            
+            if (contentsMatch && _hasValidPath(i, j, i2, j2)) {
               _grid[i][j].showHint();
               _grid[i2][j2].showHint();
               _updateGrid();
