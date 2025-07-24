@@ -124,89 +124,99 @@ class _PikachuGameScreenState extends State<PikachuGameScreen> {
   }
 
   Widget _buildGameGrid(List<List<GameCell>> grid) {
-    return AspectRatio(
-      aspectRatio: 16 / 9, // Maintain proper grid proportions for landscape
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final gridWidth = constraints.maxWidth;
-          final gridHeight = constraints.maxHeight;
-          final cellWidth = gridWidth / 16;
-          final cellHeight = gridHeight / 9;
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: AspectRatio(
+        aspectRatio: 16 / 9, // Maintain proper grid proportions for landscape
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final gridWidth = constraints.maxWidth;
+            final gridHeight = constraints.maxHeight;
+            final cellWidth = gridWidth / 16;
+            final cellHeight = gridHeight / 9;
 
-          return Stack(
-            children: [
-              // Game grid
-              GridView.builder(
-                physics: const NeverScrollableScrollPhysics(), // Disable scrolling to fit view
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 16,
-                  childAspectRatio: 1.0,
-                  crossAxisSpacing: 1,
-                  mainAxisSpacing: 1,
-                ),
-                itemCount: 16 * 9,
-                itemBuilder: (context, index) {
-                  final row = index ~/ 16;
-                  final col = index % 16;
-                  final cell = grid[row][col];
+            return Stack(
+              children: [
+                // Game grid
+                GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(), // Disable scrolling to fit view
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 16,
+                    childAspectRatio: 1.0,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 1,
+                  ),
+                  itemCount: 16 * 9,
+                  itemBuilder: (context, index) {
+                    final row = index ~/ 16;
+                    final col = index % 16;
+                    final cell = grid[row][col];
 
-                  return GestureDetector(
-                    onTap: () {
-                      _controller.onCellTapped(row, col);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _getCellColor(cell),
-                        border: Border.all(
-                          color: cell.isSelected ? Colors.blue : Colors.grey.shade400,
-                          width: cell.isSelected ? 3 : 0.5,
-                        ),
-                      ),
-                      child: Center(
-                        child: cell.isEmpty
-                            ? null
-                            : Text(
-                                cell.number.toString(),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: cell.isMatched ? Colors.grey : Colors.black,
-                                ),
+                    return GestureDetector(
+                      onTap: () {
+                        _controller.onCellTapped(row, col);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _getCellColor(cell),
+                          border: cell.isEmpty 
+                            ? null // No border for empty cells
+                            : Border.all(
+                                color: cell.isSelected ? Colors.blue : Colors.grey.shade400,
+                                width: cell.isSelected ? 3 : 0.5,
                               ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              // Connection line overlay
-              ValueListenableBuilder<List<Offset>?>(
-                valueListenable: _controller.connectionLineNotifier,
-                builder: (context, connectionLine, child) {
-                  if (connectionLine == null) return const SizedBox.shrink();
-
-                  return TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 800),
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    builder: (context, animationProgress, child) {
-                      return CustomPaint(
-                        size: Size.infinite,
-                        painter: ConnectionLinePainter(
-                          points: connectionLine,
-                          cellWidth: cellWidth,
-                          cellHeight: cellHeight,
-                          animationProgress: animationProgress,
-                          gridCols: 16,
-                          gridRows: 9,
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          );
-        },
+                        child: Center(
+                          child: cell.isEmpty
+                              ? null
+                              : Text(
+                                  cell.number.toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: cell.isMatched ? Colors.grey : Colors.black,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                // Connection line overlay
+                ValueListenableBuilder<List<Offset>?>(
+                  valueListenable: _controller.connectionLineNotifier,
+                  builder: (context, connectionLine, child) {
+                    if (connectionLine == null) return const SizedBox.shrink();
+
+                    return ValueListenableBuilder<int>(
+                      valueListenable: _controller.animationDurationNotifier,
+                      builder: (context, duration, child) {
+                        return TweenAnimationBuilder<double>(
+                          duration: Duration(milliseconds: duration),
+                          tween: Tween(begin: 0.0, end: 1.0),
+                          builder: (context, animationProgress, child) {
+                            return CustomPaint(
+                              size: Size.infinite,
+                              painter: ConnectionLinePainter(
+                                points: connectionLine,
+                                cellWidth: cellWidth,
+                                cellHeight: cellHeight,
+                                animationProgress: animationProgress,
+                                gridCols: 16,
+                                gridRows: 9,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -268,7 +278,7 @@ class _PikachuGameScreenState extends State<PikachuGameScreen> {
 
   Color _getCellColor(GameCell cell) {
     if (cell.isEmpty) {
-      return Colors.grey[300]!;
+      return Colors.transparent; // Make empty cells completely invisible
     }
     if (cell.isMatched) {
       return Colors.grey[400]!;

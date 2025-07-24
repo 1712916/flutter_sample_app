@@ -13,6 +13,7 @@ class PikachuGameController {
   late ValueNotifier<int> movesNotifier;
   late ValueNotifier<int> timeNotifier;
   late ValueNotifier<List<Offset>?> connectionLineNotifier;
+  late ValueNotifier<int> animationDurationNotifier; // Dynamic animation duration in milliseconds
 
   List<List<GameCell>> _grid = [];
   GameCell? _firstSelected;
@@ -35,6 +36,7 @@ class PikachuGameController {
     movesNotifier = ValueNotifier(0);
     timeNotifier = ValueNotifier(0);
     connectionLineNotifier = ValueNotifier(null);
+    animationDurationNotifier = ValueNotifier(800); // Default 800ms
   }
 
   void initializeGame() {
@@ -190,11 +192,15 @@ class PikachuGameController {
         // Match found! Show connection line animation
         _saveGameState();
         
+        // Calculate dynamic animation duration based on distance
+        int dynamicDuration = _calculateAnimationDuration(_firstSelectedRow, _firstSelectedCol, _secondSelectedRow, _secondSelectedCol, pathPoints);
+        animationDurationNotifier.value = dynamicDuration;
+        
         // Show the connection line
         connectionLineNotifier.value = pathPoints;
         
         // After animation delay, mark cells as matched
-        Future.delayed(const Duration(milliseconds: 800), () {
+        Future.delayed(Duration(milliseconds: dynamicDuration), () {
           _firstSelected!.markAsMatched();
           _secondSelected!.markAsMatched();
           
@@ -222,6 +228,35 @@ class PikachuGameController {
       _clearAllSelections();
       _updateGrid();
     });
+  }
+
+  /// Calculate animation duration based on distance between cells and path complexity
+  int _calculateAnimationDuration(int row1, int col1, int row2, int col2, List<Offset> pathPoints) {
+    // Calculate Manhattan distance (straight-line grid distance)
+    int manhattanDistance = (row1 - row2).abs() + (col1 - col2).abs();
+    
+    // Calculate path complexity (number of turns)
+    int pathTurns = pathPoints.length - 2; // Start and end don't count as turns
+    
+    // Base duration calculation
+    // Near cells (distance 1-3): 300-500ms
+    // Medium cells (distance 4-8): 500-700ms  
+    // Far cells (distance 9+): 700-1000ms
+    int baseDuration;
+    if (manhattanDistance <= 3) {
+      baseDuration = 300 + manhattanDistance * 50; // 350-450ms
+    } else if (manhattanDistance <= 8) {
+      baseDuration = 500 + (manhattanDistance - 3) * 40; // 540-700ms
+    } else {
+      baseDuration = 700 + math.min((manhattanDistance - 8) * 30, 300); // 730-1000ms
+    }
+    
+    // Add time for path complexity (each turn adds time)
+    int complexityBonus = pathTurns * 100; // 100ms per turn
+    
+    // Final duration with bounds
+    int finalDuration = baseDuration + complexityBonus;
+    return math.max(250, math.min(finalDuration, 1200)); // Clamp between 250ms and 1200ms
   }
 
   List<Offset>? _getConnectionPath(int row1, int col1, int row2, int col2) {
@@ -539,5 +574,6 @@ class PikachuGameController {
     movesNotifier.dispose();
     timeNotifier.dispose();
     connectionLineNotifier.dispose();
+    animationDurationNotifier.dispose();
   }
 }

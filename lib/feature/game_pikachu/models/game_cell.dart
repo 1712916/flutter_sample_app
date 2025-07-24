@@ -29,6 +29,8 @@ class GameCell {
   void markAsMatched() {
     isMatched = true;
     isSelected = false;
+    isEmpty = true;  // Make cell invisible
+    number = 0;      // Reset number
   }
 
   void select() {

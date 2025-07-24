@@ -35,9 +35,13 @@ A matching game where players need to connect pairs of identical numbers on a 16
 - **Color Coding**: Different colors for each number (1-9)
 - **Selection Highlight**: Selected cells have red borders and yellow background
 - **Hint Highlight**: Hinted cells have green background
-- **Matched State**: Matched cells become greyed out
+- **Matched State**: Matched cells become completely invisible (transparent)
 - **Animations**: Smooth transitions for cell state changes
-- **Connection Line Animation**: Animated red line shows the path between matching cells
+- **Connection Line Animation**: Animated red line shows the path between matching cells with dynamic timing
+  - Near cells (1-3 steps): 350-450ms animation
+  - Medium distance (4-8 steps): 540-700ms animation  
+  - Far cells (9+ steps): 730-1000ms animation
+  - Complex paths with multiple turns get additional time
 - **Path Visualization**: Visual feedback shows exactly how cells are connected
 - **Clean Grid Design**: Square cells with no border radius for sharp, clean look
 - **Fitted Layout**: Grid automatically scales to fit available space perfectly
