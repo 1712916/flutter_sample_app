@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../core/index.dart';
 import '../core/util/app_store_review.dart';
 import '../widgets/widgets.dart';
-import 'auto_play/auto_play_sort_game.dart';
+import 'auto_play/auto_play_selection_widget.dart';
 import 'base_page.dart';
 import 'onboarding/onboarding_util.dart';
 
@@ -25,8 +25,6 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
   Widget buildBody(BuildContext context) {
     final textColor = theme.textColor2;
     final iconColor = theme.iconColor;
-
-    final String email = LKey.devInformation.tr(context: context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -254,8 +252,8 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
                       color: theme.iconColor,
                     ),
                     onTap: () {
-                      //show dialog to confirm auto play
-                      AutoPlayGameConfirmWidget().show(context);
+                      // Show new auto-play selection dialog
+                      AutoPlaySelectionWidget().show(context);
                     },
                   )
                 ],

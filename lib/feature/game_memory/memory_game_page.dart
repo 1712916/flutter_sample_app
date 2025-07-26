@@ -14,6 +14,9 @@ class MemoryGamePage extends StatefulWidget {
 
   @override
   _MemoryGamePageState createState() => _MemoryGamePageState();
+
+  // Global key for auto-play access
+  static final GlobalKey<_MemoryGamePageState> memoryGameKey = GlobalKey<_MemoryGamePageState>();
 }
 
 class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProviderStateMixin {
@@ -122,6 +125,18 @@ class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProvid
   void dispose() {
     _shakeController.dispose();
     super.dispose();
+  }
+
+  // Public methods for auto-play
+  List<GlobalKey<FlipCardState>> get cardKeys => _cardKeys;
+  List<bool> get matchedCards => _matchedCards;
+  List<String> get scrambledContents => _scrambledContents;
+  bool get isFlipping => _isFlipping;
+  int? get firstCardIndex => _firstCardIndex;
+
+  // Method to simulate card tap for auto-play
+  Future<void> simulateCardTap(int index) async {
+    await _onCardTapped(index);
   }
 
   @override

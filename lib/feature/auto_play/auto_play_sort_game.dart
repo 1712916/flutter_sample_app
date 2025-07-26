@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +15,8 @@ import '../game_sort/widget/play_area_widget.dart';
 import '../image/cubit/image_list_cubit.dart';
 import '../image/image_list_page.dart';
 import 'auto_play.dart';
-
-//Just using for testing purpose
-const bool _recordGame = false;
+import 'auto_play_memory_game.dart';
+import 'auto_play_recording_service.dart';
 
 class AutoPlaySortGame extends AutoPlay {
   late BuildContext context;
@@ -26,24 +24,14 @@ class AutoPlaySortGame extends AutoPlay {
 
   AutoPlaySortGame();
 
-  static const String _recordServer = 'http://192.168.120.233:5001'; // Replace with your actual server URL
-
-  final Dio dio = Dio(
-    BaseOptions(
-      baseUrl: _recordServer,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 10),
-    ),
-  );
+  // Use the shared recording service
+  final AutoPlayRecordingService _recordingService = AutoPlayRecordingService();
 
   @override
   Future<void> init() async {
     await Future.delayed(const Duration(seconds: 3));
-    if (_recordGame) {
-      try {
-        await dio.get('/start');
-      } catch (e) {}
+    if (AutoPlayRecordingService.recordGame) {
+      await _recordingService.start();
     }
   }
 
@@ -104,7 +92,7 @@ class AutoPlaySortGame extends AutoPlay {
     await Future.delayed(const Duration(seconds: 3));
 
     for (final move in revertScramble) {
-      gameArea!.move(move);
+      gameArea.move(move);
       await Future.delayed(const Duration(milliseconds: 600));
       if (gameArea.game.isCompleted) {
         break;
@@ -120,14 +108,14 @@ class AutoPlaySortGame extends AutoPlay {
   @override
   Future<void> stopAutoPlay() async {
     await Future.delayed(const Duration(seconds: 3));
-    autoPlayGameNotifier.disable();
+    enhancedAutoPlayGameNotifier.disable();
 
-    if (_recordGame) {
+    if (AutoPlayRecordingService.recordGame) {
       try {
-        await dio.get('/stop');
+        await _recordingService.stop();
         await Future.delayed(const Duration(seconds: 3));
 
-        autoPlayGameNotifier.enable();
+        enhancedAutoPlayGameNotifier.enable(AutoPlayGameType.sortGame);
         context.read<ImageListCubit>().reset();
         goToHome();
       } catch (e) {}
@@ -173,7 +161,7 @@ class AutoPlayGameConfirmWidget extends StatelessWidget with ShowDialog {
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop(true);
-                      autoPlayGameNotifier.enable();
+                      enhancedAutoPlayGameNotifier.enable(AutoPlayGameType.sortGame);
                       context.read<ImageListCubit>().reset();
                       goToHome();
                     },
@@ -203,24 +191,5 @@ class AutoPlayGameConfirmWidget extends StatelessWidget with ShowDialog {
         ),
       ),
     );
-  }
-}
-
-final AutoPlayGameNotifier autoPlayGameNotifier = AutoPlayGameNotifier();
-
-//create a notifier to handle auto play game
-class AutoPlayGameNotifier extends ValueNotifier<bool> {
-  AutoPlayGameNotifier() : super(false);
-
-  void toggle() {
-    value = !value;
-  }
-
-  void enable() {
-    value = true;
-  }
-
-  void disable() {
-    value = false;
   }
 }

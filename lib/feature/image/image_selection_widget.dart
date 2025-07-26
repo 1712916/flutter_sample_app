@@ -35,6 +35,9 @@ class ImageSelectionScreen extends StatefulWidget {
   final Function(List<String> imagePaths) onSubmitImage;
   final String selectImageTitle;
 
+  // Static key for auto-play access
+  static final GlobalKey<_ImageSelectionScreenState> autoPlayKey = GlobalKey<_ImageSelectionScreenState>();
+
   @override
   _ImageSelectionScreenState createState() => _ImageSelectionScreenState();
 }
@@ -61,6 +64,23 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
   // Đếm số ảnh đã chọn
   int _getSelectedCount() {
     return _selectedImages.length;
+  }
+
+  // Method for auto-play to select images automatically
+  void autoSelectImages(Set<int> indices) {
+    if (mounted) {
+      setState(() {
+        _selectedImages.clear();
+        _selectedImages.addAll(indices.take(_maxImages));
+      });
+    }
+  }
+
+  // Method for auto-play to start the game
+  void autoStartGame() {
+    if (mounted && _getSelectedCount() >= _minImages) {
+      _startGame();
+    }
   }
 
   // Xử lý bắt đầu trò chơi

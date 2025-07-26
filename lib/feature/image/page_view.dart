@@ -10,7 +10,7 @@ import '../../data/data.dart';
 import '../../main.dart';
 import '../../widgets/widgets.dart';
 import '../auto_play/auto_play.dart';
-import '../auto_play/auto_play_sort_game.dart';
+import '../auto_play/auto_play_memory_game.dart';
 import '../base_page.dart';
 import '../favourite/favourite_wrapper.dart';
 import 'cubit/image_list_cubit.dart';
@@ -35,13 +35,25 @@ class _ImagePageViewState extends StateTemplate<ImagePageView> {
     super.initState();
     _pageController = PageController(initialPage: cubit.currentIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (autoPlayGameNotifier.value) {
+      // Check for enhanced auto-play (supports different game types)
+      if (enhancedAutoPlayGameNotifier.isEnabled) {
         Future.delayed(const Duration(seconds: 1), () {
-          //show home widget
-          autoPlaySortGame
-            ..context = navKey.currentContext!
-            ..pageController = _pageController
-            ..runAutoPlayGame();
+          final gameType = enhancedAutoPlayGameNotifier.value!;
+          switch (gameType) {
+            case AutoPlayGameType.sortGame:
+              autoPlaySortGame
+                ..context = navKey.currentContext!
+                ..pageController = _pageController
+                ..runAutoPlayGame();
+              break;
+            case AutoPlayGameType.memoryGame:
+              // Use the auto play matching game from auto_play_memory_game.dart
+              final memoryGameAutoPlay = AutoPlayMemoryGame()
+                ..context = navKey.currentContext!
+                ..pageController = _pageController;
+              memoryGameAutoPlay.runAutoPlayGame();
+              break;
+          }
         });
       }
     });

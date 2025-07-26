@@ -116,6 +116,7 @@ void goToMemoryGamePage(BuildContext context, {required List<String> imagePaths}
     MaterialPageRoute(
       builder: (context) => BackgroundMusicPlayer(
         child: MemoryGamePage(
+          key: MemoryGamePage.memoryGameKey,
           imagePaths: imagePaths,
         ),
       ),

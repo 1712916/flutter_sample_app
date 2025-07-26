@@ -1,3 +1,4 @@
+import 'auto_play_memory_game.dart';
 import 'auto_play_sort_game.dart';
 
 abstract class AutoPlay {
@@ -18,3 +19,4 @@ abstract class AutoPlay {
 }
 
 AutoPlaySortGame autoPlaySortGame = AutoPlaySortGame();
+AutoPlayMemoryGame autoPlayMemoryGame = AutoPlayMemoryGame();

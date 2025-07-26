@@ -19,7 +19,7 @@ import 'core/util/firebase.dart';
 import 'core/util/index.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/app_menu/cubit/app_menu_cubit.dart';
-import 'feature/auto_play/auto_play_sort_game.dart';
+import 'feature/auto_play/auto_play_memory_game.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
 import 'feature/game_sort/cubit/game_setting_cubit.dart';
 import 'feature/home_widget/home_widget_page.dart';
@@ -179,15 +179,17 @@ class _MaterialAppState extends State<_MaterialApp> {
               onGenerateRoute: (settings) => RouteManager.getRoute(settings),
               builder: (context, child) {
                 return ValueListenableBuilder(
-                  valueListenable: autoPlayGameNotifier,
-                  builder: (context, autoMode, _) {
+                  valueListenable: enhancedAutoPlayGameNotifier,
+                  builder: (context, enhancedAutoMode, _) {
+                    final isAnyAutoMode = enhancedAutoMode != null;
+
                     return Stack(
                       fit: StackFit.expand,
                       children: [
                         Column(
                           children: [
                             Expanded(child: child ?? const SizedBox.shrink()),
-                            if (autoMode)
+                            if (isAnyAutoMode)
                               Material(
                                 color: context.appTheme.scaffoldBackgroundColor2,
                                 child: SafeArea(
@@ -205,6 +207,14 @@ class _MaterialAppState extends State<_MaterialApp> {
                                         ),
                                         const SizedBox(width: 8),
                                         LText(LKey.autoPlayMode),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          '(${enhancedAutoMode == AutoPlayGameType.sortGame ? "Sort" : "Memory"})',
+                                          style: TextStyle(
+                                            color: context.appTheme.textColor2,
+                                            fontSize: 12,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -212,7 +222,7 @@ class _MaterialAppState extends State<_MaterialApp> {
                               ),
                           ],
                         ),
-                        if (autoMode) Material(color: Colors.white10),
+                        if (isAnyAutoMode) Material(color: Colors.white10),
                       ],
                     );
                   },
