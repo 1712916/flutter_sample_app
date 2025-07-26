@@ -34,8 +34,6 @@ class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProvid
   bool _isFlipping = false;
   // Đếm số lần lật thẻ
   int _flipCount = 0;
-  // Controller cho hiệu ứng rung khi ghép sai
-  late AnimationController _shakeController;
 
   @override
   void initState() {
@@ -44,11 +42,6 @@ class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProvid
     _cardContents = widget.imagePaths.expand((path) => [path, path]).toList();
     // Khởi tạo trạng thái trò chơi
     _resetGame();
-    // Khởi tạo controller cho hiệu ứng rung
-    _shakeController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
   }
 
   // Khởi tạo hoặc reset trò chơi
@@ -96,7 +89,6 @@ class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProvid
           }
         } else {
           // Ghép sai, lật lại thẻ và thêm hiệu ứng rung
-          _shakeController.forward().then((_) => _shakeController.reset());
           _cardKeys[_firstCardIndex!].currentState?.toggleCard();
           _cardKeys[index].currentState?.toggleCard();
         }
@@ -123,7 +115,6 @@ class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProvid
 
   @override
   void dispose() {
-    _shakeController.dispose();
     super.dispose();
   }
 
@@ -164,56 +155,52 @@ class _MemoryGamePageState extends State<MemoryGamePage> with SingleTickerProvid
         itemBuilder: (context, index) {
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
-            child: _matchedCards[index]
-                ? const SizedBox() // Ẩn thẻ đã ghép
-                : GestureDetector(
-                    onTap: () => _onCardTapped(index),
-                    child: AnimatedBuilder(
-                      animation: _shakeController,
-                      builder: (context, child) {
-                        // Thêm hiệu ứng rung khi ghép sai
-                        final offset = sin(_shakeController.value * pi * 4) * 2;
-                        return Transform.translate(
-                          offset: Offset(offset, 0),
-                          child: child,
-                        );
-                      },
-                      child: FlipCard(
-                        autoFlipDuration: Duration(milliseconds: 1000),
-                        side: CardSide.BACK,
-                        key: _cardKeys[index],
-                        direction: FlipDirection.HORIZONTAL,
-                        front: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white30),
-                            color: Colors.black38,
-                          ),
-                          alignment: Alignment.center,
-                          child: SizedBox(
-                            width: 60,
-                            height: 60,
-                            child: Image.asset('assets/icon/icon.png'),
-                          ),
-                        ),
-                        back: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white30),
-                            color: Colors.black38,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: AppImage(
-                              image: _scrambledContents[index],
-                            ),
-                          ),
-                        ),
-                        flipOnTouch: false,
-                        fill: Fill.fillBack,
+            child: AnimatedOpacity(
+              key: ValueKey('card_$index'),
+              opacity: _matchedCards[index] ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOut,
+              child: IgnorePointer(
+                ignoring: _matchedCards[index],
+                child: GestureDetector(
+                  onTap: () => _onCardTapped(index),
+                  child: FlipCard(
+                    autoFlipDuration: const Duration(milliseconds: 1000),
+                    side: CardSide.BACK,
+                    key: _cardKeys[index],
+                    direction: FlipDirection.HORIZONTAL,
+                    front: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.white30),
+                        color: Colors.black38,
+                      ),
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Image.asset('assets/icon/icon.png'),
                       ),
                     ),
+                    back: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.white30),
+                        color: Colors.black38,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: AppImage(
+                          image: _scrambledContents[index],
+                        ),
+                      ),
+                    ),
+                    flipOnTouch: false,
+                    fill: Fill.fillBack,
                   ),
+                ),
+              ),
+            ),
           );
         },
       ),
