@@ -209,7 +209,7 @@ class _MaterialAppState extends State<_MaterialApp> {
                                         LText(LKey.autoPlayMode),
                                         const SizedBox(width: 8),
                                         Text(
-                                          '(${enhancedAutoMode == AutoPlayGameType.sortGame ? "Sort" : "Memory"})',
+                                          '(${enhancedAutoMode.name.replaceAll('Game', '')})',
                                           style: TextStyle(
                                             color: context.appTheme.textColor2,
                                             fontSize: 12,

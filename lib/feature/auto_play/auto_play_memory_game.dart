@@ -32,13 +32,13 @@ class AutoPlayMemoryGame extends AutoPlay {
 
   @override
   Future<void> startAutoPlay() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 800));
 
     // Swipe to some page to get different images
     final randomStep = Random().nextInt(3) + 1; // Giảm từ 5 xuống 3
 
     for (int i = 1; i <= randomStep; i++) {
-      await pageController.nextPage(duration: Duration(milliseconds: 200), curve: Curves.linear);
+      await pageController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.linear);
       await Future.delayed(const Duration(milliseconds: 150));
     }
 
@@ -48,9 +48,10 @@ class AutoPlayMemoryGame extends AutoPlay {
 
     // Check if current image is gif type, let go to next image with other type
     int i = 0;
-    while (i < 2) { // Giảm từ 3 xuống 2
+    while (i < 2) {
+      // Giảm từ 3 xuống 2
       if (currentImage.endsWith('.gif')) {
-        await pageController.nextPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
+        await pageController.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.linear);
         await Future.delayed(const Duration(milliseconds: 150));
         i++;
       } else {
@@ -58,17 +59,17 @@ class AutoPlayMemoryGame extends AutoPlay {
       }
     }
 
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 400));
 
     // Go to game menu
     goToGameMenu(context);
 
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 400));
 
     // Navigate to memory game through image selection
     _startMemoryGameSelection();
 
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 400));
 
     // Auto play the memory game
     await _playMemoryGame();
@@ -121,10 +122,7 @@ class AutoPlayMemoryGame extends AutoPlay {
 
     if (totalImages >= 8) {
       // Chọn 8 vị trí đầu tiên
-      final selectedIndices = <int>{};
-      for (int i = 0; i < 8; i++) {
-        selectedIndices.add(i);
-      }
+      final selectedIndices = Set<int>.from(List.generate(8, (index) => index));
 
       print('Auto-selecting images at indices: $selectedIndices');
 
@@ -132,16 +130,8 @@ class AutoPlayMemoryGame extends AutoPlay {
       final selectionScreenState = ImageSelectionScreen.autoPlayKey.currentState;
       if (selectionScreenState != null) {
         // Simulate selecting images one by one with delays
-        final indices = selectedIndices.toList();
-        for (int i = 0; i < indices.length; i++) {
-          await Future.delayed(const Duration(milliseconds: 200));
-
-          // Select images progressively
-          final progressiveSelection = indices.take(i + 1).toSet();
-          selectionScreenState.autoSelectImages(progressiveSelection);
-
-          print('Auto-selected image ${i + 1}/8 at index ${indices[i]}');
-        }
+        await Future.delayed(const Duration(milliseconds: 600));
+        selectionScreenState.autoSelectImages(selectedIndices);
 
         // Wait a bit more then start the game
         await Future.delayed(const Duration(milliseconds: 300));
@@ -164,7 +154,7 @@ class AutoPlayMemoryGame extends AutoPlay {
 
   Future<void> _autoPlayMemoryGame() async {
     // Wait for memory game page to be fully loaded
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 1200));
 
     // Get the memory game state
     final memoryGameState = MemoryGamePage.memoryGameKey.currentState;
@@ -197,12 +187,12 @@ class AutoPlayMemoryGame extends AutoPlay {
       if (memoryGameState.firstCardIndex != null) {
         final firstCardIndex = memoryGameState.firstCardIndex!;
         final firstCardContent = memoryGameState.scrambledContents[firstCardIndex];
-        
+
         print('First card selected: $firstCardIndex with content: $firstCardContent');
 
         // Kiểm tra trong lịch sử có thẻ nào trùng nội dung không
         final matchingCards = flipHistory[firstCardContent] ?? [];
-        
+
         // Tìm thẻ trùng nội dung trong lịch sử (khác với thẻ đầu tiên và chưa ghép)
         for (final cardIndex in matchingCards) {
           if (cardIndex != firstCardIndex && !memoryGameState.matchedCards[cardIndex]) {
@@ -215,9 +205,7 @@ class AutoPlayMemoryGame extends AutoPlay {
         // Nếu không tìm được thẻ trùng trong lịch sử, lật thẻ mới chưa lật
         if (nextCardIndex == null) {
           for (int i = 0; i < totalCards; i++) {
-            if (!memoryGameState.matchedCards[i] && 
-                !flippedCardIndices.contains(i) && 
-                i != firstCardIndex) {
+            if (!memoryGameState.matchedCards[i] && !flippedCardIndices.contains(i) && i != firstCardIndex) {
               nextCardIndex = i;
               print('Flipping new card: $i');
               break;
@@ -238,13 +226,16 @@ class AutoPlayMemoryGame extends AutoPlay {
       } else {
         // Chưa có thẻ nào được chọn, lật thẻ đầu tiên
         // Ưu tiên lật thẻ chưa lật lần nào
-        for (int i = 0; i < totalCards; i++) {
-          if (!memoryGameState.matchedCards[i] && !flippedCardIndices.contains(i)) {
-            nextCardIndex = i;
-            print('Flipping first card (new): $i');
-            break;
-          }
-        }
+
+        //index của các thẻ chưa matched
+        final unMatchedCards = Set<int>.from(
+            memoryGameState.matchedCards.asMap().entries.where((entry) => !entry.value).map((entry) => entry.key));
+
+        //unMatchedCards trừ ra các thẻ đã lật trong flippedCardIndices
+        final availableCards = unMatchedCards.difference(flippedCardIndices);
+
+        nextCardIndex =
+            availableCards.isNotEmpty ? availableCards.elementAt(random.nextInt(availableCards.length)) : null;
 
         // Nếu không có thẻ mới, lật bất kỳ thẻ nào chưa ghép
         if (nextCardIndex == null) {
@@ -266,7 +257,7 @@ class AutoPlayMemoryGame extends AutoPlay {
         final content = memoryGameState.scrambledContents[nextCardIndex];
         flipHistory.putIfAbsent(content, () => []).add(nextCardIndex);
         flippedCardIndices.add(nextCardIndex);
-        
+
         print('Added to history: content=$content, index=$nextCardIndex');
         print('Current flip history: $flipHistory');
 
@@ -278,55 +269,6 @@ class AutoPlayMemoryGame extends AutoPlay {
     }
 
     print('Memory game auto-play completed!');
-  }
-
-  int? _findNextCardToFlip(
-    dynamic memoryGameState,
-    Map<String, List<int>> contentToIndices,
-    Set<int> revealedCards,
-    Random random,
-  ) {
-    // If no first card is selected, pick any unmatched card
-    if (memoryGameState.firstCardIndex == null) {
-      final unmatchedCards = <int>[];
-      for (int i = 0; i < memoryGameState.cardKeys.length; i++) {
-        if (!memoryGameState.matchedCards[i]) {
-          unmatchedCards.add(i);
-        }
-      }
-
-      if (unmatchedCards.isNotEmpty) {
-        return unmatchedCards[random.nextInt(unmatchedCards.length)];
-      }
-    } else {
-      // A first card is selected, try to find its match
-      final firstCardIndex = memoryGameState.firstCardIndex!;
-      final firstCardContent = memoryGameState.scrambledContents[firstCardIndex];
-
-      // Look for a matching card that we've seen before
-      final matchingIndices = contentToIndices[firstCardContent];
-      if (matchingIndices != null && matchingIndices.length > 1) {
-        for (final index in matchingIndices) {
-          if (index != firstCardIndex && !memoryGameState.matchedCards[index]) {
-            return index;
-          }
-        }
-      }
-
-      // If no known match, pick a random unmatched card
-      final unmatchedCards = <int>[];
-      for (int i = 0; i < memoryGameState.cardKeys.length; i++) {
-        if (!memoryGameState.matchedCards[i] && i != firstCardIndex) {
-          unmatchedCards.add(i);
-        }
-      }
-
-      if (unmatchedCards.isNotEmpty) {
-        return unmatchedCards[random.nextInt(unmatchedCards.length)];
-      }
-    }
-
-    return null;
   }
 
   @override
