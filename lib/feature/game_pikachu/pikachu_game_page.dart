@@ -1,36 +1,74 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../../core/index.dart';
 import '../../widgets/widgets.dart';
 import 'models/cell_content.dart';
+import 'models/cell_content_factory.dart';
 import 'models/game_background_config.dart';
 import 'models/game_cell.dart';
 import 'pikachu_game_controller.dart';
 import 'widgets/connection_line_painter.dart';
 
-class PikachuGameScreen extends StatefulWidget {
-  const PikachuGameScreen({Key? key}) : super(key: key);
+class PikachuGamePage extends StatefulWidget {
+  const PikachuGamePage({Key? key}) : super(key: key);
 
   @override
-  State<PikachuGameScreen> createState() => _PikachuGameScreenState();
+  State<PikachuGamePage> createState() => _PikachuGamePageState();
 }
 
-class _PikachuGameScreenState extends State<PikachuGameScreen> {
+class _PikachuGamePageState extends State<PikachuGamePage> {
   late PikachuGameController _controller;
   GameBackgroundConfig _currentBackground = BackgroundPresets.gaming;
+  String? _secretImage;
+  List<String> files = [];
 
   @override
   void initState() {
     super.initState();
-    _controller = PikachuGameController();
-    _controller.initializeGame();
+    _controller = PikachuGameController()..initializeGame();
 
     // Force landscape orientation
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+
+    loadImages();
   }
+
+  void loadImages() async {
+    final d = DownloadFromGithubUtil.pikachu;
+    files = await d.getAvailableFilePaths();
+
+    //_secretImage = random a path in files
+    if (files.isNotEmpty) {
+      _secretImage = files[Random().nextInt(files.length)];
+    }
+
+    _controller.changeContentType(CellContentConfig(
+      type: CellContentType.image,
+      contentFactory: () {
+        return List.generate(
+          files.length,
+          (index) => ImageCellContent(
+            id: index,
+            imagePath: files[index],
+            isAsset: false,
+          ),
+        );
+      },
+      name: 'Images',
+      description: 'Image tiles from Pikachu game',
+    ));
+    setState(() {});
+  }
+
+  ThemeData get theme => context.appTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +112,16 @@ class _PikachuGameScreenState extends State<PikachuGameScreen> {
             child: Container(
               padding: const EdgeInsets.all(8),
               child: Center(
-                child: ValueListenableBuilder<List<List<GameCell>>>(
-                  valueListenable: _controller.gridNotifier,
-                  builder: (context, grid, child) {
-                    return _buildGameGrid(grid);
-                  },
+                child: Stack(
+                  children: [
+                    if (_secretImage != null) Positioned.fill(child: Image.file(File(_secretImage!))),
+                    ValueListenableBuilder<List<List<GameCell>>>(
+                      valueListenable: _controller.gridNotifier,
+                      builder: (context, grid, child) {
+                        return _buildGameGrid(grid);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -165,105 +208,104 @@ class _PikachuGameScreenState extends State<PikachuGameScreen> {
   }
 
   Widget _buildGameGrid(List<List<GameCell>> grid) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0), // Reduced padding to give more space to cells
-      child: AspectRatio(
-        aspectRatio: 16 / 9, // Maintain proper grid proportions for landscape
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final gridWidth = constraints.maxWidth;
-            final gridHeight = constraints.maxHeight;
-            final cellWidth = gridWidth / 16;
-            final cellHeight = gridHeight / 9;
+    return AspectRatio(
+      aspectRatio: 16 / 9, // Maintain proper grid proportions for landscape
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final gridWidth = constraints.maxWidth;
+          final gridHeight = constraints.maxHeight;
+          final cellWidth = gridWidth / 16;
+          final cellHeight = gridHeight / 9;
 
-            return Stack(
-              children: [
-                // Game grid
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(), // Disable scrolling to fit view
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 16,
-                    childAspectRatio: 1.0,
-                    crossAxisSpacing: 2, // Increased spacing between cells
-                    mainAxisSpacing: 2, // Increased spacing between cells
-                  ),
-                  itemCount: 16 * 9,
-                  itemBuilder: (context, index) {
-                    final row = index ~/ 16;
-                    final col = index % 16;
-                    final cell = grid[row][col];
-
-                    return GestureDetector(
-                      onTap: () {
-                        _controller.onCellTapped(row, col);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _getCellColor(cell),
-                          border: cell.isEmpty
-                              ? null // No border for empty cells
-                              : Border.all(
-                                  color: cell.isSelected ? Colors.blue : Colors.grey.shade400,
-                                  width: cell.isSelected ? 3 : 0.5,
-                                ),
-                        ),
-                        child: Center(
-                          child: cell.isEmpty
-                              ? null
-                              : cell.content?.buildWidget(
-                                    fontSize: 18, // Increased font size
-                                    isSelected: cell.isSelected,
-                                    isMatched: cell.isMatched,
-                                    isHinted: cell.isHinted,
-                                  ) ??
-                                  Text(
-                                    cell.number.toString(), // Fallback to number
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18, // Increased font size
-                                      color: cell.isMatched ? Colors.grey : Colors.black,
-                                    ),
-                                  ),
-                        ),
-                      ),
-                    );
-                  },
+          return Stack(
+            children: [
+              // Game grid
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(), // Disable scrolling to fit view
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 16,
+                  childAspectRatio: 1.0,
+                  crossAxisSpacing: 0, // Increased spacing between cells
+                  mainAxisSpacing: 0, // Increased spacing between cells
                 ),
-                // Connection line overlay
-                ValueListenableBuilder<List<Offset>?>(
-                  valueListenable: _controller.connectionLineNotifier,
-                  builder: (context, connectionLine, child) {
-                    if (connectionLine == null) return const SizedBox.shrink();
+                itemCount: 16 * 9,
+                itemBuilder: (context, index) {
+                  final row = index ~/ 16;
+                  final col = index % 16;
+                  final cell = grid[row][col];
 
-                    return ValueListenableBuilder<int>(
-                      valueListenable: _controller.animationDurationNotifier,
-                      builder: (context, duration, child) {
-                        return TweenAnimationBuilder<double>(
-                          duration: Duration(milliseconds: duration),
-                          tween: Tween(begin: 0.0, end: 1.0),
-                          builder: (context, animationProgress, child) {
-                            return CustomPaint(
-                              size: Size.infinite,
-                              painter: ConnectionLinePainter(
-                                points: connectionLine,
-                                cellWidth: cellWidth,
-                                cellHeight: cellHeight,
-                                animationProgress: animationProgress,
-                                gridCols: 16,
-                                gridRows: 9,
+                  return GestureDetector(
+                    onTap: () {
+                      _controller.onCellTapped(row, col);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _getCellColor(cell),
+                        border: cell.isEmpty
+                            ? null // No border for empty cells
+                            : Border.all(
+                                color: cell.isSelected ? theme.highlightColor2 : Colors.transparent,
+                                width: cell.isSelected ? 0.4 : 0.2,
                               ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            );
-          },
-        ),
+                      ),
+                      child: Center(
+                        child: cell.isEmpty
+                            ? null
+                            : cell.content?.buildWidget(
+                                  fontSize: 20, // Increased font size
+                                  isSelected: cell.isSelected,
+                                  isMatched: cell.isMatched,
+                                  isHinted: cell.isHinted,
+                                ) ??
+                                Text(
+                                  cell.number.toString(), // Fallback to number
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20, // Increased font size
+                                    color: cell.isMatched ? Colors.grey : Colors.black,
+                                  ),
+                                ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              // Connection line overlay
+              ValueListenableBuilder<List<Offset>?>(
+                valueListenable: _controller.connectionLineNotifier,
+                builder: (context, connectionLine, child) {
+                  if (connectionLine == null) return const SizedBox.shrink();
+
+                  return ValueListenableBuilder<int>(
+                    valueListenable: _controller.animationDurationNotifier,
+                    builder: (context, duration, child) {
+                      return TweenAnimationBuilder<double>(
+                        duration: Duration(milliseconds: duration),
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, animationProgress, child) {
+                          return CustomPaint(
+                            size: Size.infinite,
+                            painter: ConnectionLinePainter(
+                              points: connectionLine,
+                              cellWidth: cellWidth,
+                              cellHeight: cellHeight,
+                              animationProgress: animationProgress,
+                              gridCols: 16,
+                              gridRows: 9,
+                              lineColor: Colors.green,
+                              pointColor: Colors.green,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -284,6 +326,10 @@ class _PikachuGameScreenState extends State<PikachuGameScreen> {
             child: IconButton(
               onPressed: () {
                 setState(() {
+                  //_secretImage = random a path in files
+                  if (files.isNotEmpty) {
+                    _secretImage = files[Random().nextInt(files.length)];
+                  }
                   _controller.initializeGame();
                 });
               },

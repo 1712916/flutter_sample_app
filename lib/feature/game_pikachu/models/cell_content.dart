@@ -1,24 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 /// Enum defining different types of cell content
 enum CellContentType {
-  number,    // Display numbers 1-9
-  emoji,     // Display emoji symbols
-  icon,      // Display Material icons
-  image,     // Display custom images
-  custom,    // Display custom widgets
+  number, // Display numbers 1-9
+  emoji, // Display emoji symbols
+  icon, // Display Material icons
+  image, // Display custom images
+  custom, // Display custom widgets
 }
 
 /// Abstract base class for cell content
 abstract class CellContent {
-  final int id;           // Unique identifier for matching (1-9)
+  final int id; // Unique identifier for matching (1-9)
   final CellContentType type;
-  
+
   const CellContent({
     required this.id,
     required this.type,
   });
-  
+
   /// Build the widget to display in the cell
   Widget buildWidget({
     double? fontSize,
@@ -27,10 +29,10 @@ abstract class CellContent {
     bool isMatched = false,
     bool isHinted = false,
   });
-  
+
   /// Check if this content matches another content
   bool matches(CellContent other) => id == other.id && type == other.type;
-  
+
   /// Get background color for this content based on ID
   Color getBackgroundColor() {
     // Define a consistent color palette for IDs 1-9
@@ -45,20 +47,19 @@ abstract class CellContent {
       Color(0xFFB2EBF2), // Light Cyan
       Color(0xFFB2DFDB), // Light Teal
     ];
-    
+
     // Use modulo to ensure we stay within array bounds
     return colors[(id - 1) % colors.length];
   }
-  
+
   /// Create a copy of this content
   CellContent copy();
 }
 
 /// Number-based cell content (default)
 class NumberCellContent extends CellContent {
-  const NumberCellContent({required int id}) 
-      : super(id: id, type: CellContentType.number);
-  
+  const NumberCellContent({required int id}) : super(id: id, type: CellContentType.number);
+
   @override
   Widget buildWidget({
     double? fontSize,
@@ -76,7 +77,7 @@ class NumberCellContent extends CellContent {
       ),
     );
   }
-  
+
   @override
   CellContent copy() => NumberCellContent(id: id);
 }
@@ -84,12 +85,12 @@ class NumberCellContent extends CellContent {
 /// Emoji-based cell content
 class EmojiCellContent extends CellContent {
   final String emoji;
-  
+
   const EmojiCellContent({
     required int id,
     required this.emoji,
   }) : super(id: id, type: CellContentType.emoji);
-  
+
   @override
   Widget buildWidget({
     double? fontSize,
@@ -106,7 +107,7 @@ class EmojiCellContent extends CellContent {
       ),
     );
   }
-  
+
   @override
   CellContent copy() => EmojiCellContent(id: id, emoji: emoji);
 }
@@ -114,12 +115,12 @@ class EmojiCellContent extends CellContent {
 /// Icon-based cell content
 class IconCellContent extends CellContent {
   final IconData iconData;
-  
+
   const IconCellContent({
     required int id,
     required this.iconData,
   }) : super(id: id, type: CellContentType.icon);
-  
+
   @override
   Widget buildWidget({
     double? fontSize,
@@ -134,7 +135,7 @@ class IconCellContent extends CellContent {
       color: color ?? (isMatched ? Colors.grey : Colors.black),
     );
   }
-  
+
   @override
   CellContent copy() => IconCellContent(id: id, iconData: iconData);
 }
@@ -143,13 +144,13 @@ class IconCellContent extends CellContent {
 class ImageCellContent extends CellContent {
   final String imagePath;
   final bool isAsset;
-  
+
   const ImageCellContent({
     required int id,
     required this.imagePath,
     this.isAsset = true,
   }) : super(id: id, type: CellContentType.image);
-  
+
   @override
   Widget buildWidget({
     double? fontSize,
@@ -158,28 +159,30 @@ class ImageCellContent extends CellContent {
     bool isMatched = false,
     bool isHinted = false,
   }) {
-    Widget image = isAsset 
+    Widget image = isAsset
         ? Image.asset(
             imagePath,
             width: fontSize ?? 24,
             height: fontSize ?? 24,
             fit: BoxFit.contain,
           )
-        : Image.network(
-            imagePath,
-            width: fontSize ?? 24,
-            height: fontSize ?? 24,
+        : Image.file(
+            File(imagePath),
+            width: 100,
+            height: 100,
+            cacheWidth: 100,
+            cacheHeight: 100,
             fit: BoxFit.contain,
           );
-    
-    return isMatched 
+
+    return isMatched
         ? ColorFiltered(
             colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.saturation),
             child: image,
           )
         : image;
   }
-  
+
   @override
   CellContent copy() => ImageCellContent(id: id, imagePath: imagePath, isAsset: isAsset);
 }
@@ -193,12 +196,12 @@ class CustomCellContent extends CellContent {
     double? size,
     Color? color,
   }) widgetBuilder;
-  
+
   const CustomCellContent({
     required int id,
     required this.widgetBuilder,
   }) : super(id: id, type: CellContentType.custom);
-  
+
   @override
   Widget buildWidget({
     double? fontSize,
@@ -215,7 +218,7 @@ class CustomCellContent extends CellContent {
       color: color,
     );
   }
-  
+
   @override
   CellContent copy() => CustomCellContent(id: id, widgetBuilder: widgetBuilder);
 }

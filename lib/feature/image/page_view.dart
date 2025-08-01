@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
 import 'package:meow_app/feature/favourite/cubit/favourite_cubit.dart';
 
-import '../../core/base/index.dart';
+import '../../core/index.dart';
 import '../../core/util/image_util.dart';
 import '../../data/data.dart';
 import '../../main.dart';

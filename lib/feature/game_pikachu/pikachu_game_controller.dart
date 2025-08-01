@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-import 'models/game_cell.dart';
+
 import 'models/cell_content.dart';
 import 'models/cell_content_factory.dart';
+import 'models/game_cell.dart';
 
 class PikachuGameController {
   static const int rows = 9;
@@ -18,7 +20,7 @@ class PikachuGameController {
   late ValueNotifier<int> animationDurationNotifier; // Dynamic animation duration in milliseconds
 
   // Content configuration
-  CellContentConfig _contentConfig = CellContentConfig.presets[0]; // Default to numbers
+  CellContentConfig _contentConfig = CellContentConfig.presets[2]; // Default to numbers
   List<CellContent> _availableContent = [];
 
   List<List<GameCell>> _grid = [];
@@ -83,17 +85,17 @@ class PikachuGameController {
     if (_availableContent.isEmpty) {
       _availableContent = _contentConfig.contentFactory();
     }
-    
+
     List<CellContent> contentPairs = [];
 
     // Generate pairs of content (each content type gets exactly 2 instances)
     int totalCells = rows * cols;
     int contentTypesAvailable = _availableContent.length; // Should be 9
-    
+
     // Calculate how many complete sets of content types we need
     int completeSets = totalCells ~/ (contentTypesAvailable * 2);
     int remainingCells = totalCells % (contentTypesAvailable * 2);
-    
+
     // Add complete sets
     for (int set = 0; set < completeSets; set++) {
       for (int i = 0; i < contentTypesAvailable; i++) {
@@ -102,7 +104,7 @@ class PikachuGameController {
         contentPairs.add(content.copy());
       }
     }
-    
+
     // Add remaining cells if needed (should be pairs)
     if (remainingCells > 0) {
       int remainingPairs = remainingCells ~/ 2;
@@ -111,7 +113,7 @@ class PikachuGameController {
         contentPairs.add(content.copy());
         contentPairs.add(content.copy());
       }
-      
+
       // If there's one odd cell left, add it (this shouldn't happen with even grid)
       if (remainingCells % 2 == 1) {
         contentPairs.add(_availableContent[0].copy());
@@ -236,37 +238,39 @@ class PikachuGameController {
       // Fallback to number matching for backward compatibility
       contentsMatch = _firstSelected!.number == _secondSelected!.number;
     }
-    
+
     if (contentsMatch) {
       // Check if there's a valid path between the cells
-      List<Offset>? pathPoints = _getConnectionPath(_firstSelectedRow, _firstSelectedCol, _secondSelectedRow, _secondSelectedCol);
+      List<Offset>? pathPoints =
+          _getConnectionPath(_firstSelectedRow, _firstSelectedCol, _secondSelectedRow, _secondSelectedCol);
       if (pathPoints != null) {
         // Match found! Show connection line animation
         _saveGameState();
-        
+
         // Calculate dynamic animation duration based on distance
-        int dynamicDuration = _calculateAnimationDuration(_firstSelectedRow, _firstSelectedCol, _secondSelectedRow, _secondSelectedCol, pathPoints);
+        int dynamicDuration = _calculateAnimationDuration(
+            _firstSelectedRow, _firstSelectedCol, _secondSelectedRow, _secondSelectedCol, pathPoints);
         animationDurationNotifier.value = dynamicDuration;
-        
+
         // Show the connection line
         connectionLineNotifier.value = pathPoints;
-        
+
         // After animation delay, mark cells as matched
-        Future.delayed(Duration(milliseconds: dynamicDuration), () {
+        Future.delayed(Duration(milliseconds: dynamicDuration + 200), () {
           _firstSelected!.markAsMatched();
           _secondSelected!.markAsMatched();
-          
+
           scoreNotifier.value += 10;
-          
+
           // Hide the connection line
           connectionLineNotifier.value = null;
-          
+
           // Check if game is won
           if (_isGameWon()) {
             _stopTimer();
             _showGameWonDialog();
           }
-          
+
           // Clear selections
           _clearAllSelections();
           _updateGrid();
@@ -286,13 +290,13 @@ class PikachuGameController {
   int _calculateAnimationDuration(int row1, int col1, int row2, int col2, List<Offset> pathPoints) {
     // Calculate Manhattan distance (straight-line grid distance)
     int manhattanDistance = (row1 - row2).abs() + (col1 - col2).abs();
-    
+
     // Calculate path complexity (number of turns)
     int pathTurns = pathPoints.length - 2; // Start and end don't count as turns
-    
+
     // Base duration calculation - reduced for faster animations
     // Near cells (distance 1-3): 150-250ms
-    // Medium cells (distance 4-8): 250-350ms  
+    // Medium cells (distance 4-8): 250-350ms
     // Far cells (distance 9+): 350-500ms
     int baseDuration;
     if (manhattanDistance <= 3) {
@@ -302,10 +306,10 @@ class PikachuGameController {
     } else {
       baseDuration = 350 + math.min((manhattanDistance - 8) * 15, 150); // 365-500ms
     }
-    
+
     // Add time for path complexity (each turn adds less time)
     int complexityBonus = pathTurns * 50; // 50ms per turn (reduced from 100ms)
-    
+
     // Final duration with bounds - much faster overall
     int finalDuration = baseDuration + complexityBonus;
     return math.max(150, math.min(finalDuration, 600)); // Clamp between 150ms and 600ms
@@ -314,19 +318,19 @@ class PikachuGameController {
   List<Offset>? _getConnectionPath(int row1, int col1, int row2, int col2) {
     // Same cell - not valid
     if (row1 == row2 && col1 == col2) return null;
-    
+
     // Try direct paths first
     List<Offset>? directPath = _getDirectPath(row1, col1, row2, col2);
     if (directPath != null) return directPath;
-    
+
     // Try one-turn paths (L-shaped)
     List<Offset>? oneTurnPath = _getOneTurnPath(row1, col1, row2, col2);
     if (oneTurnPath != null) return oneTurnPath;
-    
+
     // Try two-turn paths (requires external border)
     List<Offset>? twoTurnPath = _getTwoTurnPath(row1, col1, row2, col2);
     if (twoTurnPath != null) return twoTurnPath;
-    
+
     return null;
   }
 
@@ -340,7 +344,7 @@ class PikachuGameController {
         ];
       }
     }
-    
+
     // Direct vertical path (same column)
     if (col1 == col2) {
       if (_isVerticalPathClear(col1, row1, row2)) {
@@ -350,13 +354,13 @@ class PikachuGameController {
         ];
       }
     }
-    
+
     return null;
   }
 
   List<Offset>? _getOneTurnPath(int row1, int col1, int row2, int col2) {
     // L-shaped path: horizontal first, then vertical
-    if (_isHorizontalPathClear(row1, col1, col2) && 
+    if (_isHorizontalPathClear(row1, col1, col2) &&
         _isVerticalPathClear(col2, row1, row2) &&
         _isCellEmptyOrTarget(row1, col2, row2, col2)) {
       return [
@@ -365,9 +369,9 @@ class PikachuGameController {
         Offset(col2.toDouble(), row2.toDouble()),
       ];
     }
-    
+
     // L-shaped path: vertical first, then horizontal
-    if (_isVerticalPathClear(col1, row1, row2) && 
+    if (_isVerticalPathClear(col1, row1, row2) &&
         _isHorizontalPathClear(row2, col1, col2) &&
         _isCellEmptyOrTarget(row2, col1, row2, col2)) {
       return [
@@ -376,13 +380,13 @@ class PikachuGameController {
         Offset(col2.toDouble(), row2.toDouble()),
       ];
     }
-    
+
     return null;
   }
 
   List<Offset>? _getTwoTurnPath(int row1, int col1, int row2, int col2) {
     // Check paths through extended borders (top, bottom, left, right)
-    
+
     // Through top border (row -1)
     if (_canReachThroughTopBorder(row1, col1, row2, col2)) {
       return [
@@ -392,7 +396,7 @@ class PikachuGameController {
         Offset(col2.toDouble(), row2.toDouble()),
       ];
     }
-    
+
     // Through bottom border (row rows)
     if (_canReachThroughBottomBorder(row1, col1, row2, col2)) {
       return [
@@ -402,7 +406,7 @@ class PikachuGameController {
         Offset(col2.toDouble(), row2.toDouble()),
       ];
     }
-    
+
     // Through left border (col -1)
     if (_canReachThroughLeftBorder(row1, col1, row2, col2)) {
       return [
@@ -412,7 +416,7 @@ class PikachuGameController {
         Offset(col2.toDouble(), row2.toDouble()),
       ];
     }
-    
+
     // Through right border (col cols)
     if (_canReachThroughRightBorder(row1, col1, row2, col2)) {
       return [
@@ -422,7 +426,7 @@ class PikachuGameController {
         Offset(col2.toDouble(), row2.toDouble()),
       ];
     }
-    
+
     return null;
   }
 
@@ -604,7 +608,7 @@ class PikachuGameController {
             } else {
               contentsMatch = _grid[i][j].number == _grid[i2][j2].number;
             }
-            
+
             if (contentsMatch && _hasValidPath(i, j, i2, j2)) {
               _grid[i][j].showHint();
               _grid[i2][j2].showHint();

@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 
 import '../core/util/app_store_review.dart';
 import '../feature/game_memory/memory_game_page.dart';
+import '../feature/game_pikachu/widgets/game_loading_page.dart';
 import '../feature/game_sort/game_page.dart';
 import '../feature/game_sort/widget/crop_image_view.dart';
 import '../feature/game_sticker/sticker_page.dart';
@@ -143,5 +144,11 @@ void goToGameSetting([BuildContext? context]) {
 }
 
 void goToPikachuGame([BuildContext? context]) {
-  Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.pikachuGamePage);
+  Navigator.push(
+    context ?? navKey.currentContext!,
+    MaterialPageRoute(
+      builder: (context) => GameLoadingPage(),
+    ),
+  );
+  // Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.pikachuGamePage);
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meow_app/feature/game_pikachu/pikachu_game_page.dart';
 import 'package:meow_app/feature/game_sort/game_setting_page.dart';
 import 'package:meow_app/feature/game_sticker/sticker_list_page.dart';
 import 'package:meow_app/feature/game_sticker/sticker_page.dart';
 import 'package:meow_app/feature/onboarding/onboarding_page.dart';
 import 'package:meow_app/feature/setting_page_new.dart';
-import 'package:meow_app/feature/game_pikachu/pikachu_game_screen.dart';
 
 import '../feature/favourite/favourite_page.dart';
 import '../feature/game/game_menu_page.dart';
@@ -33,6 +33,6 @@ class PageDependencies {
     injector.registerFactory<Widget>(() => StickerListPage(), instanceName: RouteManager.stickerListPage);
 
     //pikachu game
-    injector.registerFactory<Widget>(() => const PikachuGameScreen(), instanceName: RouteManager.pikachuGamePage);
+    injector.registerFactory<Widget>(() => const PikachuGamePage(), instanceName: RouteManager.pikachuGamePage);
   }
 }
