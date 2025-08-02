@@ -54,8 +54,17 @@ class CellContentFactory {
   static List<CellContent> createMixedContent() {
     // Combine Meow and Gaow content
     List<CellContent> mixedContent = [];
-    mixedContent.addAll(createMeowContent());
-    mixedContent.addAll(createGaowContent());
+    //get a haft of each contents
+    final meowCount = (_meowImagePaths.length / 2).ceil();
+    final gaowCount = (_gaowImagePaths.length / 2).ceil();
+    final cats = createMeowContent();
+    cats.shuffle();
+
+    final dogs = createGaowContent();
+    dogs.shuffle();
+
+    mixedContent.addAll(cats.take(meowCount));
+    mixedContent.addAll(dogs.take(gaowCount));
     return mixedContent;
   }
 

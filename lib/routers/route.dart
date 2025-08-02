@@ -2,6 +2,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meow_app/feature/game_pikachu/pikachu_game_loader.dart';
+import 'package:meow_app/feature/game_pikachu/pikachu_game_page.dart';
 
 import '../core/util/app_store_review.dart';
 import '../feature/game_memory/memory_game_page.dart';
@@ -147,8 +149,21 @@ void goToPikachuGame([BuildContext? context]) {
   Navigator.push(
     context ?? navKey.currentContext!,
     MaterialPageRoute(
-      builder: (context) => GameLoadingPage(),
+      builder: (context) => GameLoadingPage(
+        onComplete: () async {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BackgroundMusicPlayer(
+                child: PikachuGamePage(),
+              ),
+            ),
+          );
+        },
+        onProcess: () async {
+          await PikachuGameLoader().loadGame();
+        },
+      ),
     ),
   );
-  // Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.pikachuGamePage);
 }

@@ -7,6 +7,7 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
 import '../../widgets/widgets.dart';
+import '../sound/game_sound_manager.dart';
 import 'models/cell_content_factory.dart';
 import 'models/game_background_config.dart';
 import 'models/game_cell.dart';
@@ -372,6 +373,10 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               case 'background':
                 _showBackgroundPicker();
                 break;
+              case 'music':
+                // Handle music settings here
+                ChooseMusicWidget().show(context);
+                break;
             }
           },
           itemBuilder: (BuildContext context) => [
@@ -392,6 +397,16 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                   Icon(Icons.wallpaper, size: 20, color: Colors.teal),
                   SizedBox(width: 8),
                   Text('Background'),
+                ],
+              ),
+            ),
+            const PopupMenuItem<String>(
+              value: 'music',
+              child: Row(
+                children: [
+                  Icon(Icons.music_note, size: 20, color: Colors.limeAccent),
+                  SizedBox(width: 8),
+                  Text('Music'),
                 ],
               ),
             ),
@@ -584,6 +599,64 @@ class ChooseGameContentWidget extends StatelessWidget with ShowDialog<CellConten
           }).toList(),
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+      ],
+    );
+  }
+}
+
+class ChooseMusicWidget extends StatelessWidget with ShowDialog<void> {
+  const ChooseMusicWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final GameSoundManager _gameSoundManager = GameSoundManager();
+
+    return AlertDialog(
+      title: const Text('Choose Music'),
+      content: FutureBuilder<List<String>>(
+          future: _gameSoundManager.getAvailableMusicFiles(),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return const SizedBox();
+            }
+
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: snapshot.data!.map((entry) {
+                  String name = entry;
+                  bool isSelected = name == _gameSoundManager.getCurrentMusicFile();
+
+                  return ListTile(
+                    leading: Container(
+                        width: 40,
+                        height: 40,
+                        child: Icon(isSelected ? Icons.music_note : Icons.music_note_outlined,
+                            color: Colors.white, size: 20)),
+                    title: Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? Colors.blue : null,
+                      ),
+                    ),
+                    onTap: () {
+                      _gameSoundManager.playBackgroundMusic(name);
+                      Navigator.of(context).pop();
+                    },
+                    trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
+                  );
+                }).toList(),
+              ),
+            );
+          }),
+      // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      // actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),

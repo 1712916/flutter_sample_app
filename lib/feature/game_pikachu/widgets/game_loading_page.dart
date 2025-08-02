@@ -5,13 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
-import '../../../core/util/download_helper.dart';
-import '../../../routers/route.dart';
 import '../../../widgets/app_bar.dart';
-import '../models/cell_content_factory.dart';
 
 class GameLoadingPage extends StatefulWidget {
-  const GameLoadingPage({super.key});
+  const GameLoadingPage({super.key, required this.onProcess, required this.onComplete});
+
+  final Future Function() onProcess;
+  final Future Function() onComplete;
 
   @override
   State<GameLoadingPage> createState() => _GameLoadingPageState();
@@ -84,18 +84,8 @@ class _GameLoadingPageState extends State<GameLoadingPage> with TickerProviderSt
 
   Future<void> _startRealLoading() async {
     await Future.delayed(const Duration(milliseconds: 800)); // giả lập delay
-    final downloaderMeow = DownloadFromGithubUtil.pikachuMeow;
-    await downloaderMeow.initialize();
 
-    final meowPaths = await downloaderMeow.getAvailableFilePaths();
-    CellContentFactory.setMeowImagePaths(meowPaths);
-
-    //downloaderGaow
-    final downloaderGaow = DownloadFromGithubUtil.pikachuGaow;
-    await downloaderGaow.initialize();
-
-    final gaowPaths = await downloaderGaow.getAvailableFilePaths();
-    CellContentFactory.setGaowImagePaths(gaowPaths);
+    await widget.onProcess();
 
     // Khi load xong dữ liệu thật
     setState(() {
@@ -108,7 +98,7 @@ class _GameLoadingPageState extends State<GameLoadingPage> with TickerProviderSt
 
   void goToGame() {
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed(RouteManager.pikachuGamePage);
+    widget.onComplete();
   }
 
   @override
