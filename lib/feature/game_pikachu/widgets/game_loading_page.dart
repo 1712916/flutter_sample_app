@@ -8,6 +8,7 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 import '../../../core/util/download_helper.dart';
 import '../../../routers/route.dart';
 import '../../../widgets/app_bar.dart';
+import '../models/cell_content_factory.dart';
 
 class GameLoadingPage extends StatefulWidget {
   const GameLoadingPage({super.key});
@@ -83,8 +84,18 @@ class _GameLoadingPageState extends State<GameLoadingPage> with TickerProviderSt
 
   Future<void> _startRealLoading() async {
     await Future.delayed(const Duration(milliseconds: 800)); // giả lập delay
-    final downloader = DownloadFromGithubUtil.pikachu;
-    await downloader.initialize();
+    final downloaderMeow = DownloadFromGithubUtil.pikachuMeow;
+    await downloaderMeow.initialize();
+
+    final meowPaths = await downloaderMeow.getAvailableFilePaths();
+    CellContentFactory.setMeowImagePaths(meowPaths);
+
+    //downloaderGaow
+    final downloaderGaow = DownloadFromGithubUtil.pikachuGaow;
+    await downloaderGaow.initialize();
+
+    final gaowPaths = await downloaderGaow.getAvailableFilePaths();
+    CellContentFactory.setGaowImagePaths(gaowPaths);
 
     // Khi load xong dữ liệu thật
     setState(() {

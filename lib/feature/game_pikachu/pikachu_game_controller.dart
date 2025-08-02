@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class PikachuGameController {
   late ValueNotifier<int> animationDurationNotifier; // Dynamic animation duration in milliseconds
 
   // Content configuration
-  CellContentConfig _contentConfig = CellContentConfig.presets[2]; // Default to numbers
+  CellContentConfig _contentConfig = CellContentConfig.presets[0]; // Default to numbers
   List<CellContent> _availableContent = [];
 
   List<List<GameCell>> _grid = [];
@@ -36,6 +37,8 @@ class PikachuGameController {
   bool _gameStarted = false;
 
   List<List<List<GameCell>>> _gameHistory = [];
+
+  String? secretImage;
   bool get canUndo => _gameHistory.isNotEmpty;
 
   PikachuGameController() {
@@ -52,6 +55,17 @@ class PikachuGameController {
     _grid = List.generate(rows, (i) => List.generate(cols, (j) => GameCell()));
     _generateContent();
     _shuffleGrid();
+
+    if (_contentConfig.type == CellContentType.image) {
+      // If using images, set a secret image if available
+      if (_availableContent.isNotEmpty) {
+        secretImage = _availableContent
+            .map((e) => (e as ImageCellContent).imagePath)
+            .toList()[Random().nextInt(_availableContent.length)];
+      }
+    } else {
+      secretImage = null; // No secret image for non-image content
+    }
 
     gridNotifier.value = _grid.map((row) => row.map((cell) => cell.copy()).toList()).toList();
     scoreNotifier.value = 0;
@@ -76,9 +90,6 @@ class PikachuGameController {
 
   /// Get current content configuration
   CellContentConfig get currentContentConfig => _contentConfig;
-
-  /// Get available content presets
-  List<CellContentConfig> get availableContentTypes => CellContentConfig.presets;
 
   void _generateContent() {
     // Initialize content types if not already done

@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Configuration class for game background
-class GameBackgroundConfig {
+class GameBackgroundConfig extends Equatable {
   final BackgroundType type;
   final List<Color>? gradientColors;
   final List<double>? gradientStops;
@@ -80,9 +81,7 @@ class GameBackgroundConfig {
           gradient: LinearGradient(
             begin: gradientBegin,
             end: gradientEnd,
-            colors: (gradientColors ?? _defaultGradientColors)
-                .map((color) => color.withOpacity(opacity))
-                .toList(),
+            colors: (gradientColors ?? _defaultGradientColors).map((color) => color.withOpacity(opacity)).toList(),
             stops: gradientStops ?? _defaultGradientStops,
           ),
         );
@@ -94,9 +93,7 @@ class GameBackgroundConfig {
         return BoxDecoration(
           image: imagePath != null
               ? DecorationImage(
-                  image: isAssetImage
-                      ? AssetImage(imagePath!)
-                      : NetworkImage(imagePath!) as ImageProvider,
+                  image: isAssetImage ? AssetImage(imagePath!) : NetworkImage(imagePath!) as ImageProvider,
                   fit: imageBoxFit,
                   opacity: opacity,
                 )
@@ -115,6 +112,20 @@ class GameBackgroundConfig {
 
   /// Default gradient stops
   static const List<double> _defaultGradientStops = [0.0, 0.3, 0.7, 1.0];
+
+  @override
+  List<Object?> get props => [
+        type,
+        gradientColors,
+        gradientStops,
+        gradientBegin,
+        gradientEnd,
+        solidColor,
+        imagePath,
+        isAssetImage,
+        imageBoxFit,
+        opacity,
+      ];
 }
 
 /// Enum for background types

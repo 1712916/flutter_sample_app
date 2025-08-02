@@ -1,13 +1,12 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
 import '../../widgets/widgets.dart';
-import 'models/cell_content.dart';
 import 'models/cell_content_factory.dart';
 import 'models/game_background_config.dart';
 import 'models/game_cell.dart';
@@ -24,48 +23,23 @@ class PikachuGamePage extends StatefulWidget {
 class _PikachuGamePageState extends State<PikachuGamePage> {
   late PikachuGameController _controller;
   GameBackgroundConfig _currentBackground = BackgroundPresets.gaming;
-  String? _secretImage;
-  List<String> files = [];
 
   @override
   void initState() {
     super.initState();
-    _controller = PikachuGameController()..initializeGame();
+    final isMeow = SettingManager.isMeow;
+
+    _controller = PikachuGameController();
+
+    final config = isMeow ? CellContentConfig.presets[0] : CellContentConfig.presets[1];
+
+    _controller.changeContentType(config);
 
     // Force landscape orientation
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-
-    loadImages();
-  }
-
-  void loadImages() async {
-    final d = DownloadFromGithubUtil.pikachu;
-    files = await d.getAvailableFilePaths();
-
-    //_secretImage = random a path in files
-    if (files.isNotEmpty) {
-      _secretImage = files[Random().nextInt(files.length)];
-    }
-
-    _controller.changeContentType(CellContentConfig(
-      type: CellContentType.image,
-      contentFactory: () {
-        return List.generate(
-          files.length,
-          (index) => ImageCellContent(
-            id: index,
-            imagePath: files[index],
-            isAsset: false,
-          ),
-        );
-      },
-      name: 'Images',
-      description: 'Image tiles from Pikachu game',
-    ));
-    setState(() {});
   }
 
   ThemeData get theme => context.appTheme;
@@ -114,7 +88,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               child: Center(
                 child: Stack(
                   children: [
-                    if (_secretImage != null) Positioned.fill(child: Image.file(File(_secretImage!))),
+                    if (_controller.secretImage != null)
+                      Positioned.fill(child: Image.file(File(_controller.secretImage!))),
                     ValueListenableBuilder<List<List<GameCell>>>(
                       valueListenable: _controller.gridNotifier,
                       builder: (context, grid, child) {
@@ -326,10 +301,6 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
             child: IconButton(
               onPressed: () {
                 setState(() {
-                  //_secretImage = random a path in files
-                  if (files.isNotEmpty) {
-                    _secretImage = files[Random().nextInt(files.length)];
-                  }
                   _controller.initializeGame();
                 });
               },
@@ -466,143 +437,29 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
   }
 
   void _showContentTypePicker() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Choose Game Theme'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: _controller.availableContentTypes.map((config) {
-                bool isSelected = config.name == _controller.currentContentConfig.name;
-                return ListTile(
-                  leading: Icon(
-                    _getIconForContentType(config.type),
-                    color: isSelected ? Colors.blue : null,
-                  ),
-                  title: Text(
-                    config.name,
-                    style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? Colors.blue : null,
-                    ),
-                  ),
-                  subtitle: Text(config.description),
-                  onTap: () {
-                    setState(() {
-                      _controller.changeContentType(config);
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
+    ChooseGameContentWidget(
+      currentContentConfig: _controller.currentContentConfig,
+    ).show(context).then(
+      (value) {
+        if (value != null) {
+          setState(() {
+            _controller.changeContentType(value);
+          });
+        }
       },
     );
-  }
-
-  IconData _getIconForContentType(CellContentType type) {
-    switch (type) {
-      case CellContentType.number:
-        return Icons.numbers;
-      case CellContentType.emoji:
-        return Icons.emoji_emotions;
-      case CellContentType.icon:
-        return Icons.star;
-      case CellContentType.image:
-        return Icons.image;
-      case CellContentType.custom:
-        return Icons.widgets;
-      default:
-        return Icons.help;
-    }
   }
 
   void _showBackgroundPicker() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Choose Background'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: BackgroundPresets.all.entries.map((entry) {
-                String name = entry.key;
-                GameBackgroundConfig config = entry.value;
-                bool isSelected = _isCurrentBackground(config);
-
-                return ListTile(
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: config.buildDecoration(),
-                    child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 20) : null,
-                  ),
-                  title: Text(
-                    name,
-                    style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? Colors.blue : null,
-                    ),
-                  ),
-                  subtitle: Text(_getBackgroundDescription(config)),
-                  onTap: () {
-                    setState(() {
-                      _currentBackground = config;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
+    ChooseBackgroundWidget(currentBackground: _currentBackground).show(context).then(
+      (value) {
+        if (value != null) {
+          setState(() {
+            _currentBackground = value;
+          });
+        }
       },
     );
-  }
-
-  bool _isCurrentBackground(GameBackgroundConfig config) {
-    // Simple comparison based on type and main properties
-    if (_currentBackground.type != config.type) return false;
-
-    switch (config.type) {
-      case BackgroundType.gradient:
-        return _currentBackground.gradientColors?.length == config.gradientColors?.length &&
-            _currentBackground.gradientBegin == config.gradientBegin;
-      case BackgroundType.solid:
-        return _currentBackground.solidColor == config.solidColor;
-      case BackgroundType.image:
-        return _currentBackground.imagePath == config.imagePath;
-    }
-  }
-
-  String _getBackgroundDescription(GameBackgroundConfig config) {
-    switch (config.type) {
-      case BackgroundType.gradient:
-        return 'Gradient with ${config.gradientColors?.length ?? 0} colors';
-      case BackgroundType.solid:
-        return 'Solid color background';
-      case BackgroundType.image:
-        return 'Image background';
-    }
   }
 
   @override
@@ -618,5 +475,121 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
     ]);
 
     super.dispose();
+  }
+}
+
+class ChooseBackgroundWidget extends StatelessWidget with ShowDialog<GameBackgroundConfig> {
+  const ChooseBackgroundWidget({super.key, required this.currentBackground});
+
+  final GameBackgroundConfig currentBackground;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Choose Background'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: BackgroundPresets.all.entries.map((entry) {
+            String name = entry.key;
+            GameBackgroundConfig config = entry.value;
+            bool isSelected = currentBackground == config;
+
+            return ListTile(
+              leading: Container(
+                width: 40,
+                height: 40,
+                decoration: config.buildDecoration(),
+                child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 20) : null,
+              ),
+              title: Text(
+                name,
+                style: TextStyle(
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: isSelected ? Colors.blue : null,
+                ),
+              ),
+              subtitle: Text(_getBackgroundDescription(config)),
+              onTap: () {
+                Navigator.of(context).pop(config);
+              },
+              trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
+            );
+          }).toList(),
+        ),
+      ),
+      // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      // actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+      ],
+    );
+  }
+
+  String _getBackgroundDescription(GameBackgroundConfig config) {
+    switch (config.type) {
+      case BackgroundType.gradient:
+        return 'Gradient with ${config.gradientColors?.length ?? 0} colors';
+      case BackgroundType.solid:
+        return 'Solid color background';
+      case BackgroundType.image:
+        return 'Image background';
+    }
+  }
+}
+
+class ChooseGameContentWidget extends StatelessWidget with ShowDialog<CellContentConfig> {
+  const ChooseGameContentWidget({super.key, required this.currentContentConfig});
+
+  final CellContentConfig currentContentConfig;
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, String> animalMap = {
+      'Meow': 'assets/icon/cat.svg',
+      'Gaow': 'assets/icon/dog.svg',
+      'Mixed': 'assets/icon/paw.svg',
+    };
+    final theme = context.appTheme;
+    return AlertDialog(
+      title: const Text('Choose Game Theme'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: CellContentConfig.presets.map((config) {
+            bool isSelected = config == currentContentConfig;
+            return ListTile(
+              leading: SvgPicture.asset(
+                animalMap[config.name] ?? 'assets/icon/default.svg',
+                color: theme.iconColor,
+                width: 24,
+                height: 24,
+              ),
+              title: Text(
+                config.name,
+                style: TextStyle(
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: isSelected ? Colors.blue : null,
+                ),
+              ),
+              subtitle: Text(config.description),
+              onTap: () {
+                Navigator.of(context).pop(config);
+              },
+              trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
+            );
+          }).toList(),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+      ],
+    );
   }
 }

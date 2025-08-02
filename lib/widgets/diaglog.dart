@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-mixin ShowDialog on Widget {
-  Future show(BuildContext context) {
-    return showGeneralDialog(
+mixin ShowDialog<T> on Widget {
+  Future<T?> show(BuildContext context) {
+    return showGeneralDialog<T?>(
       context: context,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,

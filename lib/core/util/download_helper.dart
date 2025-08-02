@@ -130,10 +130,17 @@ class DownloadFromGithubUtil {
   static String gitHubRawUrl = 'https://raw.githubusercontent.com/bossxomlut/assets/main/';
   static String gitHubApiUrl = 'https://api.github.com/repos/bossxomlut/assets/contents/';
 
-  static DownloadFromGithubUtil pikachu = DownloadFromGithubUtil(
-    downloadedKey: 'pikachuDownloaded',
-    localFolderName: 'pikachu',
-    remoteFolderName: 'imagex512',
+  static DownloadFromGithubUtil pikachuMeow = DownloadFromGithubUtil(
+    downloadedKey: 'pikachuCatDownloaded',
+    localFolderName: 'pikachu/cat',
+    remoteFolderName: 'image/512/cat',
+  );
+
+  //pikachu gaow
+  static DownloadFromGithubUtil pikachuGaow = DownloadFromGithubUtil(
+    downloadedKey: 'pikachuDogDownloaded',
+    localFolderName: 'pikachu/dog',
+    remoteFolderName: 'image/512/dog',
   );
 
   DownloadFromGithubUtil({
