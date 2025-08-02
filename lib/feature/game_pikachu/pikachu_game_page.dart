@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:meow_app/feature/auto_play/auto_play_memory_game.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
@@ -89,8 +91,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               child: Center(
                 child: Stack(
                   children: [
-                    if (_controller.secretImage != null)
-                      Positioned.fill(child: Image.file(File(_controller.secretImage!))),
+                    if (_controller.secretImage != null) Positioned.fill(child: Image.file(File(_controller.secretImage!))),
                     ValueListenableBuilder<List<List<GameCell>>>(
                       valueListenable: _controller.gridNotifier,
                       builder: (context, grid, child) {
@@ -126,8 +127,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               ValueListenableBuilder<int>(
                 valueListenable: _controller.scoreNotifier,
                 builder: (context, score, child) {
-                  return Text('$score',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green));
+                  return Text('$score', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green));
                 },
               ),
             ],
@@ -148,8 +148,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               ValueListenableBuilder<int>(
                 valueListenable: _controller.movesNotifier,
                 builder: (context, moves, child) {
-                  return Text('$moves',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue));
+                  return Text('$moves', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue));
                 },
               ),
             ],
@@ -172,8 +171,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                 builder: (context, time, child) {
                   final minutes = time ~/ 60;
                   final seconds = time % 60;
-                  return Text('${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red));
+                  return Text('${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red));
                 },
               ),
             ],
@@ -293,7 +291,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
         const Spacer(),
         // Primary action buttons (icon only with tooltips)
         Tooltip(
-          message: 'New Game',
+          message: LKey.newGame.tr(),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),
@@ -317,7 +315,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
         ),
         const SizedBox(width: 4), // Reduced spacing
         Tooltip(
-          message: 'Show Hint',
+          message: LKey.showHint.tr(),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.9),
@@ -340,7 +338,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
         const SizedBox(width: 4), // Reduced spacing
         // Settings dropdown menu
         PopupMenuButton<String>(
-          tooltip: 'Settings',
+          tooltip: LKey.settings.tr(),
           // icon: Icon(Icons.settings, size: 16, color: Colors.grey[700]), // Made smaller to match other icons
           padding: const EdgeInsets.all(4), // Reduced padding
           iconSize: 16, // Explicit smaller icon size
@@ -386,7 +384,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                 children: [
                   Icon(Icons.palette, size: 20, color: Colors.purple),
                   SizedBox(width: 8),
-                  Text('Game Theme'),
+                  LText(LKey.gameTheme),
                 ],
               ),
             ),
@@ -396,7 +394,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                 children: [
                   Icon(Icons.wallpaper, size: 20, color: Colors.teal),
                   SizedBox(width: 8),
-                  Text('Background'),
+                  LText(LKey.background),
                 ],
               ),
             ),
@@ -406,7 +404,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                 children: [
                   Icon(Icons.music_note, size: 20, color: Colors.limeAccent),
                   SizedBox(width: 8),
-                  Text('Music'),
+                  LText(LKey.music),
                 ],
               ),
             ),
@@ -501,7 +499,7 @@ class ChooseBackgroundWidget extends StatelessWidget with ShowDialog<GameBackgro
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Choose Background'),
+      title: const LText(LKey.chooseBackground),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -517,7 +515,7 @@ class ChooseBackgroundWidget extends StatelessWidget with ShowDialog<GameBackgro
                 decoration: config.buildDecoration(),
                 child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 20) : null,
               ),
-              title: Text(
+              title: LText(
                 name,
                 style: TextStyle(
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -538,7 +536,7 @@ class ChooseBackgroundWidget extends StatelessWidget with ShowDialog<GameBackgro
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: const LText(LKey.cancel),
         ),
       ],
     );
@@ -547,11 +545,11 @@ class ChooseBackgroundWidget extends StatelessWidget with ShowDialog<GameBackgro
   String _getBackgroundDescription(GameBackgroundConfig config) {
     switch (config.type) {
       case BackgroundType.gradient:
-        return 'Gradient with ${config.gradientColors?.length ?? 0} colors';
+        return LKey.backgroundGradientDescription.tr(namedArgs: {"length": config.gradientColors?.length.toString() ?? '0'});
       case BackgroundType.solid:
-        return 'Solid color background';
+        return LKey.backgroundSolidDescription.tr();
       case BackgroundType.image:
-        return 'Image background';
+        return LKey.backgroundImageDescription.tr();
     }
   }
 }
@@ -570,7 +568,7 @@ class ChooseGameContentWidget extends StatelessWidget with ShowDialog<CellConten
     };
     final theme = context.appTheme;
     return AlertDialog(
-      title: const Text('Choose Game Theme'),
+      title: const LText(LKey.chooseTheme),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -602,7 +600,7 @@ class ChooseGameContentWidget extends StatelessWidget with ShowDialog<CellConten
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: const LText(LKey.cancel),
         ),
       ],
     );
@@ -617,7 +615,7 @@ class ChooseMusicWidget extends StatelessWidget with ShowDialog<void> {
     final GameSoundManager _gameSoundManager = GameSoundManager();
 
     return AlertDialog(
-      title: const Text('Choose Music'),
+      title: const LText(LKey.chooseMusic),
       content: FutureBuilder<List<String>>(
           future: _gameSoundManager.getAvailableMusicFiles(),
           builder: (context, snapshot) {
@@ -633,11 +631,7 @@ class ChooseMusicWidget extends StatelessWidget with ShowDialog<void> {
                   bool isSelected = name == _gameSoundManager.getCurrentMusicFile();
 
                   return ListTile(
-                    leading: Container(
-                        width: 40,
-                        height: 40,
-                        child: Icon(isSelected ? Icons.music_note : Icons.music_note_outlined,
-                            color: Colors.white, size: 20)),
+                    leading: Container(width: 40, height: 40, child: Icon(isSelected ? Icons.music_note : Icons.music_note_outlined, color: Colors.white, size: 20)),
                     title: Text(
                       name,
                       style: TextStyle(
@@ -660,7 +654,7 @@ class ChooseMusicWidget extends StatelessWidget with ShowDialog<void> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: const LText(LKey.cancel),
         ),
       ],
     );

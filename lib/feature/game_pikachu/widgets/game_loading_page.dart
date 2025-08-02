@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/resources/locale/locale_keys.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../../widgets/app_bar.dart';
@@ -152,7 +154,7 @@ class _GameLoadingPageState extends State<GameLoadingPage> with TickerProviderSt
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: Text(
-                    isLoadingRealData ? 'Đang tải trò chơi...' : 'Chuẩn bị khởi động...',
+                    isLoadingRealData ? LKey.gameLoadingTitle.tr() : LKey.gameLoadingSubtitle.tr(),
                     style: textTheme.headlineSmall,
                   ),
                 ),

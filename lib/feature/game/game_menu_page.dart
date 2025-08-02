@@ -79,7 +79,7 @@ class _GameMenuPageState extends StateTemplate<GameMenuPage> {
           message: 'Demo',
           location: BannerLocation.topEnd,
           child: MenuItemWidget(
-            title: 'Pikachu Game',
+            title: LKey.pikachuGame.tr(context: context),
             backgroundColor: theme.cardColor2,
             imageUrl: null,
             onTap: () {

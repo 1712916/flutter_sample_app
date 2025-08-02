@@ -118,6 +118,7 @@ class LKey {
   static const String gameMenu = 'gameMenu';
   static const String sortGame = 'sortGame';
   static const String memoryGame = 'memoryGame';
+  static const String pikachuGame = 'pikachuGame';
   static const String requireSelectImageDescription = 'requireSelectImageDescription';
   static const String maximumSelectImageDescription = 'maximumSelectImageDescription';
   static const String selectedTitle = 'selectedTitle';
@@ -136,6 +137,28 @@ class LKey {
   static const String chooseMusicTrack = 'chooseMusicTrack';
   static const String gameControls = 'gameControls';
   static const String soundSettings = 'soundSettings';
+
+  //gameLoadingTitle
+  static const String gameLoadingTitle = 'gameLoadingTitle';
+  static const String gameLoadingSubtitle = 'gameLoadingSubtitle';
+  static const String gameTheme = 'gameTheme';
+  static const String chooseTheme = 'chooseTheme';
+  static const String background = 'background';
+  static const String chooseBackground = 'chooseBackground';
+  static const String music = 'music';
+  static const String chooseMusic = 'chooseMusic';
+  static const String cancel = 'cancel';
+
+  static const String catThemeDescription = 'catThemeDescription';
+  static const String dogThemeDescription = 'dogThemeDescription';
+  static const String mixedThemeDescription = 'mixedThemeDescription';
+
+  static const String showHint = 'showHint';
+  static const String newGame = 'newGame';
+
+  static const String backgroundGradientDescription = 'backgroundGradientDescription';
+  static const String backgroundSolidDescription = 'backgroundSolidDescription';
+  static const String backgroundImageDescription = 'backgroundImageDescription';
 
   // Onboarding
   static const String onboardingWelcome = 'onboardingWelcome';

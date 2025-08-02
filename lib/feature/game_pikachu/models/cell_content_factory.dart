@@ -1,5 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
+import 'package:meow_app/feature/auto_play/auto_play_memory_game.dart';
 
+import '../../../widgets/text.dart';
 import 'cell_content.dart';
 
 /// Factory class for creating different types of cell content
@@ -94,26 +97,26 @@ class CellContentConfig extends Equatable {
     required this.description,
   });
 
-  static const List<CellContentConfig> presets = [
-    CellContentConfig(
-      type: CellContentType.image,
-      contentFactory: CellContentFactory.createMeowContent,
-      name: 'Meow',
-      description: 'Cute cat images',
-    ),
-    CellContentConfig(
-      type: CellContentType.image,
-      contentFactory: CellContentFactory.createGaowContent,
-      name: 'Gaow',
-      description: 'Cute dog images',
-    ),
-    CellContentConfig(
-      type: CellContentType.image,
-      contentFactory: CellContentFactory.createMixedContent,
-      name: 'Mixed',
-      description: 'Mix of cat and dog images',
-    ),
-  ];
+  static List<CellContentConfig> get presets => [
+        CellContentConfig(
+          type: CellContentType.image,
+          contentFactory: CellContentFactory.createMeowContent,
+          name: 'Meow',
+          description: LKey.catThemeDescription.tr(),
+        ),
+        CellContentConfig(
+          type: CellContentType.image,
+          contentFactory: CellContentFactory.createGaowContent,
+          name: 'Gaow',
+          description: LKey.dogThemeDescription.tr(),
+        ),
+        CellContentConfig(
+          type: CellContentType.image,
+          contentFactory: CellContentFactory.createMixedContent,
+          name: 'Mixed',
+          description: LKey.mixedThemeDescription.tr(),
+        ),
+      ];
 
   @override
   List<Object?> get props => [
