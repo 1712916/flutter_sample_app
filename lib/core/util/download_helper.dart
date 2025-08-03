@@ -170,10 +170,18 @@ class DownloadFromGithubUtil {
           return;
         }
 
-        for (final file in remoteFiles) {
-          final fileUrl = '$rawFolderUrl/$file';
-          log('Downloading $file from $fileUrl', name: 'GithubDownload');
-          await download(file, fileUrl);
+        const chunkSize = 10;
+        for (var i = 0; i < remoteFiles.length; i += chunkSize) {
+          final end = (i + chunkSize < remoteFiles.length) ? i + chunkSize : remoteFiles.length;
+          final chunk = remoteFiles.sublist(i, end);
+
+          final downloadTasks = chunk.map((file) {
+            final fileUrl = '$rawFolderUrl/$file';
+            log('Downloading $file from $fileUrl', name: 'GithubDownload');
+            return download(file, fileUrl);
+          }).toList();
+
+          await Future.wait(downloadTasks);
         }
 
         await prefs.setBool(downloadedKey, true);

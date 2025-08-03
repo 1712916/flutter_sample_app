@@ -54,7 +54,6 @@ class PikachuGameController {
     _stopTimer();
     _grid = List.generate(rows, (i) => List.generate(cols, (j) => GameCell()));
     _generateContent();
-    _shuffleGrid();
 
     if (_contentConfig.type == CellContentType.image) {
       // If using images, set a secret image if available
@@ -132,7 +131,7 @@ class PikachuGameController {
     }
 
     // Shuffle the content pairs to randomize positions
-    contentPairs.shuffle(math.Random());
+    contentPairs.shuffle();
 
     // Fill the grid
     int index = 0;
@@ -140,34 +139,6 @@ class PikachuGameController {
       for (int j = 0; j < cols; j++) {
         if (index < contentPairs.length) {
           _grid[i][j].setContent(contentPairs[index]);
-          index++;
-        }
-      }
-    }
-  }
-
-  void _shuffleGrid() {
-    List<GameCell> allCells = [];
-
-    // Collect all non-empty cells
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++) {
-        if (!_grid[i][j].isEmpty) {
-          allCells.add(_grid[i][j]);
-        }
-      }
-    }
-
-    // Shuffle the numbers
-    List<int> numbers = allCells.map((cell) => cell.number).toList();
-    numbers.shuffle();
-
-    // Redistribute the shuffled numbers
-    int index = 0;
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++) {
-        if (!_grid[i][j].isEmpty && index < numbers.length) {
-          _grid[i][j].setNumber(numbers[index]);
           index++;
         }
       }
@@ -528,6 +499,7 @@ class PikachuGameController {
     print('Score: ${scoreNotifier.value}');
     print('Moves: ${movesNotifier.value}');
     print('Time: ${_formatTime(_elapsedTime)}');
+    gameCompletionListener?.call(movesNotifier.value);
   }
 
   String _formatTime(int seconds) {
@@ -649,5 +621,13 @@ class PikachuGameController {
     timeNotifier.dispose();
     connectionLineNotifier.dispose();
     animationDurationNotifier.dispose();
+  }
+
+  //create field for game completion listener
+  /// Add a listener for game completion events
+  Function? gameCompletionListener;
+
+  void addGameCompletionListener(Function(int countStep) param0) {
+    gameCompletionListener = param0;
   }
 }

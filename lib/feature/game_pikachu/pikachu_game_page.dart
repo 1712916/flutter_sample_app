@@ -4,11 +4,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:meow_app/feature/auto_play/auto_play_memory_game.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
 import '../../widgets/widgets.dart';
+import '../game_sort/widget/game_complete_widget.dart';
 import '../sound/game_sound_manager.dart';
 import 'models/cell_content_factory.dart';
 import 'models/game_background_config.dart';
@@ -37,6 +37,22 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
     final config = isMeow ? CellContentConfig.presets[0] : CellContentConfig.presets[1];
 
     _controller.changeContentType(config);
+
+    _controller.addGameCompletionListener((int countStep) {
+      GameCompleteWidget(
+        countStep: countStep,
+        onExit: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        },
+        onPlayAgain: () {
+          Navigator.of(context).pop();
+          setState(() {
+            _controller.initializeGame();
+          });
+        },
+      ).show(context);
+    });
 
     // Force landscape orientation
     SystemChrome.setPreferredOrientations([
@@ -91,7 +107,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               child: Center(
                 child: Stack(
                   children: [
-                    if (_controller.secretImage != null) Positioned.fill(child: Image.file(File(_controller.secretImage!))),
+                    if (_controller.secretImage != null)
+                      Positioned.fill(child: Image.file(File(_controller.secretImage!))),
                     ValueListenableBuilder<List<List<GameCell>>>(
                       valueListenable: _controller.gridNotifier,
                       builder: (context, grid, child) {
@@ -127,7 +144,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               ValueListenableBuilder<int>(
                 valueListenable: _controller.scoreNotifier,
                 builder: (context, score, child) {
-                  return Text('$score', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green));
+                  return Text('$score',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green));
                 },
               ),
             ],
@@ -148,7 +166,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
               ValueListenableBuilder<int>(
                 valueListenable: _controller.movesNotifier,
                 builder: (context, moves, child) {
-                  return Text('$moves', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue));
+                  return Text('$moves',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue));
                 },
               ),
             ],
@@ -171,7 +190,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                 builder: (context, time, child) {
                   final minutes = time ~/ 60;
                   final seconds = time % 60;
-                  return Text('${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red));
+                  return Text('${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red));
                 },
               ),
             ],
@@ -198,15 +218,15 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                 physics: const NeverScrollableScrollPhysics(), // Disable scrolling to fit view
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 16,
+                  crossAxisCount: PikachuGameController.cols,
                   childAspectRatio: 1.0,
                   crossAxisSpacing: 0, // Increased spacing between cells
                   mainAxisSpacing: 0, // Increased spacing between cells
                 ),
-                itemCount: 16 * 9,
+                itemCount: PikachuGameController.cols * PikachuGameController.rows,
                 itemBuilder: (context, index) {
-                  final row = index ~/ 16;
-                  final col = index % 16;
+                  final row = index ~/ PikachuGameController.cols;
+                  final col = index % PikachuGameController.cols;
                   final cell = grid[row][col];
 
                   return GestureDetector(
@@ -545,7 +565,8 @@ class ChooseBackgroundWidget extends StatelessWidget with ShowDialog<GameBackgro
   String _getBackgroundDescription(GameBackgroundConfig config) {
     switch (config.type) {
       case BackgroundType.gradient:
-        return LKey.backgroundGradientDescription.tr(namedArgs: {"length": config.gradientColors?.length.toString() ?? '0'});
+        return LKey.backgroundGradientDescription
+            .tr(namedArgs: {"length": config.gradientColors?.length.toString() ?? '0'});
       case BackgroundType.solid:
         return LKey.backgroundSolidDescription.tr();
       case BackgroundType.image:
@@ -631,7 +652,11 @@ class ChooseMusicWidget extends StatelessWidget with ShowDialog<void> {
                   bool isSelected = name == _gameSoundManager.getCurrentMusicFile();
 
                   return ListTile(
-                    leading: Container(width: 40, height: 40, child: Icon(isSelected ? Icons.music_note : Icons.music_note_outlined, color: Colors.white, size: 20)),
+                    leading: Container(
+                        width: 40,
+                        height: 40,
+                        child: Icon(isSelected ? Icons.music_note : Icons.music_note_outlined,
+                            color: Colors.white, size: 20)),
                     title: Text(
                       name,
                       style: TextStyle(

@@ -43,66 +43,58 @@ class GameCompleteWidget extends StatelessWidget with ShowDialog {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Card(
-        margin: const EdgeInsets.all(24.0),
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LText(
+            LKey.gameCompleteTitle,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            LKey.gameCompleteDescription.tr(
+              context: context,
+              namedArgs: {'countStep': countStep.toString()},
+            ),
+            style: const TextStyle(fontSize: 18),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              LText(
-                LKey.gameCompleteTitle,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                LKey.gameCompleteDescription.tr(
-                  context: context,
-                  namedArgs: {'countStep': countStep.toString()},
-                ),
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: onPlayAgain,
-                    icon: Icon(Icons.replay, color: theme.iconColor),
-                    label: LText(
-                      LKey.playAgain,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: onExit,
-                    icon: Icon(Icons.exit_to_app, color: theme.iconColor),
-                    label: LText(
-                      LKey.exit,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () => _shareAppLink(context),
-                icon: Icon(Icons.share, color: theme.iconColor),
-                label: LText(LKey.share, style: theme.textTheme.titleMedium),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(48),
-                  backgroundColor: theme.primaryColor,
+                onPressed: onPlayAgain,
+                icon: Icon(Icons.replay, color: theme.iconColor),
+                label: LText(
+                  LKey.playAgain,
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: onExit,
+                icon: Icon(Icons.exit_to_app, color: theme.iconColor),
+                label: LText(
+                  LKey.exit,
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () => _shareAppLink(context),
+            icon: Icon(Icons.share, color: theme.iconColor),
+            label: LText(LKey.share, style: theme.textTheme.titleMedium),
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(48),
+              backgroundColor: theme.secondaryHeaderColor,
+            ),
+          ),
+        ],
       ),
     );
   }
