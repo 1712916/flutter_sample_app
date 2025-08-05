@@ -29,6 +29,14 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
+    // Force landscape orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     super.initState();
     final isMeow = SettingManager.isMeow;
 
@@ -53,12 +61,6 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
         },
       ).show(context);
     });
-
-    // Force landscape orientation
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
   }
 
   ThemeData get theme => context.appTheme;
@@ -498,6 +500,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
   @override
   void dispose() {
     _controller.dispose();
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 
     // Restore default orientation when leaving the game
     SystemChrome.setPreferredOrientations([
