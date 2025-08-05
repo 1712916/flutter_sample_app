@@ -58,9 +58,13 @@ class PikachuGameController {
     if (_contentConfig.type == CellContentType.image) {
       // If using images, set a secret image if available
       if (_availableContent.isNotEmpty) {
-        secretImage = _availableContent
-            .map((e) => (e as ImageCellContent).imagePath)
-            .toList()[Random().nextInt(_availableContent.length)];
+        try {
+          secretImage = _availableContent
+              .map((e) => (e as ImageCellContent).imagePath)
+              .toList()[Random().nextInt(_availableContent.length)];
+        } catch (e) {
+          secretImage = null; // Fallback if no images available
+        }
       }
     } else {
       secretImage = null; // No secret image for non-image content

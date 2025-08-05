@@ -170,18 +170,36 @@ class DownloadFromGithubUtil {
           return;
         }
 
+        final dir = await getDirectory(localFolderName);
+
         const chunkSize = 10;
         for (var i = 0; i < remoteFiles.length; i += chunkSize) {
           final end = (i + chunkSize < remoteFiles.length) ? i + chunkSize : remoteFiles.length;
           final chunk = remoteFiles.sublist(i, end);
 
-          final downloadTasks = chunk.map((file) {
-            final fileUrl = '$rawFolderUrl/$file';
-            log('Downloading $file from $fileUrl', name: 'GithubDownload');
-            return download(file, fileUrl);
-          }).toList();
+          await compute((message) async {
+            final chunk = message['chunk'] as List<String>;
+            final localFolderName = message['localFolderName'] as String;
+            final rawFolderUrl = message['rawFolderUrl'] as String;
+            final filePath = message['filePath'] as String;
+            final downloadTasks = chunk.map((file) {
+              final fileUrl = '$rawFolderUrl/$file';
+              log('Downloading $file from $fileUrl', name: 'GithubDownload');
+              return download(
+                filename: file,
+                url: fileUrl,
+                localFolderName: localFolderName,
+                filePath: '$filePath/$file',
+              );
+            }).toList();
 
-          await Future.wait(downloadTasks);
+            await Future.wait(downloadTasks);
+          }, {
+            'chunk': chunk,
+            'localFolderName': localFolderName,
+            'rawFolderUrl': rawFolderUrl,
+            'filePath': '${dir.path}'
+          });
         }
 
         await prefs.setBool(downloadedKey, true);
@@ -189,42 +207,6 @@ class DownloadFromGithubUtil {
     } catch (e) {
       log('Error initializing music manager', error: e);
     }
-  }
-
-  Future<void> download(String filename, String url) async {
-    try {
-      final dir = await _getDirectory();
-      final filePath = '${dir.path}/$filename';
-
-      if (await File(filePath).exists()) {
-        return;
-      }
-
-      await _dio.download(
-        url,
-        filePath,
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            log('Download $filename: ${(received / total * 100).toStringAsFixed(0)}%', name: 'DownloadProgress');
-          }
-        },
-      );
-
-      log('Downloaded $filename to $filePath', name: 'DownloadComplete');
-    } catch (e) {
-      log('Error downloading $filename', error: e);
-    }
-  }
-
-  Future<Directory> _getDirectory() async {
-    final appDir = await getApplicationDocumentsDirectory();
-    final musicDir = Directory('${appDir.path}/$localFolderName');
-
-    if (!await musicDir.exists()) {
-      await musicDir.create(recursive: true);
-    }
-
-    return musicDir;
   }
 
   Future<List<String>> getRemoteFiles() async {
@@ -249,7 +231,7 @@ class DownloadFromGithubUtil {
 
   Future<List<String>> getAvailableFiles() async {
     try {
-      final dir = await _getDirectory();
+      final dir = await getDirectory(localFolderName);
       final files = dir.listSync().whereType<File>().map((file) => file.path.split('/').last).toList();
       return files;
     } catch (e) {
@@ -260,12 +242,48 @@ class DownloadFromGithubUtil {
 
   Future<List<String>> getAvailableFilePaths() async {
     try {
-      final dir = await _getDirectory();
+      final dir = await getDirectory(localFolderName);
       final files = dir.listSync().whereType<File>().map((file) => file.path).toList();
       return files;
     } catch (e) {
       log('Error listing file paths', error: e);
       return [];
     }
+  }
+}
+
+Future<Directory> getDirectory(String folder) async {
+  final appDir = await getApplicationDocumentsDirectory();
+  final fileDirectory = Directory('${appDir.path}/$folder');
+
+  if (!await fileDirectory.exists()) {
+    await fileDirectory.create(recursive: true);
+  }
+
+  return fileDirectory;
+}
+
+Future<void> download({
+  required String filename,
+  required String filePath,
+  required String url,
+  required String localFolderName,
+}) async {
+  try {
+    final _dio = Dio();
+
+    await _dio.download(
+      url,
+      filePath,
+      onReceiveProgress: (received, total) {
+        if (total != -1) {
+          log('Download $filename: ${(received / total * 100).toStringAsFixed(0)}%', name: 'DownloadProgress');
+        }
+      },
+    );
+
+    log('Downloaded $filename to $filePath', name: 'DownloadComplete');
+  } catch (e, st) {
+    log('Error downloading $filename', error: e, stackTrace: st);
   }
 }
