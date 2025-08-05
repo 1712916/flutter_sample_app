@@ -123,6 +123,8 @@ class LKey {
   static const String maximumSelectImageDescription = 'maximumSelectImageDescription';
   static const String selectedTitle = 'selectedTitle';
   static const String startGame = 'startGame';
+  static const String restartGame = 'restartGame';
+  static const String restartGameDescription = 'restartGameDescription';
 
   static const String sticker = 'sticker';
   static const String emptyData = 'emptyData';
@@ -148,6 +150,7 @@ class LKey {
   static const String music = 'music';
   static const String chooseMusic = 'chooseMusic';
   static const String cancel = 'cancel';
+  static const String oke = 'oke';
 
   static const String catThemeDescription = 'catThemeDescription';
   static const String dogThemeDescription = 'dogThemeDescription';

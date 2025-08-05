@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
@@ -321,7 +322,8 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                     fit: StackFit.expand,
                     children: [
                       AnimatedPositioned(
-                        duration: Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
                         left: left1,
                         top: top1,
                         width: cellWidth,
@@ -330,14 +332,15 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                             ? BlinkingMarker(
                                 size: cellWidth,
                                 cornerColor: Colors.red,
-                                blinkDuration: const Duration(milliseconds: 500),
+                                blinkDuration: const Duration(milliseconds: 400),
                                 padding: EdgeInsets.zero,
                                 cornerSize: 6,
                               )
                             : const SizedBox.shrink(),
                       ),
                       AnimatedPositioned(
-                        duration: Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
                         left: left2,
                         top: top2,
                         width: cellWidth,
@@ -346,7 +349,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                             ? BlinkingMarker(
                                 size: cellWidth,
                                 cornerColor: Colors.red,
-                                blinkDuration: const Duration(milliseconds: 500),
+                                blinkDuration: const Duration(milliseconds: 400),
                                 padding: EdgeInsets.zero,
                                 cornerSize: 6,
                               )
@@ -378,7 +381,11 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
             ),
             child: IconButton(
               onPressed: () {
-                _controller.initializeGame();
+                ConfirmWidget(
+                  onConfirm: () {
+                    _controller.initializeGame();
+                  },
+                ).show(context);
               },
               icon: const Icon(Icons.refresh, size: 16), // Smaller icon consistent with settings
               style: IconButton.styleFrom(
@@ -738,6 +745,63 @@ class ChooseMusicWidget extends StatelessWidget with ShowDialog<void> {
           child: const LText(LKey.cancel),
         ),
       ],
+    );
+  }
+}
+
+class ConfirmWidget extends StatelessWidget with ShowDialog<void> {
+  const ConfirmWidget({super.key, required this.onConfirm});
+  final VoidCallback onConfirm;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+
+    return AlertDialog(
+      title: const LText(LKey.restartGame),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 300, maxHeight: 200),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LText(
+              LKey.restartGameDescription,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.textTheme.bodyLarge?.color?.withOpacity(0.8),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(HugeIcons.strokeRoundedCancel02, color: theme.iconColor),
+                  label: LText(
+                    LKey.cancel,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onConfirm();
+                  },
+                  icon: Icon(HugeIcons.strokeRoundedOkFinger, color: theme.iconColor),
+                  label: LText(
+                    LKey.oke,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      // actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
   }
 }

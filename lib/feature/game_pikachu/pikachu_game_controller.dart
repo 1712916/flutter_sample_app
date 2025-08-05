@@ -254,15 +254,31 @@ class PikachuGameController {
           // Hide the connection line
           connectionLineNotifier.value = null;
 
+          // Clear selections
+          _clearAllSelections();
+          _updateGrid();
+
           // Check if game is won
           if (_isGameWon()) {
             _stopTimer();
             _showGameWonDialog();
+            return;
           }
 
-          // Clear selections
-          _clearAllSelections();
-          _updateGrid();
+          ///check hint is empty, it's mean have not two cells matched
+          ///need to shuffle current grid
+          final hint = getHint();
+          if (hint.isEmpty) {
+            // Shuffle the grid if no hints available
+            //flatten the grid to a single list
+            List<GameCell> flatGrid = _grid.expand((row) => row).toList();
+            //shuffle the flat grid
+            flatGrid.shuffle();
+            //rebuild the grid with shuffled cells
+            _grid = List.generate(rows, (i) => List.generate(cols, (j) => flatGrid[i * cols + j]));
+            //update the grid notifier
+            _updateGrid();
+          }
         });
         return;
       }
@@ -601,6 +617,26 @@ class PikachuGameController {
     _clearAllHints();
 
     // Find a pair that can be matched using the improved path finding
+    final hint = getHint();
+
+    if (hint.isNotEmpty) {
+      _grid[hint[0].y][hint[0].x].showHint();
+      _grid[hint[1].y][hint[1].x].showHint();
+      _updateGrid();
+
+      hintStateNotifier.value = PikachuHintState(
+        fistCell: Point(hint[0].x, hint[0].y),
+        secondCell: Point(hint[1].x, hint[1].y),
+      );
+
+      _hintTimer = Timer(const Duration(seconds: 4), () {
+        _clearAllHints();
+        _updateGrid();
+      });
+    }
+  }
+
+  List<Point<int>> getHint() {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         if (_grid[i][j].isEmpty || _grid[i][j].isMatched) continue;
@@ -618,29 +654,17 @@ class PikachuGameController {
             }
 
             if (contentsMatch && _hasValidPath(i, j, i2, j2)) {
-              _grid[i][j].showHint();
-              _grid[i2][j2].showHint();
-              _updateGrid();
-
-              hintStateNotifier.value = PikachuHintState(
-                fistCell: Point(j, i),
-                secondCell: Point(j2, i2),
-              );
-
-              _hintTimer = Timer(const Duration(seconds: 4), () {
-                _clearAllHints();
-                _updateGrid();
-              });
-              return;
+              return [
+                Point(j, i),
+                Point(j2, i2),
+              ];
             }
           }
         }
       }
     }
 
-    // If no hint found, maybe the game is stuck
-    print('No valid moves found - game might be unsolvable in current state');
-    //todo: Show a message to the user
+    return [];
   }
 
   void dispose() {
