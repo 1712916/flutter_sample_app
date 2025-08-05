@@ -19,6 +19,8 @@ class PikachuGameController {
   late ValueNotifier<int> timeNotifier;
   late ValueNotifier<List<Offset>?> connectionLineNotifier;
   late ValueNotifier<int> animationDurationNotifier; // Dynamic animation duration in milliseconds
+  final ValueNotifier<PikachuHintState?> hintStateNotifier = ValueNotifier(null);
+  Timer? _hintTimer;
 
   // Content configuration
   CellContentConfig _contentConfig = CellContentConfig.presets[0]; // Default to numbers
@@ -51,6 +53,7 @@ class PikachuGameController {
   }
 
   void initializeGame() {
+    _clearAllHints();
     _stopTimer();
     _grid = List.generate(rows, (i) => List.generate(cols, (j) => GameCell()));
     _generateContent();
@@ -527,15 +530,29 @@ class PikachuGameController {
   }
 
   void _clearAllHints() {
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++) {
-        _grid[i][j].clearHint();
+    try {
+      for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+          _grid[i][j].clearHint();
+        }
       }
-    }
+
+      try {
+        hintStateNotifier.value = null; // Clear hint state
+        _hintTimer?.cancel();
+        _hintTimer = null;
+      } catch (e) {
+        // If hint state is already null, ignore
+      }
+    } catch (e) {}
   }
 
   void _updateGrid() {
-    gridNotifier.value = _grid.map((row) => row.map((cell) => cell.copy()).toList()).toList();
+    try {
+      gridNotifier.value = _grid.map((row) => row.map((cell) => cell.copy()).toList()).toList();
+    } catch (e) {
+      // Handle any errors that might occur during grid update
+    }
   }
 
   void _startTimer() {
@@ -577,6 +594,10 @@ class PikachuGameController {
   }
 
   void showHint() {
+    if (_hintTimer != null) {
+      return;
+    }
+
     _clearAllHints();
 
     // Find a pair that can be matched using the improved path finding
@@ -601,8 +622,12 @@ class PikachuGameController {
               _grid[i2][j2].showHint();
               _updateGrid();
 
-              // Clear hint after 3 seconds
-              Future.delayed(const Duration(seconds: 3), () {
+              hintStateNotifier.value = PikachuHintState(
+                fistCell: Point(j, i),
+                secondCell: Point(j2, i2),
+              );
+
+              _hintTimer = Timer(const Duration(seconds: 4), () {
                 _clearAllHints();
                 _updateGrid();
               });
@@ -615,6 +640,7 @@ class PikachuGameController {
 
     // If no hint found, maybe the game is stuck
     print('No valid moves found - game might be unsolvable in current state');
+    //todo: Show a message to the user
   }
 
   void dispose() {
@@ -625,13 +651,24 @@ class PikachuGameController {
     timeNotifier.dispose();
     connectionLineNotifier.dispose();
     animationDurationNotifier.dispose();
+    hintStateNotifier.dispose();
   }
 
   //create field for game completion listener
   /// Add a listener for game completion events
-  Function? gameCompletionListener;
+  Function(int countStep)? gameCompletionListener;
 
   void addGameCompletionListener(Function(int countStep) param0) {
     gameCompletionListener = param0;
   }
+}
+
+class PikachuHintState {
+  final Point<int> fistCell;
+  final Point<int> secondCell;
+
+  PikachuHintState({
+    required this.fistCell,
+    required this.secondCell,
+  });
 }

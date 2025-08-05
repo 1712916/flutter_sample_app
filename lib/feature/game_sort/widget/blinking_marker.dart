@@ -5,6 +5,7 @@ class BlinkingMarker extends StatefulWidget {
   final Color cornerColor; // Color of the "L" shapes
   final Duration blinkDuration; // Duration for the blinking animation
   final double cornerSize; // Size of each "L" shape arm
+  final EdgeInsetsGeometry? padding;
 
   const BlinkingMarker({
     Key? key,
@@ -12,6 +13,7 @@ class BlinkingMarker extends StatefulWidget {
     this.cornerColor = Colors.red,
     this.blinkDuration = const Duration(milliseconds: 500),
     this.cornerSize = 10.0,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -46,7 +48,7 @@ class _BlinkingMarkerState extends State<BlinkingMarker> with SingleTickerProvid
     return Container(
       width: widget.size,
       height: widget.size,
-      padding: EdgeInsets.all(16),
+      padding: widget.padding ?? EdgeInsets.all(16),
       child: Stack(
         alignment: Alignment.center,
         children: [

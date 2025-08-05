@@ -8,6 +8,7 @@ import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
 import '../../widgets/widgets.dart';
+import '../game_sort/widget/blinking_marker.dart';
 import '../game_sort/widget/game_complete_widget.dart';
 import '../sound/game_sound_manager.dart';
 import 'models/cell_content_factory.dart';
@@ -214,9 +215,12 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
           final cellHeight = gridHeight / 9;
 
           return Stack(
+            // alignment: Alignment.center,
+            key: ValueKey('pikachu_game_grid'),
             children: [
               // Game grid
               GridView.builder(
+                restorationId: 'pikachu_game_grid',
                 physics: const NeverScrollableScrollPhysics(), // Disable scrolling to fit view
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -266,6 +270,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                     ),
                   );
                 },
+                padding: EdgeInsets.zero,
               ),
               // Connection line overlay
               ValueListenableBuilder<List<Offset>?>(
@@ -299,6 +304,58 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
                   );
                 },
               ),
+              ValueListenableBuilder<PikachuHintState?>(
+                valueListenable: _controller.hintStateNotifier,
+                builder: (context, hintState, child) {
+                  double defaultLeft = (PikachuGameController.cols) * cellWidth / 2;
+                  double defaultTop = (PikachuGameController.rows) * cellWidth / 2 - cellWidth / 2;
+
+                  double? left1 = hintState?.fistCell != null ? hintState!.fistCell.x * cellWidth : defaultLeft;
+                  double? top1 = hintState?.fistCell != null ? hintState!.fistCell.y * cellWidth : defaultTop;
+
+                  double? left2 = hintState?.secondCell != null ? hintState!.secondCell.x * cellWidth : defaultLeft;
+                  double? top2 = hintState?.secondCell != null ? hintState!.secondCell.y * cellWidth : defaultTop;
+
+                  return Stack(
+                    key: const Key('hint_marker'),
+                    fit: StackFit.expand,
+                    children: [
+                      AnimatedPositioned(
+                        duration: Duration(milliseconds: 500),
+                        left: left1,
+                        top: top1,
+                        width: cellWidth,
+                        height: cellWidth,
+                        child: hintState != null
+                            ? BlinkingMarker(
+                                size: cellWidth,
+                                cornerColor: Colors.red,
+                                blinkDuration: const Duration(milliseconds: 500),
+                                padding: EdgeInsets.zero,
+                                cornerSize: 6,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      AnimatedPositioned(
+                        duration: Duration(milliseconds: 500),
+                        left: left2,
+                        top: top2,
+                        width: cellWidth,
+                        height: cellWidth,
+                        child: hintState != null
+                            ? BlinkingMarker(
+                                size: cellWidth,
+                                cornerColor: Colors.red,
+                                blinkDuration: const Duration(milliseconds: 500),
+                                padding: EdgeInsets.zero,
+                                cornerSize: 6,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           );
         },
@@ -321,9 +378,7 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
             ),
             child: IconButton(
               onPressed: () {
-                setState(() {
-                  _controller.initializeGame();
-                });
+                _controller.initializeGame();
               },
               icon: const Icon(Icons.refresh, size: 16), // Smaller icon consistent with settings
               style: IconButton.styleFrom(
@@ -445,9 +500,6 @@ class _PikachuGamePageState extends State<PikachuGamePage> {
     }
     if (cell.isSelected) {
       return Colors.yellow[200]!;
-    }
-    if (cell.isHinted) {
-      return Colors.lightGreen[200]!;
     }
 
     // Use content-based color if available
