@@ -44,6 +44,8 @@ class RouteManager {
 
   static String get pikachuGamePage => '/game/pikachu';
 
+  static String get chatPage => '/chat';
+
   static getRoute(RouteSettings settings) {
     late Widget widget;
     try {
