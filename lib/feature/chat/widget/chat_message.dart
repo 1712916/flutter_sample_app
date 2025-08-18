@@ -208,7 +208,7 @@ enum MessageRelativePosition {
 Decoration chatBubbleDecoration(BuildContext context, bool isUserMessage, MessageRelativePosition position) {
   final theme = context.appTheme;
   final color = isUserMessage ? theme.colorScheme.inverseSurface : theme.colorScheme.tertiaryContainer;
-  final borderRadius = BorderRadius.circular(16);
+  final borderRadius = BorderRadius.circular(20);
 
   switch (isUserMessage) {
     case true:
@@ -216,7 +216,7 @@ Decoration chatBubbleDecoration(BuildContext context, bool isUserMessage, Messag
         case MessageRelativePosition.only:
           return BoxDecoration(
             color: color,
-            borderRadius: borderRadius.copyWith(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            borderRadius: borderRadius.copyWith(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           );
         case MessageRelativePosition.first:
           return BoxDecoration(
@@ -242,7 +242,7 @@ Decoration chatBubbleDecoration(BuildContext context, bool isUserMessage, Messag
         case MessageRelativePosition.only:
           return BoxDecoration(
             color: color,
-            borderRadius: borderRadius.copyWith(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            borderRadius: borderRadius.copyWith(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           );
         case MessageRelativePosition.first:
           return BoxDecoration(
@@ -271,10 +271,10 @@ EdgeInsets getMargin(MessageRelativePosition position) {
     case MessageRelativePosition.only:
       return EdgeInsets.zero;
     case MessageRelativePosition.first:
-      return EdgeInsets.only(bottom: 2);
+      return EdgeInsets.only(bottom: 4);
     case MessageRelativePosition.last:
       return EdgeInsets.zero;
     case MessageRelativePosition.middle:
-      return EdgeInsets.only(bottom: 2);
+      return EdgeInsets.only(bottom: 4);
   }
 }
