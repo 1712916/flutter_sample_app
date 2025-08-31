@@ -1,8 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/feature/game/game_menu_page.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../../../widgets/button.dart';
+import '../../../widgets/widgets.dart';
 import '../../image/detail_image_page.dart';
 
 enum ChatMessageType {
@@ -69,44 +71,68 @@ class ImagesChatMessage extends ChatMessage {
 
   @override
   Widget build(BuildContext context, MessageRelativePosition position) {
+    final theme = context.appTheme;
     return Padding(
       padding: getMargin(position),
       child: FractionallySizedBox(
         widthFactor: 0.8,
-        child: SizedBox(
-          height: 120,
-          child: Align(
-            alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
-            child: ListView.separated(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                separatorBuilder: (context, index) => const SizedBox(width: 8.0),
-                itemCount: imagePaths.length,
-                itemBuilder: (context, index) {
-                  final path = imagePaths[index];
-                  if (path.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Handle image tap if needed
-                        DetailImagePage(
-                          url: path,
-                          heroTag: "heroTag",
-                        ).show(context);
-                      },
-                      child: Image.file(
-                        File(path),
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                }),
+        child: Align(
+          alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CircleIconButton(
+                icon: HugeIcons.strokeRoundedGameboy,
+                onPressed: () {
+                  goToGameMenu(context, image: imagePaths.firstOrNull);
+                },
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: ImagesStackView(
+                  images: imagePaths,
+                  onImageTap: (url) {
+                    DetailImagePage(
+                      url: url,
+                      heroTag: "heroTag",
+                    ).show(context);
+                  },
+                ),
+              ),
+              // Flexible(
+              //   child: ListView.separated(
+              //       shrinkWrap: true,
+              //       scrollDirection: Axis.horizontal,
+              //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //       separatorBuilder: (context, index) => const SizedBox(width: 8.0),
+              //       itemCount: imagePaths.length,
+              //       itemBuilder: (context, index) {
+              //         final path = imagePaths[index];
+              //         if (path.isEmpty) {
+              //           return const SizedBox.shrink();
+              //         }
+              //         return ClipRRect(
+              //           borderRadius: BorderRadius.circular(8.0),
+              //           child: GestureDetector(
+              //             onTap: () {
+              //               // Handle image tap if needed
+              //               DetailImagePage(
+              //                 url: path,
+              //                 heroTag: "heroTag",
+              //               ).show(context);
+              //             },
+              //             child: Image.file(
+              //               File(path),
+              //               width: 120,
+              //               height: 120,
+              //               fit: BoxFit.cover,
+              //             ),
+              //           ),
+              //         );
+              //       }),
+              // ),
+            ],
           ),
         ),
       ),
@@ -170,6 +196,8 @@ class ChatGroupMessageState {
             children: [
               CircleAvatar(
                 radius: 12,
+                child: Image.asset('assets/icon/icon.png'),
+                backgroundColor: Colors.transparent,
               ),
               const SizedBox(width: 4),
               Flexible(

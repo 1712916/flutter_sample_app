@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meow_app/core/index.dart';
 import 'package:meow_app/feature/chat/chat_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
@@ -28,6 +29,8 @@ class _ChatPageState extends State<ChatPage> {
   final ValueNotifier<bool> _showFilesNotifier = ValueNotifier<bool>(true);
   late Listenable _inputListenable;
   final ChatCubit _chatCubit = ChatCubit();
+  final SimpleStorage _storage = SimpleStorage();
+  static const String _key = 'unsent_message';
 
   @override
   void initState() {
@@ -35,6 +38,13 @@ class _ChatPageState extends State<ChatPage> {
 
     _inputListenable = Listenable.merge([_focusNode, _controller]);
     _inputListenable.addListener(_inputListener);
+
+    // load unsent message
+    _storage.getString(_key).then((value) {
+      if (value != null && value.isNotEmpty && mounted) {
+        _controller.text = value;
+      }
+    });
   }
 
   bool _previousFocus = false;
@@ -56,6 +66,12 @@ class _ChatPageState extends State<ChatPage> {
       _showFilesNotifier.value = true;
     }
     _previousFocus = _focusNode.hasFocus;
+  }
+
+  @override
+  void deactivate() {
+    _storage.saveString(_key, _controller.text);
+    super.deactivate();
   }
 
   @override

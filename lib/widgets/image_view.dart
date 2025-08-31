@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:meow_app/core/index.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../data/repositories/image_storage_repository.dart';
@@ -24,28 +25,59 @@ class AppImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return CachedNetworkImage(
-      memCacheHeight: memCacheHeight,
-      memCacheWidth: memCacheWidth,
-      imageUrl: image,
-      fit: fit ?? BoxFit.cover,
-      placeholder: (context, url) {
-        return Container(
-          color: theme.cardColor2,
+    switch (image.isUrl) {
+      case true:
+        return CachedNetworkImage(
+          memCacheHeight: memCacheHeight,
+          memCacheWidth: memCacheWidth,
+          imageUrl: image,
+          fit: fit ?? BoxFit.cover,
+          placeholder: (context, url) {
+            return Container(
+              color: theme.cardColor2,
+            );
+          },
+          errorWidget: (context, url, error) {
+            return Container(
+              color: theme.cardColor2,
+              child: Center(
+                child: Icon(
+                  Icons.error,
+                  color: theme.iconColor,
+                ),
+              ),
+            );
+          },
         );
-      },
-      errorWidget: (context, url, error) {
-        return Container(
-          color: theme.cardColor2,
-          child: Center(
-            child: Icon(
-              Icons.error,
-              color: theme.iconColor,
-            ),
-          ),
+      case false:
+        return Image.file(
+          File(image),
+          cacheWidth: memCacheWidth,
+          cacheHeight: memCacheHeight,
+          fit: fit ?? BoxFit.cover,
+          frameBuilder: (context, child, __, wasSynchronouslyLoaded) {
+            return child;
+
+            if (wasSynchronouslyLoaded) {
+              return child;
+            }
+            return Container(
+              color: theme.cardColor2,
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: theme.cardColor2,
+              child: Center(
+                child: Icon(
+                  Icons.error,
+                  color: theme.iconColor,
+                ),
+              ),
+            );
+          },
         );
-      },
-    );
+    }
   }
 }
 
@@ -178,5 +210,120 @@ class StrImageWidget extends StatelessWidget {
     return const Center(
       child: Text('Image not found'),
     );
+  }
+}
+
+class ImagesStackView extends StatefulWidget {
+  const ImagesStackView({super.key, required this.images, this.onImageTap});
+
+  final List<String> images;
+  final Function(String image)? onImageTap;
+
+  @override
+  State<ImagesStackView> createState() => _ImagesStackViewState();
+}
+
+class _ImagesStackViewState extends State<ImagesStackView> {
+  bool isShowGridView = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isShowGridView) {
+      final length = widget.images.length;
+      // if (length == 1) {
+      //
+      // }
+      final count = length.getCountByLength();
+
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: count,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 4,
+        ),
+        itemCount: widget.images.length,
+        itemBuilder: (context, index) {
+          return Container(
+            foregroundDecoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: GestureDetector(
+                onTap: () {
+                  widget.onImageTap?.call(widget.images[index]);
+                },
+                child: AppImage(
+                  image: widget.images[index],
+                  memCacheWidth: 140,
+                  memCacheHeight: 140,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isShowGridView = true;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Stack(
+          fit: StackFit.loose,
+          children: [
+            for (int i = 0; i < widget.images.length; i++)
+              Transform.rotate(
+                angle: (i - (widget.images.length - 1) / 2) * 0.12,
+                child: Container(
+                  foregroundDecoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: GestureDetector(
+                      onTap: widget.images.length == 1
+                          ? () {
+                              widget.onImageTap?.call(widget.images[i]);
+                            }
+                          : null,
+                      child: AppImage(
+                        image: widget.images[i],
+                        memCacheWidth: 140,
+                        memCacheHeight: 140,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+extension GetCountByLength on int {
+  int getCountByLength() {
+    if (this <= 3) {
+      return this;
+    }
+    return 3;
   }
 }
