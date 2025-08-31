@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/util/app_image_manager.dart';
+import '../../data/models/image_storage_model.dart';
 import 'widget/chat_message.dart';
 
 class ChatState {
@@ -27,6 +29,8 @@ class ChatCubit extends Cubit<ChatState> {
     _addChatMessage(timeMessage);
   }
 
+  final AppImageManager _appImageManager = AppImageManager(ImageStorageFeature.chat);
+
   void userSendMessage(String message) {
     final newMessage = TextChatMessage(
       isUserMessage: true,
@@ -43,6 +47,16 @@ class ChatCubit extends Cubit<ChatState> {
     );
 
     _addChatMessage(newMessage);
+
+    Future.sync(
+      () {
+        for (var image in images) {
+          _appImageManager.saveImageFromPath(
+            image,
+          );
+        }
+      },
+    );
   }
 
   void _addChatMessage(ChatMessage message) {

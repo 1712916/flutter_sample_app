@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:meow_app/core/index.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../data/models/image_storage_model.dart';
 import '../data/repositories/image_storage_repository.dart';
 
 class AppImage extends StatelessWidget {

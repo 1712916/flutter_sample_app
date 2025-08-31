@@ -6,7 +6,7 @@ import 'package:meow_app/feature/game_sticker/cubit/sticker_list_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/image_view.dart';
 
-import '../../data/repositories/image_storage_repository.dart';
+import '../../data/models/image_storage_model.dart';
 import '../../widgets/text.dart';
 
 class StickerListPage extends StatefulWidget {
