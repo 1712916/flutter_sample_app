@@ -64,6 +64,23 @@ enum ChatSource {
     }
     return ChatSource.none;
   }
+
+  //toString
+  @override
+  String toString() {
+    switch (this) {
+      case ChatSource.system:
+        return 'system';
+      case ChatSource.user:
+        return 'user';
+      case ChatSource.gameHistory:
+        return 'gameHistory';
+      case ChatSource.none:
+        return '';
+    }
+  }
+
+  bool get isUserMessage => this == ChatSource.user;
 }
 
 abstract class ChatModel<T> {
@@ -92,10 +109,11 @@ abstract class ChatModel<T> {
           data: entity.message,
         );
       case ChatMessageType.image:
-        return ChatTextMessage(
+        final dataString = entity.message.split(',');
+        return ChatImageMessage(
           source: source,
           createdAt: entity.createdAt,
-          data: entity.message,
+          data: dataString,
         );
       case ChatMessageType.date:
       case ChatMessageType.none:
@@ -121,4 +139,12 @@ class ChatTextMessage extends ChatModel<String> {
     required super.createdAt,
     required super.data,
   }) : super(type: ChatMessageType.text);
+}
+
+class ChatImageMessage extends ChatModel<List<String>> {
+  ChatImageMessage({
+    required super.source,
+    required super.createdAt,
+    required super.data,
+  }) : super(type: ChatMessageType.image);
 }

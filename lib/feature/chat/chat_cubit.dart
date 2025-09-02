@@ -1,9 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/persistence/app_image_manager.dart';
-import '../../data/database_model/object_box_entity/chat_entity.dart';
 import '../../data/models/chat.dart';
-import '../../data/models/image_storage_model.dart';
+import '../../data/repositories/chat_repository.dart';
 import 'widget/chat_message.dart';
 
 class ChatState {
@@ -17,7 +15,7 @@ class ChatState {
 }
 
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit() : super(ChatState.initial()) {
+  ChatCubit(this.chatRepository) : super(ChatState.initial()) {
     final newMessage = TextChatMessage(
       isUserMessage: false,
       text: "Xin chào, tôi là Meow, trợ lý ảo của bạn. Bạn cần gì?",
@@ -29,9 +27,38 @@ class ChatCubit extends Cubit<ChatState> {
       date: DateTime.now(),
     );
     _addChatMessage(timeMessage);
+
+    chatRepository.getChatHistory().then(
+      (value) {
+        return value.map(
+          (e) {
+            switch (e) {
+              case ChatImageMessage(data: var data, source: var source):
+                return ImagesChatMessage(
+                  isUserMessage: source.isUserMessage,
+                  imagePaths: data,
+                );
+              case ChatTextMessage(data: var text, source: var source):
+                return TextChatMessage(
+                  isUserMessage: source.isUserMessage,
+                  text: text,
+                );
+            }
+
+            return TextChatMessage(isUserMessage: true, text: "");
+          },
+        ).toList();
+      },
+    ).then(
+      (value) {
+        for (var element in value) {
+          _addChatMessage(element);
+        }
+      },
+    );
   }
 
-  final AppImageManager _appImageManager = AppImageManager(ImageStorageFeature.chat);
+  final ChatRepository chatRepository;
 
   void userSendMessage(String message) {
     final newMessage = TextChatMessage(
@@ -41,12 +68,7 @@ class ChatCubit extends Cubit<ChatState> {
 
     _addChatMessage(newMessage);
 
-    AObjectBox.create().then(
-      (objectBox) {
-        final store = objectBox.store.box<ChatEntity>();
-        store.put(ChatEntity(message: message, sender: 'user', type: 'text', createdAt: DateTime.now()));
-      },
-    );
+    chatRepository.sendTextMessage(ChatSource.user, message);
   }
 
   void userSendImages(List<String> images) {
@@ -57,15 +79,7 @@ class ChatCubit extends Cubit<ChatState> {
 
     _addChatMessage(newMessage);
 
-    Future.sync(
-      () {
-        for (var image in images) {
-          _appImageManager.saveImageFromPath(
-            image,
-          );
-        }
-      },
-    );
+    chatRepository.sendImagesMessage(ChatSource.user, images);
   }
 
   void _addChatMessage(ChatMessage message) {

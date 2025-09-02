@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meow_app/core/index.dart';
+import 'package:meow_app/data/repositories/chat_repository.dart';
 import 'package:meow_app/feature/chat/chat_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
@@ -28,7 +29,7 @@ class _ChatPageState extends State<ChatPage> {
 
   final ValueNotifier<bool> _showFilesNotifier = ValueNotifier<bool>(true);
   late Listenable _inputListenable;
-  final ChatCubit _chatCubit = ChatCubit();
+  final ChatCubit _chatCubit = ChatCubit(ChatRepositoryImpl());
   final SimpleStorage _storage = SimpleStorage();
   static const String _key = 'unsent_message';
 
