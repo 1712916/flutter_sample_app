@@ -28,7 +28,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.vinhnt.meow_app"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -45,6 +45,7 @@ android {
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        ndk { abiFilters "armeabi-v7a", "arm64-v8a", "x86_64" }
     }
 
     signingConfigs {
@@ -98,12 +99,18 @@ flutter {
 
 dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828' // Use the latest version available
-    implementation platform('com.google.firebase:firebase-bom:33.12.0')
+    implementation platform('com.google.firebase:firebase-bom:34.2.0')
     implementation 'com.google.firebase:firebase-analytics'
+    def objectboxVersion = "4.1.0"
+    debugImplementation("io.objectbox:objectbox-android-objectbrowser:$objectboxVersion")
+    releaseImplementation("io.objectbox:objectbox-android:$objectboxVersion")
 }
 
 configurations {
     all {
         exclude group: 'androidx.work', module: 'work-runtime-ktx'
+    }
+    debugImplementation {
+        exclude group: 'io.objectbox', module: 'objectbox-android'
     }
 }

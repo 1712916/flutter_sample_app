@@ -25,7 +25,7 @@ abstract class BackgroundWorker {
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
-      existingWorkPolicy: ExistingWorkPolicy.replace,
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
       frequency: const Duration(hours: 2),
     );
   }

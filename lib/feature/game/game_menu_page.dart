@@ -190,11 +190,12 @@ class SelectImagePlaceHolder extends StatelessWidget {
       height: height,
       width: height,
       child: DottedBorder(
-        color: theme.textColor2,
-        borderType: BorderType.RRect,
-        radius: Radius.circular(8),
-        dashPattern: const [6, 6],
-        strokeCap: StrokeCap.butt,
+        options: RoundedRectDottedBorderOptions(
+          color: theme.textColor2,
+          radius: Radius.circular(8),
+          dashPattern: const [6, 6],
+          strokeCap: StrokeCap.butt,
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(

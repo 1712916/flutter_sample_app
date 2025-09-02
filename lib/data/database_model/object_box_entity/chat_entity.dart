@@ -27,15 +27,28 @@ class ChatEntity {
   });
 }
 
-class ObjectBox {
+class AObjectBox {
   late final Store store;
 
-  ObjectBox._create(this.store);
+  AObjectBox._create(this.store);
 
-  static Future<ObjectBox> create() async {
+  static AObjectBox? _instance;
+
+  static Future<AObjectBox> create() async {
+    if (_instance != null) {
+      return _instance!;
+    }
+
     final docsDir = await getApplicationDocumentsDirectory();
 
-    final store = await openStore(directory: p.join(docsDir.path, "obx-example"));
-    return ObjectBox._create(store);
+    ///Check is store opened
+    if (Store.isOpen(docsDir.path)) {
+      return _instance!;
+    }
+
+    final store = await openStore(directory: p.join(docsDir.path));
+    _instance = AObjectBox._create(store);
+
+    return _instance!;
   }
 }

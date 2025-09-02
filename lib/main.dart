@@ -12,11 +12,13 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/core/sound/music_manager.dart';
 import 'package:meow_app/feature/sound/music_provider.dart';
 import 'package:meow_app/widgets/text.dart';
+import 'package:objectbox/objectbox.dart';
 
 import 'core/persistence/isar_storage.dart';
 import 'core/util/background_worker.dart';
 import 'core/util/firebase.dart';
 import 'core/util/index.dart';
+import 'data/database_model/object_box_entity/chat_entity.dart' show ObjectBox, AObjectBox;
 import 'dependencies/app_dependencies.dart';
 import 'feature/app_menu/cubit/app_menu_cubit.dart';
 import 'feature/auto_play/auto_play_memory_game.dart';
@@ -76,8 +78,21 @@ Future initApp() async {
 
   Bloc.observer = AppBlocObserver();
 
+
+  if (Admin.isAvailable() && isFirstRun) {
+    // Keep a reference until no longer needed or manually closed.
+    isFirstRun = false;
+    final ob = await AObjectBox.create();
+
+    admin = Admin(ob.store, bindUri: 'http://127.0.0.1:8091');
+  }
+
   FlutterNativeSplash.remove();
 }
+
+bool isFirstRun = true;
+
+late Admin admin;
 
 class AppBlocObserver extends BlocObserver {
   @override

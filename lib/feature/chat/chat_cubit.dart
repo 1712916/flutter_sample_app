@@ -41,7 +41,7 @@ class ChatCubit extends Cubit<ChatState> {
 
     _addChatMessage(newMessage);
 
-    ObjectBox.create().then(
+    AObjectBox.create().then(
       (objectBox) {
         final store = objectBox.store.box<ChatEntity>();
         store.put(ChatEntity(message: message, sender: 'user', type: 'text', createdAt: DateTime.now()));
