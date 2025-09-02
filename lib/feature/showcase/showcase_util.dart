@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-import '../../core/util/storage.dart';
+import '../../core/persistence/storage.dart';
 import '../../resources/locale/locale_keys.dart';
 
 class ShowcaseUtil {

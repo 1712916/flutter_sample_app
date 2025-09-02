@@ -3,15 +3,10 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/feature/game/game_menu_page.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../../../data/data.dart';
 import '../../../widgets/button.dart';
 import '../../../widgets/widgets.dart';
 import '../../image/detail_image_page.dart';
-
-enum ChatMessageType {
-  text, // Represents a text message
-  image, // Represents an image message
-  date, // Represents a date message
-}
 
 abstract class ChatMessage {
   final bool isUserMessage;

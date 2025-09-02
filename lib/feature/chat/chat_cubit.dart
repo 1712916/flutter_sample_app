@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/util/app_image_manager.dart';
+import '../../core/persistence/app_image_manager.dart';
+import '../../data/database_model/object_box_entity/chat_entity.dart';
+import '../../data/models/chat.dart';
 import '../../data/models/image_storage_model.dart';
 import 'widget/chat_message.dart';
 
@@ -38,6 +40,13 @@ class ChatCubit extends Cubit<ChatState> {
     );
 
     _addChatMessage(newMessage);
+
+    ObjectBox.create().then(
+      (objectBox) {
+        final store = objectBox.store.box<ChatEntity>();
+        store.put(ChatEntity(message: message, sender: 'user', type: 'text', createdAt: DateTime.now()));
+      },
+    );
   }
 
   void userSendImages(List<String> images) {

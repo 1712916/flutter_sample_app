@@ -64,6 +64,8 @@ dependencies:
   google_mlkit_subject_segmentation: ^0.0.2
   google_mlkit_commons: any
   flutter_image_compress: ^2.4.0
+  objectbox: 4.1.0
+  objectbox_flutter_libs: any
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +74,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
   isar_generator: any
   build_runner: any
+  objectbox_generator: any
 
 flutter_icons:
   android: true

@@ -1,27 +1,10 @@
 import 'package:isar/isar.dart';
 
 import '../../core/index.dart';
+import '../database_model/isar_collection/image_storage_collection.dart';
 import '../models/image_storage_model.dart';
 import 'crud_repository.dart';
 import 'isar_repository.dart' as isarRepo;
-
-part 'image_storage_repository.g.dart';
-
-@collection
-class ImageStorageCollection {
-  Id id = Isar.autoIncrement;
-  String? url;
-  String? path;
-  List<int>? bytes;
-  String? feature;
-
-  ImageStorageCollection({
-    this.url,
-    this.path,
-    this.bytes,
-    this.feature,
-  });
-}
 
 final ImageStorageRepository imageStorageRepository = ImageStorageRepositoryImpl();
 

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../data/models/image_storage_model.dart';
 import '../../data/repositories/image_storage_repository.dart';
-import 'app_image_storage.dart';
+import '../util/app_image_storage.dart';
 
 /// Wrapper utility to manage images using both file storage and the image storage repository.
 class AppImageManager {

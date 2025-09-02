@@ -1,4 +1,4 @@
-import 'package:meow_app/core/util/storage.dart';
+import 'package:meow_app/core/persistence/storage.dart';
 
 /// Utility class for managing onboarding state
 class OnboardingUtil {
