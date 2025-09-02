@@ -78,13 +78,12 @@ Future initApp() async {
 
   Bloc.observer = AppBlocObserver();
 
-
   if (Admin.isAvailable() && isFirstRun) {
     // Keep a reference until no longer needed or manually closed.
     isFirstRun = false;
     final ob = await AObjectBox.create();
 
-    admin = Admin(ob.store, bindUri: 'http://127.0.0.1:8091');
+    admin = Admin(ob.store);
   }
 
   FlutterNativeSplash.remove();
