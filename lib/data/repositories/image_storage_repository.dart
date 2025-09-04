@@ -1,25 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:isar/isar.dart';
 
 import '../../core/index.dart';
+import '../database_model/isar_collection/image_storage_collection.dart';
+import '../models/image_storage_model.dart';
 import 'crud_repository.dart';
 import 'isar_repository.dart' as isarRepo;
-
-part 'image_storage_repository.g.dart';
-
-@collection
-class ImageStorageCollection {
-  Id id = Isar.autoIncrement;
-  String? url;
-  String? path;
-  List<int>? bytes;
-
-  ImageStorageCollection({
-    this.url,
-    this.path,
-    this.bytes,
-  });
-}
 
 final ImageStorageRepository imageStorageRepository = ImageStorageRepositoryImpl();
 
@@ -43,7 +28,8 @@ class ImageStorageRepositoryImpl extends ImageStorageRepository
     return ImageStorageCollection()
       ..url = item.url
       ..path = item.path
-      ..bytes = item.bytes;
+      ..bytes = item.bytes
+      ..feature = item.feature?.toString();
   }
 
   @override
@@ -54,6 +40,7 @@ class ImageStorageRepositoryImpl extends ImageStorageRepository
         url: collection.url,
         path: collection.path,
         bytes: collection.bytes,
+        feature: collection.feature?.toImageStorageFeature(),
       ),
     );
   }
@@ -64,7 +51,8 @@ class ImageStorageRepositoryImpl extends ImageStorageRepository
       ..id = item.id
       ..url = item.url
       ..path = item.path
-      ..bytes = item.bytes;
+      ..bytes = item.bytes
+      ..feature = item.feature?.toString();
   }
 
   @override
@@ -73,29 +61,4 @@ class ImageStorageRepositoryImpl extends ImageStorageRepository
       return mapListAsync(collections, getItemFromCollection);
     });
   }
-}
-
-class ImageStorageModel extends Equatable implements isarRepo.GetId<int> {
-  final int id;
-  final String? url;
-  final String? path;
-  final List<int>? bytes;
-
-  ImageStorageModel({
-    required this.id,
-    this.url,
-    this.path,
-    this.bytes,
-  });
-
-  @override
-  int? get getId => id;
-
-  @override
-  List<Object?> get props => [
-        id,
-        url,
-        path,
-        bytes,
-      ];
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meow_app/feature/chat/chat_page.dart';
 import 'package:meow_app/feature/game_pikachu/pikachu_game_page.dart';
 import 'package:meow_app/feature/game_sort/game_setting_page.dart';
 import 'package:meow_app/feature/game_sticker/sticker_list_page.dart';
@@ -34,5 +35,7 @@ class PageDependencies {
 
     //pikachu game
     injector.registerFactory<Widget>(() => const PikachuGamePage(), instanceName: RouteManager.pikachuGamePage);
+
+    injector.registerFactory<Widget>(() => const ChatPage(), instanceName: RouteManager.chatPage);
   }
 }

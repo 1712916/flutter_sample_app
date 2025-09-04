@@ -79,6 +79,7 @@ class LKey {
   static const String camera = 'camera';
   static const String gallery = 'gallery';
   static const String cropImage = 'cropImage';
+  static const String explore = 'explore';
 
   ///show case
   static const String switchViewTitle = 'showcase.switchViewTitle';
@@ -92,6 +93,9 @@ class LKey {
 
   static const String gameBoardTitle = 'showcase.gameBoardTitle';
   static const String gameBoardDescription = 'showcase.gameBoardDescription';
+
+  static const String chatTitle = 'showcase.chatTitle';
+  static const String chatDescription = 'showcase.chatDescription';
 
   static const String enjoyAppDescription = 'enjoyAppDescription';
 
@@ -176,4 +180,7 @@ class LKey {
   static const String next = 'next';
   static const String getStarted = 'getStarted';
   static const String back = 'back';
+
+  // Chat
+  static const String chat = 'chat';
 }

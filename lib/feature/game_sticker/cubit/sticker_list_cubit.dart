@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/image_storage_model.dart';
 import '../../../data/repositories/image_storage_repository.dart';
 
 class StickerListState extends Equatable {

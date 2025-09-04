@@ -13,7 +13,6 @@ import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
 import '../base_page.dart';
-import '../favourite/count_favourite_widget.dart';
 import '../game/game_menu_page.dart';
 import '../home_widget/home_widget_page.dart';
 import '../showcase/showcase_util.dart';
@@ -259,15 +258,6 @@ class _ImageListPageState extends State<ImageListPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CountFavouriteWidget(),
-                AppShowcase(
-                  info: ShowcaseUtil.switchViewKey,
-                  child: AnimalDropdown(
-                    onTapAction: (value) {
-                      cubit.switchView(value == 'Meow');
-                    },
-                  ),
-                ),
                 CircleAvatar(
                   backgroundColor: theme.actionBackground,
                   child: IconButton(
@@ -277,6 +267,29 @@ class _ImageListPageState extends State<ImageListPage> {
                     icon: HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings01, color: theme.iconColor,
                       // size: iconSize,
+                    ),
+                  ),
+                ),
+                AppShowcase(
+                  info: ShowcaseUtil.switchViewKey,
+                  child: AnimalDropdown(
+                    onTapAction: (value) {
+                      cubit.switchView(value == 'Meow');
+                    },
+                  ),
+                ),
+                AppShowcase(
+                  info: ShowcaseUtil.chatKey,
+                  child: CircleAvatar(
+                    backgroundColor: theme.actionBackground,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(RouteManager.chatPage);
+                      },
+                      icon: HugeIcon(
+                        icon: HugeIcons.strokeRoundedBubbleChatFavourite, color: theme.iconColor,
+                        // size: iconSize,
+                      ),
                     ),
                   ),
                 ),

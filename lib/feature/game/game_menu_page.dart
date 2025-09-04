@@ -14,8 +14,8 @@ import '../../routers/route.dart';
 import '../../widgets/text.dart';
 import '../image/image_selection_widget.dart';
 
-void goToGameMenu(BuildContext context) {
-  Navigator.of(context).pushNamed(RouteManager.gameMenuPage);
+void goToGameMenu(BuildContext context, {String? image}) {
+  Navigator.of(context).pushNamed(RouteManager.gameMenuPage, arguments: image);
 }
 
 class GameMenuPage extends StatefulWidget {
@@ -26,6 +26,17 @@ class GameMenuPage extends StatefulWidget {
 }
 
 class _GameMenuPageState extends StateTemplate<GameMenuPage> {
+  String? image;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is String?) {
+      image = args;
+    }
+  }
+
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) {
     return CustomAppBar(title: LKey.gameMenu.tr(context: context));
@@ -34,7 +45,7 @@ class _GameMenuPageState extends StateTemplate<GameMenuPage> {
   @override
   Widget buildBody(BuildContext context) {
     final ImageListCubit cubit = context.read<ImageListCubit>();
-    final currentSelectedImage = cubit.currentImage?.url ?? '';
+    final currentSelectedImage = image ?? cubit.currentImage?.url ?? '';
     return ListView(
       children: [
         MenuItemWidget(
@@ -179,11 +190,12 @@ class SelectImagePlaceHolder extends StatelessWidget {
       height: height,
       width: height,
       child: DottedBorder(
-        color: theme.textColor2,
-        borderType: BorderType.RRect,
-        radius: Radius.circular(8),
-        dashPattern: const [6, 6],
-        strokeCap: StrokeCap.butt,
+        options: RoundedRectDottedBorderOptions(
+          color: theme.textColor2,
+          radius: Radius.circular(8),
+          dashPattern: const [6, 6],
+          strokeCap: StrokeCap.butt,
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
