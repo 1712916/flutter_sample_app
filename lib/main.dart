@@ -18,7 +18,7 @@ import 'core/persistence/isar_storage.dart';
 import 'core/util/background_worker.dart';
 import 'core/util/firebase.dart';
 import 'core/util/index.dart';
-import 'data/database_model/object_box_entity/chat_entity.dart' show ObjectBox, AObjectBox;
+import 'data/database_model/object_box_entity/a_object_box.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/app_menu/cubit/app_menu_cubit.dart';
 import 'feature/auto_play/auto_play_memory_game.dart';

@@ -1,4 +1,5 @@
 import '../../core/persistence/app_image_manager.dart';
+import '../database_model/object_box_entity/a_object_box.dart';
 import '../database_model/object_box_entity/chat_entity.dart';
 import '../models/chat.dart';
 import '../models/image_storage_model.dart';
