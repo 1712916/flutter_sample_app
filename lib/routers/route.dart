@@ -169,3 +169,7 @@ void goToPikachuGame([BuildContext? context]) {
     ),
   );
 }
+
+void goToFavouritePage([BuildContext? context]) {
+  Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.favouritePage);
+}

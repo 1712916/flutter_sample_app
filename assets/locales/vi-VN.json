@@ -143,5 +143,6 @@
   "Light": "Sáng",
   "backgroundGradientDescription": "Nền với {length} màu sắc chuyển tiếp",
   "backgroundSolidDescription": "Nền với màu sắc đồng nhất",
-  "backgroundImageDescription": "Nền với hình ảnh"
+  "backgroundImageDescription": "Nền với hình ảnh",
+  "explore": "Khám phá"
 }

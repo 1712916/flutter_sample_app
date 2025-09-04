@@ -140,5 +140,6 @@
   "Light": "Light",
   "backgroundGradientDescription": "Gradient with  {length} colors",
   "backgroundSolidDescription": "Solid color background",
-  "backgroundImageDescription": "Image background"
+  "backgroundImageDescription": "Image background",
+  "explore": "Explore"
 }

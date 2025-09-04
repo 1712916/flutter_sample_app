@@ -8,9 +8,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../core/index.dart';
 import '../core/util/app_store_review.dart';
+import '../routers/route.dart';
 import '../widgets/widgets.dart';
 import 'auto_play/auto_play_selection_widget.dart';
 import 'base_page.dart';
+import 'favourite/count_favourite_widget.dart';
 import 'onboarding/onboarding_util.dart';
 
 class SettingNewPage extends StatefulWidget {
@@ -31,6 +33,44 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          IconTitleWidget(
+            icon: Icon(
+              Icons.bookmark_add,
+              color: iconColor,
+              size: 20,
+            ),
+            title: LKey.explore.tr(),
+          ),
+          SizedBox(height: 4),
+          Card(
+            color: theme.cardColor2,
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    onTap: () {
+                      goToFavouritePage();
+                    },
+                    title: LText(
+                      LKey.favourite,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    leading: CountFavouriteWidget2(),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 16), // I
           IconTitleWidget(
             icon: Icon(
               Icons.favorite,

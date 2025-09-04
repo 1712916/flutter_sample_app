@@ -79,6 +79,7 @@ class LKey {
   static const String camera = 'camera';
   static const String gallery = 'gallery';
   static const String cropImage = 'cropImage';
+  static const String explore = 'explore';
 
   ///show case
   static const String switchViewTitle = 'showcase.switchViewTitle';

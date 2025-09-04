@@ -140,6 +140,8 @@ class _MaterialAppState extends State<_MaterialApp> {
   @override
   void dispose() {
     _linkSubscription?.cancel();
+    admin.close();
+    AObjectBox.create().then((objBox) => objBox.close());
 
     super.dispose();
   }
