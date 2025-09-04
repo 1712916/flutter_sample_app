@@ -31,14 +31,18 @@ Meow App is now available on:
 ✅ **Browse Cat/Dog Images**: Explore a vast collection of high-quality, royalty-free images.  
 ✅ **Share**: Easily share your favorite cat images with friends and family.  
 ✅ **Game**: A simple and fun sorting game for entertainment.
+✅ **Chat**: A place to keep personal notes, game history, and fun moments every day.
 
 ---
 
 ## ✅ To Do
-- [ ] **Refactor Code**: Clean up and optimize the codebase after several versions.
-- [ ] **Favorites**: Save your favorite cat images for quick access.
-- [ ] **Animation**: Create smooth animations when users interact with images.
-- [ ] **Game**: Fix bugs, improve performance, and add a control bar option for players.
+- [x] **Refactor Code**: Clean up and optimize the codebase after several versions.
+- [x] **Favorites**: Save your favorite cat images for quick access.
+- [x] **Animation**: Create smooth animations when users interact with images.
+- [x] **Game**: Fix bugs, improve performance, and add a control bar option for players.
+- [ ] **Game**: Update Pikachu game.
+- [ ] **Game**: Add game - Jigsaw Puzzle
+- [ ] **Chat**: Make a great chat page.
 
 ---
 

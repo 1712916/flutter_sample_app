@@ -94,6 +94,9 @@ class LKey {
   static const String gameBoardTitle = 'showcase.gameBoardTitle';
   static const String gameBoardDescription = 'showcase.gameBoardDescription';
 
+  static const String chatTitle = 'showcase.chatTitle';
+  static const String chatDescription = 'showcase.chatDescription';
+
   static const String enjoyAppDescription = 'enjoyAppDescription';
 
   ///favourite

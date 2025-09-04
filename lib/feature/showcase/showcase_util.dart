@@ -31,6 +31,11 @@ class ShowcaseUtil {
       description: LKey.gameBoardDescription.tr(),
       key: GlobalKey(),
     ),
+    ShowcaseInfo(
+      title: LKey.chatTitle.tr(),
+      description: LKey.chatDescription.tr(),
+      key: GlobalKey(),
+    ),
   ];
 
   static int get lastStepIndex => _steps.length - 1;
@@ -42,6 +47,8 @@ class ShowcaseUtil {
   static ShowcaseInfo get shareViewKey => _steps[2];
 
   static ShowcaseInfo get gameBoardKey => _steps[3];
+
+  static ShowcaseInfo get chatKey => _steps[4];
 
   static bool _isShowed = false;
 

@@ -64,7 +64,9 @@
     "shareViewTitle": "Tap to share",
     "shareViewDescription": "Tap to share image with your friends",
     "gameBoardTitle": "Tap to play",
-    "gameBoardDescription": "Tap to start playing the game"
+    "gameBoardDescription": "Tap to start playing the game",
+    "chatTitle": "Tap to chat",
+    "chatDescription": "A place to keep personal notes, game history, and fun moments every day"
   },
   "enjoyAppDescription": "Let's enjoy meow app <3",
   "favourite": "Favourite",

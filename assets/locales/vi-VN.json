@@ -59,15 +59,14 @@
   "showcase": {
     "switchViewTitle": "Chạm để chuyển",
     "switchViewDescription": "Chạm để chuyển giữa ảnh mèo và ảnh cún",
-
     "gridViewTitle": "Chạm để xem",
     "gridViewDescription": "Chạm để xem ảnh theo bố cục dạng lưới",
-
     "shareViewTitle": "Chạm để chia sẻ",
     "shareViewDescription": "Chạm để chia sẻ ảnh với bạn bè",
-
     "gameBoardTitle": "Chạm để chơi",
-    "gameBoardDescription": "Chạm để bắt đầu chơi trò chơi"
+    "gameBoardDescription": "Chạm để bắt đầu chơi trò chơi",
+    "chatTitle": "Chạm để trò chuyện",
+    "chatDescription": "Nơi lưu giữ note cá nhân, lịch sử game và khoảnh khắc thú vị mỗi ngày"
   },
   "enjoyAppDescription": "Hãy thưởng thức ứng dụng meow nhé <3",
   "favourite": "Yêu thích",

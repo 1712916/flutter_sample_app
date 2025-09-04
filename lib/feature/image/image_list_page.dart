@@ -278,15 +278,18 @@ class _ImageListPageState extends State<ImageListPage> {
                     },
                   ),
                 ),
-                CircleAvatar(
-                  backgroundColor: theme.actionBackground,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(RouteManager.chatPage);
-                    },
-                    icon: HugeIcon(
-                      icon: HugeIcons.strokeRoundedBubbleChatFavourite, color: theme.iconColor,
-                      // size: iconSize,
+                AppShowcase(
+                  info: ShowcaseUtil.chatKey,
+                  child: CircleAvatar(
+                    backgroundColor: theme.actionBackground,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(RouteManager.chatPage);
+                      },
+                      icon: HugeIcon(
+                        icon: HugeIcons.strokeRoundedBubbleChatFavourite, color: theme.iconColor,
+                        // size: iconSize,
+                      ),
                     ),
                   ),
                 ),
