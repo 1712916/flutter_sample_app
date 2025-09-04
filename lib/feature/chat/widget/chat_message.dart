@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:meow_app/feature/chat/chat_page.dart';
 import 'package:meow_app/feature/game/game_menu_page.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
@@ -80,6 +81,7 @@ class ImagesChatMessage extends ChatMessage {
               CircleIconButton(
                 icon: HugeIcons.strokeRoundedGameboy,
                 onPressed: () {
+                  context.hideKeyboard();
                   goToGameMenu(context, image: imagePaths.firstOrNull);
                 },
               ),

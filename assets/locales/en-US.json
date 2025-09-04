@@ -141,5 +141,6 @@
   "backgroundGradientDescription": "Gradient with  {length} colors",
   "backgroundSolidDescription": "Solid color background",
   "backgroundImageDescription": "Image background",
-  "explore": "Explore"
+  "explore": "Explore",
+  "chat": "Chat"
 }

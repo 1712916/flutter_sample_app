@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meow_app/feature/chat/chat_page.dart';
 import 'package:meow_app/feature/image/image_list_page.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/widgets.dart';
@@ -22,6 +23,8 @@ class DetailImagePage extends StatefulWidget {
     Duration duration = const Duration(milliseconds: 400),
     bool rootNavigator = true,
   }) {
+    context.hideKeyboard();
+
     return Navigator.of(context, rootNavigator: rootNavigator).push(
       PageRouteBuilder(
         opaque: false,

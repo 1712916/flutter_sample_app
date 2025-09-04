@@ -177,4 +177,7 @@ class LKey {
   static const String next = 'next';
   static const String getStarted = 'getStarted';
   static const String back = 'back';
+
+  // Chat
+  static const String chat = 'chat';
 }

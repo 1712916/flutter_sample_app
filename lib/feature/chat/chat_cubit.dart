@@ -16,18 +16,6 @@ class ChatState {
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit(this.chatRepository) : super(ChatState.initial()) {
-    final newMessage = TextChatMessage(
-      isUserMessage: false,
-      text: "Xin chào, tôi là Meow, trợ lý ảo của bạn. Bạn cần gì?",
-    );
-
-    _addChatMessage(newMessage);
-
-    final timeMessage = DateChatMessage(
-      date: DateTime.now(),
-    );
-    _addChatMessage(timeMessage);
-
     chatRepository.getChatHistory().then(
       (value) {
         return value.map(

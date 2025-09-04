@@ -7,6 +7,8 @@ import 'package:meow_app/data/repositories/chat_repository.dart';
 import 'package:meow_app/feature/chat/chat_cubit.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
+import '../../widgets/text.dart';
+
 extension HideKeyBoard on BuildContext {
   void hideKeyboard() {
     final FocusScopeNode currentFocus = FocusScope.of(this);
@@ -91,7 +93,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Chat Page'),
+        title: LText(LKey.chat),
       ),
       body: Column(
         children: [
@@ -104,6 +106,7 @@ class _ChatPageState extends State<ChatPage> {
                   bloc: _chatCubit,
                   builder: (context, state) {
                     return ListView.separated(
+                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                       reverse: true,
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                       itemCount: state.messages.length,
@@ -198,7 +201,7 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           Expanded(
                             child: TextField(
-                              autofocus: true,
+                              autofocus: false,
                               focusNode: _focusNode,
                               controller: _controller,
                               onSubmitted: (value) {},
