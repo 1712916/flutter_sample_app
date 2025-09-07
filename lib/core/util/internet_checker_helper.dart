@@ -8,7 +8,8 @@ class InternetCheckerHelper {
 
   static Connectivity get connectivity => _connectivity;
 
-  static bool get isConnected => _currentResult != ConnectivityResult.none;
+  static bool get isConnected => true;
+  // static bool get isConnected => _currentResult != ConnectivityResult.none;
 
   static ConnectivityResult _currentResult = ConnectivityResult.none;
 

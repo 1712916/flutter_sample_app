@@ -12,12 +12,12 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/core/sound/music_manager.dart';
 import 'package:meow_app/feature/sound/music_provider.dart';
 import 'package:meow_app/widgets/text.dart';
-import 'package:objectbox/objectbox.dart';
 
 import 'core/persistence/isar_storage.dart';
+import 'core/persistence/storage.dart';
 import 'core/util/background_worker.dart';
 import 'core/util/firebase.dart';
-import 'core/util/index.dart';
+import 'core/util/setting.dart';
 import 'data/database_model/object_box_entity/a_object_box.dart';
 import 'dependencies/app_dependencies.dart';
 import 'feature/app_menu/cubit/app_menu_cubit.dart';
@@ -39,9 +39,9 @@ Future main() async {
 
   runApp(
     EasyLocalization(
-      child: const MyApp(),
       supportedLocales: LocaleUtils.locales,
       path: LocaleUtils.path,
+      child: const MyApp(),
     ),
   );
 }
@@ -50,7 +50,6 @@ Future initApp() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await configFirebase();
-  InternetCheckerHelper.connectivity.onConnectivityChanged.listen(InternetCheckerHelper.changeConnectivityResult);
   await Future.wait([
     EasyLocalization.ensureInitialized(),
     SettingManager.loadSetting(),
@@ -65,33 +64,27 @@ Future initApp() async {
           ),
         ),
     IsarDatabase().initialize(),
-    AppHomeWidget.init(),
-    BackgroundWorker.init().whenComplete(
-      () {
-        BackgroundWorker.registerLoadHomeWidgetData();
-      },
-    ),
   ]);
 
   // Initialize game sound manager without starting music playback
-  GameSoundManager().initialize();
+  compute((message) {
+    GameSoundManager().initialize();
+  }, dynamic);
 
-  Bloc.observer = AppBlocObserver();
+  AppHomeWidget.init().then(
+    (_) async {
+      BackgroundWorker.init().whenComplete(
+        () {
+          BackgroundWorker.registerLoadHomeWidgetData();
+        },
+      );
+    },
+  );
 
-  if (Admin.isAvailable() && isFirstRun) {
-    // Keep a reference until no longer needed or manually closed.
-    isFirstRun = false;
-    final ob = await AObjectBox.create();
-
-    admin = Admin(ob.store);
-  }
+  AObjectBox.openAdminDashboard();
 
   FlutterNativeSplash.remove();
 }
-
-bool isFirstRun = true;
-
-late Admin admin;
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -140,8 +133,7 @@ class _MaterialAppState extends State<_MaterialApp> {
   @override
   void dispose() {
     _linkSubscription?.cancel();
-    admin.close();
-    AObjectBox.create().then((objBox) => objBox.close());
+    AObjectBox.closeAdminDashboard();
 
     super.dispose();
   }

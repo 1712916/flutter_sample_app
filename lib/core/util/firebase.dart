@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 Future configFirebase() async {
   await Firebase.initializeApp();
 
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   // Non-async exceptions
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
