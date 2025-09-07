@@ -5,6 +5,7 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
     id "com.google.gms.google-services"
     id "com.google.firebase.crashlytics"
+    id "org.jetbrains.kotlin.plugin.compose"
 }
 
 def localProperties = new Properties()
@@ -90,6 +91,13 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -104,6 +112,8 @@ dependencies {
     def objectboxVersion = "4.1.0"
     debugImplementation("io.objectbox:objectbox-android-objectbrowser:$objectboxVersion")
     releaseImplementation("io.objectbox:objectbox-android:$objectboxVersion")
+    implementation 'androidx.glance:glance-appwidget:1.0.0'
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }
 
 configurations {

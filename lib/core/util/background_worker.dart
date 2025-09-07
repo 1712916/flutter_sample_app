@@ -8,7 +8,9 @@ import '../../data/response/status_code.dart';
 import '../../feature/home_widget/home_widget_page.dart';
 import '../index.dart';
 
+@pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
 abstract class BackgroundWorker {
+  @pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
   static Future<void> init() {
     return Workmanager().initialize(
       callbackDispatcher,
@@ -16,6 +18,7 @@ abstract class BackgroundWorker {
     );
   }
 
+  @pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
   static Future<void> registerLoadHomeWidgetData() {
     return Workmanager().registerPeriodicTask(
       AppHomeWidget.backgroundTaskName,
@@ -25,7 +28,7 @@ abstract class BackgroundWorker {
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
-      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+      existingWorkPolicy: ExistingWorkPolicy.replace,
       frequency: const Duration(hours: 2),
     );
   }

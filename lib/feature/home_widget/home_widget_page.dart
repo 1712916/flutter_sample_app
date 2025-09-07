@@ -9,7 +9,7 @@ import '../image/cubit/image_list_cubit.dart';
 
 const String appGroupId = 'group.com.vinhnt.meow';
 const String iOSWidgetName = 'NewsWidget';
-const String androidWidgetName = 'NewAppWidget';
+const String androidWidgetName = 'HomeWidgetReceiver';
 
 abstract class AppHomeWidget {
   static Future<void> init() async {
