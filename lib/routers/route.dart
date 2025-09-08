@@ -46,6 +46,8 @@ class RouteManager {
 
   static String get chatPage => '/chat';
 
+  static String get appWidgetSettingPage => '/app_widget/setting';
+
   static getRoute(RouteSettings settings) {
     late Widget widget;
     try {
@@ -172,4 +174,8 @@ void goToPikachuGame([BuildContext? context]) {
 
 void goToFavouritePage([BuildContext? context]) {
   Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.favouritePage);
+}
+
+void goToAppWidgetSettingPage([BuildContext? context]) {
+  Navigator.of(context ?? navKey.currentContext!).pushNamed(RouteManager.appWidgetSettingPage);
 }

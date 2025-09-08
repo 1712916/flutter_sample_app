@@ -8,6 +8,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 
 import '../../core/index.dart';
+import '../../resources/icon/icon_path.dart';
 import '../../widgets/widgets.dart';
 import '../game_sort/widget/blinking_marker.dart';
 import '../game_sort/widget/game_complete_widget.dart';
@@ -646,9 +647,9 @@ class ChooseGameContentWidget extends StatelessWidget with ShowDialog<CellConten
   @override
   Widget build(BuildContext context) {
     Map<String, String> animalMap = {
-      'Meow': 'assets/icon/cat.svg',
-      'Gaow': 'assets/icon/dog.svg',
-      'Mixed': 'assets/icon/paw.svg',
+      'Meow': IconPath.cat,
+      'Gaow': IconPath.dog,
+      'Mixed': IconPath.paw,
     };
     final theme = context.appTheme;
     return AlertDialog(

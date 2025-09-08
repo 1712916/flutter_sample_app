@@ -144,5 +144,11 @@
   "backgroundSolidDescription": "Nền với màu sắc đồng nhất",
   "backgroundImageDescription": "Nền với hình ảnh",
   "explore": "Khám phá",
-  "chat": "Trò chuyện"
+  "chat": "Trò chuyện",
+  "appWidget": "App Widget",
+  "widgetRefreshTime": "Thời gian làm mới widget",
+  "hour": "Giờ",
+  "other": "Khác",
+  "pin": "Ghim",
+  "refresh": "Làm mới"
 }

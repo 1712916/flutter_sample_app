@@ -81,6 +81,14 @@ class LKey {
   static const String cropImage = 'cropImage';
   static const String explore = 'explore';
 
+  ///Home widget
+  static const String appWidget = 'appWidget';
+  static const String widgetRefreshTime = 'widgetRefreshTime';
+  static const String hour = 'hour';
+  static const String other = 'other';
+  static const String pin = 'pin';
+  static const String refresh = 'refresh';
+
   ///show case
   static const String switchViewTitle = 'showcase.switchViewTitle';
   static const String switchViewDescription = 'showcase.switchViewDescription';

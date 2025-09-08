@@ -5,6 +5,7 @@ import 'package:meow_app/feature/game_pikachu/pikachu_game_page.dart';
 import 'package:meow_app/feature/game_sort/game_setting_page.dart';
 import 'package:meow_app/feature/game_sticker/sticker_list_page.dart';
 import 'package:meow_app/feature/game_sticker/sticker_page.dart';
+import 'package:meow_app/feature/home_widget/home_widget_setting_page.dart';
 import 'package:meow_app/feature/onboarding/onboarding_page.dart';
 import 'package:meow_app/feature/setting_page_new.dart';
 
@@ -25,6 +26,7 @@ class PageDependencies {
     }, instanceName: RouteManager.mainPage);
     injector.registerFactory<Widget>(() => OnboardingPage(), instanceName: RouteManager.onboardingPage);
     injector.registerFactory<Widget>(() => SettingNewPage(), instanceName: RouteManager.settingPage);
+    injector.registerFactory<Widget>(() => HomeWidgetSettingPage(), instanceName: RouteManager.appWidgetSettingPage);
     injector.registerFactory<Widget>(() => FavouritePage(), instanceName: RouteManager.favouritePage);
     injector.registerFactory<Widget>(() => GameSettingPage(), instanceName: RouteManager.gameSettingPage);
     injector.registerFactory<Widget>(() => GameMenuPage(), instanceName: RouteManager.gameMenuPage);

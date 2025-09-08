@@ -144,5 +144,11 @@
   "backgroundSolidDescription": "Solid color background",
   "backgroundImageDescription": "Image background",
   "explore": "Explore",
-  "chat": "Chat"
+  "chat": "Chat",
+  "appWidget": "App Widget",
+  "widgetRefreshTime": "Widget Refresh Time",
+  "hour": "Hour",
+  "other": "Other",
+  "pin": "Pin",
+  "refresh": "Refresh"
 }

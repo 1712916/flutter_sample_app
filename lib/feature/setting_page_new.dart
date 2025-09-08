@@ -66,6 +66,26 @@ class _SettingNewPageState extends StateTemplate<SettingNewPage> {
                       size: 16,
                     ),
                   ),
+                  ListTile(
+                    onTap: () {
+                      goToAppWidgetSettingPage();
+                    },
+                    title: LText(
+                      LKey.appWidget,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    leading: Icon(
+                      Icons.widgets_outlined,
+                      color: theme.iconColor,
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                  ),
                 ],
               ),
             ),
