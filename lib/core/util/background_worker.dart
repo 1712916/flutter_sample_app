@@ -6,6 +6,7 @@ import 'package:workmanager/workmanager.dart';
 import '../../data/data_provider/remote/search_service.dart';
 import '../../data/response/status_code.dart';
 import '../../feature/home_widget/home_widget_page.dart';
+import '../../feature/home_widget/home_widget_setting_page.dart';
 import '../index.dart';
 
 @pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
@@ -19,7 +20,7 @@ abstract class BackgroundWorker {
   }
 
   @pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
-  static Future<void> registerLoadHomeWidgetData() {
+  static Future<void> registerLoadHomeWidgetData(int refreshTimeInHours) {
     return Workmanager().registerPeriodicTask(
       AppHomeWidget.backgroundTaskName,
       AppHomeWidget.backgroundTaskName,
@@ -29,7 +30,7 @@ abstract class BackgroundWorker {
         networkType: NetworkType.connected,
       ),
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      frequency: const Duration(hours: 2),
+      frequency: Duration(hours: refreshTimeInHours),
     );
   }
 }
@@ -40,15 +41,17 @@ void callbackDispatcher() {
     (task, inputData) async {
       switch (task) {
         case AppHomeWidget.backgroundTaskName:
+          final SimpleStorage storage = SimpleStorage();
+
+          await storage.init();
+
+          final bool isCat = await storage.getBool(HomeWidgetSettingPageState.isCatKey) ?? true;
 
           ///call api get images
-          final rs = await searchIsolate(
-            SearchQueryModel(
-              url: ApiPath.searchAndPagination.getPath(),
-              limit: 1,
-              page: 1,
-              apiKey: '',
-            ),
+          final rs = await SearchService.searchImages(
+            isMeow: isCat,
+            page: 1,
+            limit: 1,
           );
 
           try {

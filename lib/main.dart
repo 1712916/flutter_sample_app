@@ -25,6 +25,7 @@ import 'feature/auto_play/auto_play_memory_game.dart';
 import 'feature/favourite/cubit/favourite_cubit.dart';
 import 'feature/game_sort/cubit/game_setting_cubit.dart';
 import 'feature/home_widget/home_widget_page.dart';
+import 'feature/home_widget/home_widget_setting_page.dart';
 import 'feature/image/cubit/image_list_cubit.dart';
 import 'feature/showcase/showcase_util.dart';
 import 'feature/sound/game_sound_manager.dart';
@@ -74,8 +75,14 @@ Future initApp() async {
   AppHomeWidget.init().then(
     (_) async {
       BackgroundWorker.init().whenComplete(
-        () {
-          BackgroundWorker.registerLoadHomeWidgetData();
+        () async {
+          final simpleStorage = SimpleStorage();
+          await simpleStorage.init();
+          final refreshTimeInHours = await simpleStorage.getInt(HomeWidgetSettingPageState.refreshTimeKey);
+          if (refreshTimeInHours == null) {
+            simpleStorage.saveInt(HomeWidgetSettingPageState.refreshTimeKey, refreshTimes.first);
+            BackgroundWorker.registerLoadHomeWidgetData(refreshTimes.first);
+          }
         },
       );
     },

@@ -26,8 +26,6 @@ class SearchQueryModel {
   });
 }
 
-class ISearchService {}
-
 class SearchService {
   Future<CustomResponse<List<SearchModel>>> search({
     int? limit,
@@ -45,6 +43,27 @@ class SearchService {
         orderType: order,
         imageTypes: imageTypes,
         apiKey: apiKey,
+      ),
+    );
+    return response;
+  }
+
+  static Future<CustomResponse<List<SearchModel>>> searchImages({
+    bool isMeow = true,
+    int? limit,
+    int? page,
+    OrderType? order = OrderType.desc,
+    List<ImageType>? imageTypes,
+  }) async {
+    final response = await compute<SearchQueryModel, CustomResponse<List<SearchModel>>>(
+      searchIsolate,
+      SearchQueryModel(
+        url: ApiPath.searchAndPagination.getPathByType(isMeow),
+        limit: limit,
+        page: page,
+        orderType: order,
+        imageTypes: imageTypes,
+        apiKey: SettingManager.getApiKeyByType(isMeow),
       ),
     );
     return response;

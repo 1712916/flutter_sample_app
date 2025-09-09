@@ -51,6 +51,12 @@ abstract class AppHomeWidget {
       }
     }
   }
+
+  static void requestPinWidget() {
+    HomeWidget.requestPinWidget(
+      androidName: androidWidgetName,
+    );
+  }
 }
 
 class HomeWidgetData {

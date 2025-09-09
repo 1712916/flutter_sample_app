@@ -39,6 +39,15 @@ class ImageListCubit extends Cubit<ImageListState> {
 
   int get currentIndex => _currentIndex;
 
+  String? get randomImage {
+    final images = state.images;
+    if (images != null && images.isNotEmpty) {
+      final randomIndex = DateTime.now().millisecondsSinceEpoch % images.length;
+      return images[randomIndex].url ?? '';
+    }
+    return null;
+  }
+
   void setCurrentIndex(int index) {
     _currentIndex = index;
   }

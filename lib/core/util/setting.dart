@@ -121,4 +121,7 @@ class SettingManager {
   static String? apiCatKey;
 
   static String? apiDogKey;
+
+  static String getApiKeyByType(bool isMeow) =>
+      isMeow ? (apiCatKey ?? ApiConfig.defaultApiCatKey) : (apiDogKey ?? ApiConfig.defaultApiDogKey);
 }

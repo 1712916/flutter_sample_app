@@ -30,6 +30,13 @@ extension GetPath on ApiPath {
         return '${SettingManager.isMeow ? ApiConfig.catBaseUrl : ApiConfig.dogBaseUrl}${ApiConfig.searchPath}';
     }
   }
+
+  String getPathByType(bool isMeow) {
+    switch (this) {
+      case ApiPath.searchAndPagination:
+        return '${isMeow ? ApiConfig.catBaseUrl : ApiConfig.dogBaseUrl}${ApiConfig.searchPath}';
+    }
+  }
 }
 
 class ApiRequest {

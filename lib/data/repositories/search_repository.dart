@@ -17,7 +17,7 @@ class SearchRepository extends ISearchRepository {
       page: page,
       order: SettingManager.orderType,
       imageTypes: SettingManager.imageTypes,
-      apiKey: SettingManager.isMeow ? SettingManager.apiCatKey! : SettingManager.apiDogKey!,
+      apiKey: SettingManager.getApiKeyByType(SettingManager.isMeow),
     );
   }
 }

@@ -88,6 +88,9 @@ class LKey {
   static const String other = 'other';
   static const String pin = 'pin';
   static const String refresh = 'refresh';
+  static const String changeHomeWidgetToast = 'changeHomeWidgetToast';
+  static const String changeRefreshTimeToast = 'changeRefreshTimeToast';
+  static const String refreshAppWidgetToast = 'refreshAppWidgetToast';
 
   ///show case
   static const String switchViewTitle = 'showcase.switchViewTitle';

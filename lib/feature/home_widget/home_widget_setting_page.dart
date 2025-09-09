@@ -1,14 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:meow_app/core/index.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:meow_app/widgets/radio.dart';
+import 'package:meow_app/widgets/toast.dart';
 
+import '../../core/util/background_worker.dart';
+import '../../data/data_provider/remote/search_service.dart';
 import '../../resources/icon/icon_path.dart';
 import '../../resources/string/string.dart';
 import '../../widgets/text.dart';
 import '../game_sort/game_setting_page.dart';
+import '../image/cubit/image_list_cubit.dart';
+import 'home_widget_page.dart';
 
 //by hour
 final List<int> refreshTimes = [2, 4, 6, 8, 12, 24];
@@ -17,10 +23,10 @@ class HomeWidgetSettingPage extends StatefulWidget {
   const HomeWidgetSettingPage({super.key});
 
   @override
-  State<HomeWidgetSettingPage> createState() => _HomeWidgetSettingPageState();
+  State<HomeWidgetSettingPage> createState() => HomeWidgetSettingPageState();
 }
 
-class _HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
+class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
   //create static keys to store settings
   static const String isCatKey = 'home_widget/isCat';
   static const String refreshTimeKey = 'home_widget/refreshTime';
@@ -29,23 +35,72 @@ class _HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
 
   final SimpleStorage storage = SimpleStorage();
 
+  ImageListCubit get cubit => context.read<ImageListCubit>();
+
   bool isCat = true;
   int refreshTime = refreshTimes.first;
 
-  void setIsCat(bool value) {
+  void setIsCat(bool value) async {
+    if (value == isCat) return;
+
     setState(() {
       isCat = value;
     });
+
     storage.saveBool(isCatKey, value);
-    //todo: call widget update
+
+    _onResetImage();
+
+    Toast.makeText(
+      toastLength: Toast.LENGTH_LONG,
+      message: LKey.changeHomeWidgetToast.tr(
+        namedArgs: {"type": value ? TextResource.cat : TextResource.dog},
+      ),
+    );
+  }
+
+  Future _onResetImage() async {
+    String newUrl = '';
+
+    if (SettingManager.isMeow == isCat) {
+      // cubit.randomImage;
+      newUrl = cubit.randomImage ?? '';
+    } else {
+      //call api to get a random image
+      final rs = await SearchService.searchImages(
+        isMeow: isCat,
+        limit: 1,
+        page: 1,
+      );
+      final image = rs.data?.firstOrNull;
+      newUrl = image?.url ?? '';
+    }
+
+    AppHomeWidget.updateWidget(HomeWidgetData(url: newUrl));
   }
 
   void setRefreshTime(int value) {
+    if (value == refreshTime) return;
+
     setState(() {
       refreshTime = value;
     });
     storage.saveInt(refreshTimeKey, value);
-    //todo: call widget update
+    BackgroundWorker.registerLoadHomeWidgetData(refreshTime);
+    Toast.makeText(
+      toastLength: Toast.LENGTH_LONG,
+      message: LKey.changeRefreshTimeToast.tr(
+        namedArgs: {"time": '$value ${LKey.hour.tr()}'},
+      ),
+    );
+  }
+
+  void onRefreshWidgetTap() {
+    _onResetImage();
+    Toast.makeText(
+      toastLength: Toast.LENGTH_LONG,
+      message: LKey.refreshAppWidgetToast.tr(),
+    );
   }
 
   @override
@@ -178,7 +233,9 @@ class _HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
               child: Column(
                 children: [
                   ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      AppHomeWidget.requestPinWidget();
+                    },
                     leading: Icon(
                       Icons.widgets_outlined,
                       color: iconColor,
@@ -193,7 +250,7 @@ class _HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
                     ),
                   ),
                   ListTile(
-                    onTap: () {},
+                    onTap: onRefreshWidgetTap,
                     leading: Icon(
                       Icons.refresh,
                       color: iconColor,

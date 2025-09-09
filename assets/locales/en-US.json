@@ -150,5 +150,8 @@
   "hour": "Hour",
   "other": "Other",
   "pin": "Pin",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "changeHomeWidgetToast":"Changed App Widget to {type} type",
+  "changeRefreshTimeToast": "Changed App Widget refresh time to {time} hours",
+  "refreshAppWidgetToast": "Refreshed App Widget"
 }

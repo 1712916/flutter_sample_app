@@ -150,5 +150,8 @@
   "hour": "Giờ",
   "other": "Khác",
   "pin": "Ghim",
-  "refresh": "Làm mới"
+  "refresh": "Làm mới",
+  "changeHomeWidgetToast": "Đã đổi App Widget sang loại {type}",
+  "changeRefreshTimeToast": "Đã đổi thời gian làm mới App Widget thành {time} giờ",
+  "refreshAppWidgetToast": "Đã làm mới App Widget"
 }
