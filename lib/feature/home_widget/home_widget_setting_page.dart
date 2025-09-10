@@ -90,7 +90,7 @@ class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
     Toast.makeText(
       toastLength: Toast.LENGTH_LONG,
       message: LKey.changeRefreshTimeToast.tr(
-        namedArgs: {"time": '$value ${LKey.hour.tr()}'},
+        namedArgs: {"time": '$value'},
       ),
     );
   }
