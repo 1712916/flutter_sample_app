@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,7 +39,7 @@ class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
   ImageListCubit get cubit => context.read<ImageListCubit>();
 
   bool isCat = true;
-  int refreshTime = refreshTimes.first;
+  int? refreshTime = null;
 
   void setIsCat(bool value) async {
     if (value == isCat) return;
@@ -85,8 +86,9 @@ class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
     setState(() {
       refreshTime = value;
     });
+
     storage.saveInt(refreshTimeKey, value);
-    BackgroundWorker.registerLoadHomeWidgetData(refreshTime);
+    BackgroundWorker.registerLoadHomeWidgetData(value);
     Toast.makeText(
       toastLength: Toast.LENGTH_LONG,
       message: LKey.changeRefreshTimeToast.tr(
@@ -108,7 +110,7 @@ class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
     super.initState();
     Future.microtask(() async {
       isCat = await storage.getBool(isCatKey) ?? true;
-      refreshTime = await storage.getInt(refreshTimeKey) ?? refreshTimes.first;
+      refreshTime = (await storage.getInt(refreshTimeKey)) ?? refreshTimes.first;
       setState(() {});
     });
   }
@@ -199,19 +201,36 @@ class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...refreshTimes.map(
-                    (time) => ListTile(
-                      onTap: () {
-                        setRefreshTime(time);
-                      },
-                      title: Text(
-                        '$time ${LKey.hour.tr()}',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: textColor,
-                          fontWeight: FontWeight.w600,
+                  SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: HorizontalListWheelScrollView<int>(
+                      items: refreshTimes,
+                      selectedItem: refreshTime,
+                      itemBuilder: (item) => Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '$item',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: textColor,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            Text(
+                              LKey.hours.tr(),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: textColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      trailing: AppRadio(isSelected: time == refreshTime),
+                      onChanged: (value) {
+                        setRefreshTime(value);
+                      },
                     ),
                   ),
                 ],
@@ -269,6 +288,105 @@ class HomeWidgetSettingPageState extends State<HomeWidgetSettingPage> {
           SizedBox(height: 16), // I
         ],
       ),
+    );
+  }
+}
+
+class HorizontalListWheelScrollView<T> extends StatefulWidget {
+  const HorizontalListWheelScrollView({
+    super.key,
+    required this.items,
+    this.selectedItem,
+    this.itemBuilder,
+    this.onChanged,
+  });
+
+  final List<T> items;
+  final T? selectedItem;
+  final Widget Function(T item)? itemBuilder;
+  final ValueChanged<T>? onChanged;
+
+  @override
+  State<HorizontalListWheelScrollView<T>> createState() => _HorizontalListWheelScrollViewState<T>();
+}
+
+class _HorizontalListWheelScrollViewState<T> extends State<HorizontalListWheelScrollView<T>> {
+  late final FixedExtentScrollController controller = FixedExtentScrollController();
+
+  List<T> get items => widget.items;
+  T? get selectedItem => widget.selectedItem;
+  Widget Function(T item)? get itemBuilder => widget.itemBuilder;
+  ValueChanged<T>? get onChanged => widget.onChanged;
+
+  @override
+  void didUpdateWidget(covariant HorizontalListWheelScrollView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedItem != widget.selectedItem) {
+      if (selectedItem != null) {
+        final index = items.indexOf(selectedItem!);
+        if (index != -1) {
+          controller.animateToItem(index, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+        }
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    //add post frame callback to jump to selected item
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (selectedItem != null) {
+        final index = items.indexOf(selectedItem!);
+        if (index != -1) {
+          controller.animateToItem(index, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        RotatedBox(
+          quarterTurns: 3,
+          child: ListWheelScrollView.useDelegate(
+            itemExtent: 100,
+            diameterRatio: 2,
+            physics: FixedExtentScrollPhysics(),
+            useMagnifier: true,
+            controller: controller,
+            changeReportingBehavior: ChangeReportingBehavior.onScrollEnd,
+            overAndUnderCenterOpacity: 0.6,
+            childDelegate: ListWheelChildBuilderDelegate(
+              builder: (context, index) {
+                return RotatedBox(
+                  quarterTurns: 1,
+                  child: itemBuilder?.call(items[index]) ?? Text('${items[index]}'),
+                );
+              },
+              childCount: items.length,
+            ),
+            onSelectedItemChanged: (value) {
+              onChanged?.call(items[value]);
+            },
+          ),
+        ),
+        const Center(
+          child: RotatedBox(
+            quarterTurns: 3,
+            child: IgnorePointer(
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: CupertinoPickerDefaultSelectionOverlay(),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

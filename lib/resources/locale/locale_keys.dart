@@ -85,6 +85,7 @@ class LKey {
   static const String appWidget = 'appWidget';
   static const String widgetRefreshTime = 'widgetRefreshTime';
   static const String hour = 'hour';
+  static const String hours = 'hours';
   static const String other = 'other';
   static const String pin = 'pin';
   static const String refresh = 'refresh';
