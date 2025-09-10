@@ -90,13 +90,14 @@ class AppWidget : GlanceAppWidget() {
         var randomImage by remember(imagePath) { mutableStateOf<Bitmap?>(null) }
 
         LaunchedEffect(imagePath) {
-            if (imagePath != null) randomImage = context.getRandomImage(imagePath)
+            randomImage = context.getRandomImage(imagePath)
         }
 
         Box(
             modifier = GlanceModifier.background(Color.White).padding(8.dp).clickable(
                 onClick = actionStartActivity<MainActivity>(
-                    context
+                    context,
+                    Uri.parse("appWidget://message?image_url=$imagePath")
                 )
             )
         ) {
@@ -108,7 +109,7 @@ class AppWidget : GlanceAppWidget() {
                         if (randomImage != null) {
                             Image(
                                 provider = ImageProvider(randomImage!!),
-                                contentDescription = "Image from Picsum Photos",
+                                contentDescription = "Image from Meow App",
                                 contentScale = ContentScale.Crop,
                                 modifier = GlanceModifier.fillMaxSize()
 

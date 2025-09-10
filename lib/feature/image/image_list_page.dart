@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:meow_app/feature/app_menu/cubit/app_menu_cubit.dart';
+import 'package:meow_app/resources/icon/icon_path.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -12,6 +13,7 @@ import '../../../routers/route.dart';
 import '../../../widgets/image_picker_widget.dart';
 import '../../../widgets/widgets.dart';
 import '../../core/index.dart';
+import '../../resources/string/string.dart';
 import '../base_page.dart';
 import '../game/game_menu_page.dart';
 import '../home_widget/home_widget_page.dart';
@@ -426,13 +428,13 @@ class AnimalDropdown extends StatefulWidget {
 
 class _AnimalDropdownState extends State<AnimalDropdown> {
   final List<String> items = [
-    'Meow',
-    'Gaow',
+    TextResource.cat,
+    TextResource.dog,
   ];
 
   Map<String, String> animalMap = {
-    'Meow': 'assets/icon/cat.svg',
-    'Gaow': 'assets/icon/dog.svg',
+    TextResource.cat: IconPath.cat,
+    TextResource.dog: IconPath.dog,
   };
 
   @override
