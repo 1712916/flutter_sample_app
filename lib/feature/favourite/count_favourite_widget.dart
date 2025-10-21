@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:meow_app/feature/favourite/data/favourite_collection.dart';
 import 'package:meow_app/resources/theme/theme_data.dart';
 

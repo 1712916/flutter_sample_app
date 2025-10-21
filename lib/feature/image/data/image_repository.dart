@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart' hide GetId;
+import 'package:isar_community/isar.dart' hide GetId;
 
 import '../../../core/index.dart';
 import '../../../data/repositories/isar_repository.dart';

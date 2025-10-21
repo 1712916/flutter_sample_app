@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:meow_app/feature/image/data/image_collection.dart';
 import 'package:path_provider/path_provider.dart';
 
